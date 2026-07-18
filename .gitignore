@@ -1,0 +1,12 @@
+.next/
+node_modules/
+out/
+coverage/
+public/docs/
+image-tests/
+.env*
+!.env.example
+*.log
+*.tsbuildinfo
+.DS_Store
+PLAN.md
