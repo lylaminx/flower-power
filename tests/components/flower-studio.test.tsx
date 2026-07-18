@@ -223,6 +223,28 @@ describe("FlowerStudio", () => {
     expect(saved.settings).not.toHaveProperty("panelOpen");
   });
 
+  it("downloads a design file without using the API in file mode", async () => {
+    const user = userEvent.setup();
+    const createObjectURL = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:flower-design");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    render(<FlowerStudio persistenceMode="file" />);
+
+    expect(screen.getByRole("button", { name: "Load JSON" })).toBeVisible();
+    expect(
+      screen.queryByRole("button", { name: "Saved flowers" }),
+    ).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Save JSON" }));
+
+    expect(screen.getByRole("button", { name: "Saved" })).toBeVisible();
+    expect(fetch).not.toHaveBeenCalled();
+    expect(createObjectURL).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "application/json" }),
+    );
+  });
+
   it("shows when the database save fails", async () => {
     const user = userEvent.setup();
     vi.mocked(fetch).mockResolvedValue({ ok: false, status: 503 } as Response);

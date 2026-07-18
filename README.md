@@ -1,5 +1,9 @@
 # FlowerPower
 
+[![CI](https://github.com/lylaminx/flower-power/actions/workflows/ci.yml/badge.svg)](https://github.com/lylaminx/flower-power/actions/workflows/ci.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/lylaminx/flower-power)](https://github.com/lylaminx/flower-power/releases/latest)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
+
 An artist-focused 3D botanical studio for shaping, lighting, and exporting floral references.
 
 ## Current prototype
@@ -22,6 +26,19 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+The application supports two persistence modes. `database` (the default
+outside Vercel) saves and loads designs through PostgreSQL. `file` downloads
+designs as versioned JSON files and loads them locally in the browser without
+sending their contents to a server:
+
+```bash
+NEXT_PUBLIC_PERSISTENCE_MODE=file npm run dev
+```
+
+Vercel builds default to file mode, so the repository can be deployed there
+without configuring a database. Set `NEXT_PUBLIC_PERSISTENCE_MODE=database`
+in a deployment that should use the PostgreSQL API instead.
 
 ## Run with Docker Compose
 
@@ -54,6 +71,20 @@ docker compose logs -f web
 docker compose down
 ```
 
+## Container image
+
+Publishing a GitHub Release builds the application image and publishes it to
+GitHub Container Registry:
+
+```bash
+docker pull ghcr.io/lylaminx/flower-power:latest
+```
+
+The workflow publishes immutable `sha-<commit>` tags plus the release's full
+semantic version and major/minor alias. Non-prerelease releases also update
+`latest`. GitHub creates a new container package as private by default; its
+visibility and access can be managed from the package settings.
+
 ## Quality checks
 
 ```bash
@@ -82,3 +113,7 @@ at `{BASE_URL}/docs/` after deployment. `npm run build` generates the docs
 automatically, and the Docker image includes them alongside the application.
 
 See [PLAN.md](./PLAN.md) for the product vision and phased roadmap.
+
+## License
+
+FlowerPower is licensed under the [Apache License 2.0](./LICENSE).

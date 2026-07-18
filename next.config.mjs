@@ -2,6 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
+  env: {
+    NEXT_PUBLIC_PERSISTENCE_MODE:
+      process.env.NEXT_PUBLIC_PERSISTENCE_MODE ??
+      (process.env.VERCEL ? "file" : "database"),
+  },
   async redirects() {
     return [
       {

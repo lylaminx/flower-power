@@ -17,9 +17,11 @@ import {
 import { useCallback, useRef, useState } from "react";
 import { FlowerAdjustmentPanel } from "./flower-adjustment-panel";
 import { ColorControl } from "./flower-controls";
+import { FlowerFileLoader } from "./flower-file-loader";
 import { SavedFlowersDialog } from "./saved-flowers-dialog";
 import type { ExportPng } from "./flower-scene";
 import { selectFlowerSettings } from "@/lib/flower-design";
+import { downloadFlowerDesign } from "@/lib/flower-file";
 import { flowerPresets, useFlowerStore } from "@/lib/flower-store";
 
 const FlowerScene = dynamic(
@@ -35,7 +37,16 @@ const FlowerScene = dynamic(
   },
 );
 
-export function FlowerStudio() {
+type PersistenceMode = "database" | "file";
+
+const configuredPersistenceMode: PersistenceMode =
+  process.env.NEXT_PUBLIC_PERSISTENCE_MODE === "file" ? "file" : "database";
+
+export function FlowerStudio({
+  persistenceMode = configuredPersistenceMode,
+}: {
+  persistenceMode?: PersistenceMode;
+}) {
   const exportPngRef = useRef<ExportPng | null>(null);
   const [exportReady, setExportReady] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -64,16 +75,21 @@ export function FlowerStudio() {
   const save = async () => {
     setSaveStatus("saving");
     try {
-      const response = await fetch("/api/flowers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: `${store.preset} study`,
-          settings: selectFlowerSettings(store),
-        }),
-      });
-      if (!response.ok)
-        throw new Error(`Save failed with status ${response.status}`);
+      const design = {
+        name: `${store.preset} study`,
+        settings: selectFlowerSettings(store),
+      };
+      if (persistenceMode === "file") {
+        downloadFlowerDesign(design);
+      } else {
+        const response = await fetch("/api/flowers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(design),
+        });
+        if (!response.ok)
+          throw new Error(`Save failed with status ${response.status}`);
+      }
       setSaveStatus("saved");
       window.setTimeout(() => setSaveStatus("idle"), 1800);
     } catch (error) {
@@ -107,7 +123,11 @@ export function FlowerStudio() {
           >
             <BookOpen size={18} />
           </a>
-          <SavedFlowersDialog />
+          {persistenceMode === "file" ? (
+            <FlowerFileLoader />
+          ) : (
+            <SavedFlowersDialog />
+          )}
           <button
             className="secondary-button"
             disabled={saveStatus === "saving"}
@@ -120,7 +140,9 @@ export function FlowerStudio() {
                 ? "Saved"
                 : saveStatus === "error"
                   ? "Save failed"
-                  : "Save study"}
+                  : persistenceMode === "file"
+                    ? "Save JSON"
+                    : "Save study"}
           </button>
           <button
             className="primary-button"
