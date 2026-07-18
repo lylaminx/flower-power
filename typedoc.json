@@ -1,0 +1,9 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/lib/database.ts", "src/lib/flower-store.ts"],
+  "out": "public/docs",
+  "readme": "docs/README.md",
+  "name": "FlowerPower API",
+  "includeVersion": true,
+  "cleanOutputDir": true
+}

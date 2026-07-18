@@ -1,0 +1,882 @@
+:root {
+  color-scheme: light;
+  --ink: #233128;
+  --muted: #708075;
+  --paper: #f4f1e9;
+  --line: rgba(47, 67, 54, 0.14);
+  --moss: #52664e;
+  --moss-dark: #344a38;
+  --font-sans: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  --font-display: Iowan Old Style, Baskerville, "Times New Roman", serif;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  overflow: hidden;
+}
+body {
+  font-family: var(--font-sans), sans-serif;
+  color: var(--ink);
+  background: #d8d8ce;
+}
+button,
+input {
+  font: inherit;
+}
+button {
+  color: inherit;
+}
+.studio-shell {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.topbar {
+  height: 76px;
+  flex: 0 0 76px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 28px;
+  background: rgba(248, 246, 240, 0.96);
+  border-bottom: 1px solid var(--line);
+  z-index: 10;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display), serif;
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+}
+.brand em {
+  color: #b65e67;
+  font-style: italic;
+  font-weight: 500;
+}
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: #f6eee6;
+  background: var(--moss);
+  border-radius: 50%;
+  font-size: 19px;
+}
+.brand small {
+  align-self: flex-end;
+  margin: 0 0 12px 3px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.7px;
+}
+.study-name {
+  text-align: center;
+  line-height: 1.25;
+}
+.study-name span {
+  display: block;
+  color: #899187;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+.study-name b {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+}
+.top-actions {
+  justify-self: end;
+  display: flex;
+  gap: 9px;
+}
+.top-actions button,
+.panel-toggle,
+.reset-view {
+  border: 1px solid var(--line);
+  background: transparent;
+  cursor: pointer;
+}
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(28, 38, 31, 0.38);
+  backdrop-filter: blur(5px);
+}
+.flower-library {
+  width: min(620px, 100%);
+  max-height: min(720px, calc(100vh - 48px));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: 0 28px 80px rgba(30, 43, 34, 0.28);
+}
+.flower-library > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 26px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.flower-library header span {
+  color: #9a625f;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+}
+.flower-library h2 {
+  margin: 3px 0 0;
+  font: 600 28px var(--font-display);
+}
+.library-close {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: transparent;
+  cursor: pointer;
+}
+.flower-library-list {
+  max-height: min(590px, calc(100vh - 150px));
+  overflow-y: auto;
+  padding: 14px;
+}
+.library-message {
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: 13px;
+}
+.library-message p {
+  margin: 0;
+}
+.library-message button,
+.saved-flower-card > button {
+  padding: 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+.saved-flower-card {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 13px;
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.saved-flower-card:last-child {
+  border-bottom: 0;
+}
+.saved-flower-mark {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #a85967;
+  background: #eee2df;
+  font-size: 23px;
+}
+.saved-flower-card h3 {
+  margin: 0 0 3px;
+  font: 600 17px var(--font-display);
+}
+.saved-flower-card p,
+.saved-flower-card time {
+  display: block;
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+.saved-flower-card time {
+  margin-top: 3px;
+}
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.icon-button {
+  width: 39px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.secondary-button,
+.primary-button {
+  height: 40px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.primary-button {
+  color: white !important;
+  background: var(--moss-dark) !important;
+  box-shadow: 0 7px 18px rgba(42, 65, 47, 0.18);
+}
+.workspace {
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  position: relative;
+}
+.control-panel {
+  width: 348px;
+  flex: 0 0 348px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border-right: 1px solid var(--line);
+  z-index: 5;
+  transition: margin 0.35s ease;
+}
+.left-panel.closed {
+  margin-left: -348px;
+}
+.right-panel {
+  border-right: 0;
+  border-left: 1px solid var(--line);
+}
+.right-panel.closed {
+  margin-right: -348px;
+}
+.panel-toggle {
+  position: absolute;
+  right: -38px;
+  top: 18px;
+  width: 38px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  z-index: 3;
+}
+.panel-toggle svg {
+  width: 17px;
+}
+.right-panel-toggle {
+  right: auto;
+  left: -38px;
+  border-right: 0;
+  border-left: 1px solid var(--line);
+  border-radius: 8px 0 0 8px;
+}
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px 27px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #b8bdb4 transparent;
+}
+.panel-heading > span,
+.canvas-label span {
+  color: #9a625f;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+}
+.panel-heading h1 {
+  margin: 5px 0 4px;
+  font-family: var(--font-display);
+  font-size: 29px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+.panel-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.panel-mode-tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.panel-mode-tools button {
+  min-width: 0;
+  height: 42px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: #536158;
+  background: rgba(255, 255, 255, 0.42);
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.panel-mode-tools button.active {
+  color: var(--moss-dark);
+  border-color: #899c84;
+  background: #edf0e8;
+  box-shadow: inset 0 0 0 1px #899c84;
+}
+.panel-mode-tools svg {
+  width: 16px;
+}
+.adjustment-heading {
+  padding-top: 22px;
+}
+.control-section {
+  padding: 23px 0;
+  border-bottom: 1px solid var(--line);
+}
+.control-section h2 {
+  margin: 0 0 14px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+}
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+.preset-grid button {
+  padding: 9px 4px 8px;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.42);
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.preset-grid button.active {
+  border-color: #899c84;
+  background: #edf0e8;
+  box-shadow: inset 0 0 0 1px #899c84;
+}
+.mini-flower {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background:
+    repeating-conic-gradient(#f6f2ea 0 9deg, transparent 9deg 18deg),
+    radial-gradient(circle, #d9a13a 0 24%, transparent 25%);
+}
+.mini-flower.cosmos {
+  background:
+    repeating-conic-gradient(#d983a1 0 15deg, transparent 15deg 30deg),
+    radial-gradient(circle, #d7a038 0 24%, transparent 25%);
+}
+.mini-flower.sunset {
+  background:
+    repeating-conic-gradient(#dc654b 0 11deg, transparent 11deg 22deg),
+    radial-gradient(circle, #713a2c 0 24%, transparent 25%);
+}
+.mini-flower.poppy {
+  background:
+    repeating-conic-gradient(#c9342f 0 25deg, transparent 25deg 55deg),
+    radial-gradient(circle, #241916 0 25%, transparent 26%);
+}
+.mini-flower.coneflower {
+  background:
+    repeating-conic-gradient(#b85f87 0 8deg, transparent 8deg 16deg),
+    radial-gradient(circle, #8b512d 0 28%, transparent 29%);
+}
+.mini-flower.dahlia {
+  background:
+    repeating-conic-gradient(#bd466d 0 6deg, transparent 6deg 12deg),
+    radial-gradient(circle, #7f2945 0 17%, transparent 18%);
+}
+.mini-flower.rose {
+  background:
+    repeating-conic-gradient(#b93657 0 8deg, #e6768d 8deg 15deg),
+    radial-gradient(circle, #7d283e 0 16%, transparent 17%);
+}
+.mini-flower.sunflower {
+  background:
+    repeating-conic-gradient(#e7a51e 0 7deg, transparent 7deg 14deg),
+    radial-gradient(circle, #55351f 0 32%, transparent 33%);
+}
+.mini-flower.peony {
+  background:
+    repeating-conic-gradient(#dc829a 0 10deg, #f0b1c0 10deg 19deg),
+    radial-gradient(circle, #d29b38 0 14%, transparent 15%);
+}
+.mini-flower.lotus {
+  background:
+    repeating-conic-gradient(#e39bad 0 10deg, transparent 10deg 20deg),
+    radial-gradient(circle, #d5aa3d 0 22%, transparent 23%);
+}
+.mini-flower.anemone {
+  background:
+    repeating-conic-gradient(#7660aa 0 18deg, transparent 18deg 36deg),
+    radial-gradient(circle, #24222d 0 29%, transparent 30%);
+}
+.mini-flower.zinnia {
+  background:
+    repeating-conic-gradient(#df5b4f 0 7deg, transparent 7deg 14deg),
+    radial-gradient(circle, #b56b2b 0 18%, transparent 19%);
+}
+.mini-flower.tulip {
+  background:
+    repeating-conic-gradient(#c93f58 0 22deg, transparent 22deg 60deg),
+    radial-gradient(circle, #403629 0 15%, transparent 16%);
+}
+.mini-flower.iris {
+  background:
+    repeating-conic-gradient(#6551a2 0 21deg, transparent 21deg 60deg),
+    radial-gradient(circle, #e2ad3d 0 16%, transparent 17%);
+}
+.mini-flower.lily {
+  background:
+    repeating-conic-gradient(#e8c5c5 0 22deg, transparent 22deg 60deg),
+    radial-gradient(circle, #8d4a2b 0 14%, transparent 15%);
+}
+.mini-flower.orchid {
+  background:
+    repeating-conic-gradient(#d9b9df 0 25deg, transparent 25deg 72deg),
+    radial-gradient(circle, #ae5a9d 0 22%, transparent 23%);
+}
+.mini-flower.carnation {
+  background:
+    repeating-conic-gradient(#d85f72 0 6deg, #ef95a1 6deg 11deg),
+    radial-gradient(circle, #b75065 0 12%, transparent 13%);
+}
+.mini-flower.cherry.blossom {
+  background:
+    repeating-conic-gradient(#f0c5cf 0 28deg, transparent 28deg 72deg),
+    radial-gradient(circle, #c58b3c 0 15%, transparent 16%);
+}
+.mini-flower.magnolia {
+  background:
+    repeating-conic-gradient(#eee4df 0 18deg, transparent 18deg 40deg),
+    radial-gradient(circle, #b59a4a 0 17%, transparent 18%);
+}
+.mini-flower.camellia {
+  background:
+    repeating-conic-gradient(#c8324f 0 8deg, #e66d7d 8deg 15deg),
+    radial-gradient(circle, #d4aa3e 0 14%, transparent 15%);
+}
+.mini-flower.chrysanthemum {
+  background:
+    repeating-conic-gradient(#d69a35 0 4deg, transparent 4deg 8deg),
+    radial-gradient(circle, #a76d28 0 11%, transparent 12%);
+}
+.mini-flower.daffodil {
+  background:
+    repeating-conic-gradient(#f1d64e 0 22deg, transparent 22deg 60deg),
+    radial-gradient(circle, #e69824 0 28%, transparent 29%);
+}
+.mini-flower.hibiscus {
+  background:
+    repeating-conic-gradient(#d83c57 0 28deg, transparent 28deg 72deg),
+    radial-gradient(circle, #8c2437 0 18%, transparent 19%);
+}
+.mini-flower.marigold {
+  background:
+    repeating-conic-gradient(#e88718 0 6deg, #f4af2b 6deg 12deg),
+    radial-gradient(circle, #a95e18 0 13%, transparent 14%);
+}
+.mini-flower.pansy {
+  background:
+    repeating-conic-gradient(#7253a4 0 28deg, transparent 28deg 72deg),
+    radial-gradient(circle, #e0b43e 0 15%, #49376c 16% 27%, transparent 28%);
+}
+.mini-flower.gardenia {
+  background:
+    repeating-conic-gradient(#f1eee4 0 9deg, #fffdf5 9deg 17deg),
+    radial-gradient(circle, #d7c37a 0 12%, transparent 13%);
+}
+.mini-flower.ranunculus {
+  background:
+    repeating-conic-gradient(#e57466 0 7deg, #f2a08e 7deg 13deg),
+    radial-gradient(circle, #b96053 0 10%, transparent 11%);
+}
+.mini-flower.gerbera {
+  background:
+    repeating-conic-gradient(#e0525f 0 5deg, transparent 5deg 10deg),
+    radial-gradient(circle, #49352a 0 28%, transparent 29%);
+}
+.mini-flower.bluebell {
+  background:
+    repeating-conic-gradient(#536bbb 0 22deg, transparent 22deg 60deg),
+    radial-gradient(circle, #d8cf92 0 14%, transparent 15%);
+}
+.mini-flower.protea {
+  background:
+    repeating-conic-gradient(#b9586d 0 6deg, transparent 6deg 12deg),
+    radial-gradient(circle, #865044 0 31%, #d08b86 32% 38%, transparent 39%);
+}
+.mini-flower.water.lily {
+  background:
+    repeating-conic-gradient(#eee4ed 0 7deg, transparent 7deg 14deg),
+    radial-gradient(circle, #d6a932 0 18%, transparent 19%);
+}
+.mini-flower.morning.glory {
+  background:
+    repeating-conic-gradient(#536fb4 0 31deg, #8da8d5 31deg 58deg),
+    radial-gradient(circle, #f0e5bd 0 15%, transparent 16%);
+}
+.mini-flower.calla.lily {
+  background:
+    conic-gradient(#eeeae0 0 300deg, transparent 300deg),
+    radial-gradient(circle, #d8b53f 0 14%, transparent 15%);
+}
+.mini-flower.forget-me-not {
+  background:
+    repeating-conic-gradient(#668ec9 0 28deg, transparent 28deg 72deg),
+    radial-gradient(circle, #e5bb38 0 16%, transparent 17%);
+}
+.mini-flower.aster {
+  background:
+    repeating-conic-gradient(#765ca8 0 5deg, transparent 5deg 10deg),
+    radial-gradient(circle, #d5a33a 0 27%, transparent 28%);
+}
+.mini-flower.clematis {
+  background:
+    repeating-conic-gradient(#7957a0 0 18deg, transparent 18deg 45deg),
+    radial-gradient(circle, #d6c6a2 0 22%, transparent 23%);
+}
+.mini-flower.hellebore {
+  background:
+    repeating-conic-gradient(#c8bdcf 0 28deg, transparent 28deg 72deg),
+    radial-gradient(circle, #b9a94c 0 23%, transparent 24%);
+}
+.mini-flower.crocus {
+  background:
+    repeating-conic-gradient(#7756a6 0 22deg, transparent 22deg 60deg),
+    radial-gradient(circle, #e3a936 0 14%, transparent 15%);
+}
+.mini-flower.amaryllis {
+  background:
+    repeating-conic-gradient(#c93f4b 0 22deg, transparent 22deg 60deg),
+    radial-gradient(circle, #d4bd73 0 14%, transparent 15%);
+}
+.mini-flower.primrose {
+  background:
+    repeating-conic-gradient(#e8cf58 0 28deg, transparent 28deg 72deg),
+    radial-gradient(circle, #d18c2e 0 18%, transparent 19%);
+}
+.mini-flower.plumeria {
+  background:
+    repeating-conic-gradient(#eee9df 0 31deg, #d9869b 31deg 58deg),
+    radial-gradient(circle, #e4b33b 0 16%, transparent 17%);
+}
+.mini-flower.poinsettia {
+  background:
+    repeating-conic-gradient(#b92f3c 0 11deg, transparent 11deg 22deg),
+    radial-gradient(circle, #b5a039 0 16%, transparent 17%);
+}
+.range-control {
+  display: block;
+  margin: 13px 0;
+}
+.range-control span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 10px;
+}
+.range-control em {
+  font-style: normal;
+  color: #536158;
+}
+.range-control b {
+  font-size: 9px;
+}
+input[type="range"] {
+  width: 100%;
+  height: 3px;
+  appearance: none;
+  background: linear-gradient(90deg, #72836d, #bbc2b6);
+  border-radius: 3px;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  appearance: none;
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  background: var(--moss-dark);
+  box-shadow: 0 0 0 1px #72836d;
+}
+.colors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+.color-control {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #536158;
+  font-size: 9px;
+}
+.color-control > span:last-child {
+  min-width: 0;
+}
+.color-control small {
+  display: block;
+  margin-top: 2px;
+  color: #939c95;
+  font-size: 7px;
+  letter-spacing: 0.4px;
+}
+.swatch {
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line);
+  overflow: hidden;
+  cursor: pointer;
+}
+.swatch input {
+  width: 45px;
+  height: 45px;
+  opacity: 0;
+  cursor: pointer;
+}
+.randomize-wrap {
+  padding: 15px 26px;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+}
+.randomize {
+  width: 100%;
+  height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid #889a83;
+  border-radius: 9px;
+  color: var(--moss-dark);
+  background: #edf0e8;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.canvas-wrap {
+  min-width: 0;
+  flex: 1;
+  position: relative;
+  background: #fff;
+}
+.canvas-wrap canvas {
+  touch-action: none;
+}
+.canvas-loading {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 13px;
+  color: #5e6d61;
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+.canvas-loading span {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #83927f;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.canvas-label {
+  position: absolute;
+  top: 25px;
+  left: 34px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(119, 78, 74, 0.55);
+  pointer-events: none;
+}
+.canvas-label strong {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+}
+.canvas-help {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 20px;
+  color: rgba(37, 50, 40, 0.7);
+  background: rgba(247, 245, 239, 0.54);
+  backdrop-filter: blur(8px);
+  font-size: 9px;
+  pointer-events: none;
+}
+.canvas-mode-tools {
+  position: absolute;
+  left: 22px;
+  bottom: 22px;
+  display: flex;
+  gap: 7px;
+}
+.canvas-mode-tools button {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(47, 67, 54, 0.18);
+  border-radius: 8px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+.canvas-mode-tools button:hover {
+  background: white;
+}
+.canvas-mode-tools button.active {
+  color: white;
+  border-color: var(--moss-dark);
+  background: var(--moss-dark);
+}
+.canvas-palette {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  width: 214px;
+  padding: 12px 13px 13px;
+  border: 1px solid rgba(47, 67, 54, 0.16);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 25px rgba(38, 53, 43, 0.08);
+}
+.canvas-palette > span {
+  display: block;
+  margin-bottom: 9px;
+  color: #8d625f;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+.canvas-palette .colors {
+  gap: 8px 6px;
+}
+.canvas-palette .swatch {
+  width: 25px;
+  height: 25px;
+  flex-basis: 25px;
+}
+.canvas-palette .color-control {
+  gap: 6px;
+  font-size: 8px;
+}
+.canvas-palette .color-control small {
+  font-size: 6px;
+}
+.canvas-help i {
+  width: 1px;
+  height: 12px;
+  background: rgba(48, 59, 51, 0.2);
+}
+@media (max-width: 760px) {
+  .topbar {
+    height: 64px;
+    flex-basis: 64px;
+    padding: 0 14px;
+    grid-template-columns: 1fr auto;
+  }
+  .brand {
+    font-size: 21px;
+  }
+  .brand small,
+  .study-name,
+  .secondary-button,
+  .icon-button {
+    display: none;
+  }
+  .primary-button {
+    padding: 0 12px;
+  }
+  .control-panel {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: min(330px, 88vw);
+  }
+  .left-panel.closed {
+    margin-left: min(-330px, -88vw);
+  }
+  .right-panel {
+    inset: 0 0 0 auto;
+  }
+  .right-panel.closed {
+    margin-right: min(-330px, -88vw);
+    margin-left: 0;
+  }
+  .canvas-label {
+    left: 55px;
+  }
+  .canvas-palette {
+    right: 12px;
+    bottom: 68px;
+    width: 198px;
+  }
+}
