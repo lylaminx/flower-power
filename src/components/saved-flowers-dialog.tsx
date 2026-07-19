@@ -104,7 +104,7 @@ export function SavedFlowersDialog() {
                   No saved flowers yet. Save a study to begin your collection.
                 </p>
               )}
-                {state === "idle" &&
+              {state === "idle" &&
                 flowers.map((flower) => (
                   <article className="saved-flower-card" key={flower.id}>
                     <div className="saved-flower-mark">

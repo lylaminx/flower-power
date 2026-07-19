@@ -5,7 +5,10 @@ import { useLayoutEffect, useRef } from "react";
 import * as THREE from "three";
 import type { FlowerSpecies } from "@/lib/flower-species";
 import { getHeroCenterTuning } from "@/lib/flower-center-tuning";
-import { getFlowerGrowthState, getFlowerPhaseTuning } from "@/lib/flower-growth";
+import {
+  getFlowerGrowthState,
+  getFlowerPhaseTuning,
+} from "@/lib/flower-growth";
 import { useFlowerStore } from "@/lib/flower-store";
 
 const filamentGeometry = new THREE.CylinderGeometry(1, 1, 1, 6);
@@ -80,18 +83,29 @@ export function FlowerReproductiveDetails({
 
     for (let index = 0; index < stamenCount; index += 1) {
       const angle = (index / stamenCount) * Math.PI * 2;
-      const alternating = isColumn ? 0.22 + index * 0.08 : index % 2 === 0 ? 0.72 : 0.58;
+      const alternating = isColumn
+        ? 0.22 + index * 0.08
+        : index % 2 === 0
+          ? 0.72
+          : 0.58;
       const radius = centerRadius * alternating * spread;
       const filamentHeight =
         (0.09 + (index % 3) * 0.012) *
         stamenLength *
         tuning.stamenLengthScale *
-        THREE.MathUtils.lerp(0.18, 1, maturityScale) * THREE.MathUtils.lerp(1, 0.78, wilt);
+        THREE.MathUtils.lerp(0.18, 1, maturityScale) *
+        THREE.MathUtils.lerp(1, 0.78, wilt);
 
       transform.position.set(
-        isColumn ? (index % 2 === 0 ? -radius : radius) : Math.cos(angle) * radius,
+        isColumn
+          ? index % 2 === 0
+            ? -radius
+            : radius
+          : Math.cos(angle) * radius,
         baseHeight + filamentHeight * 0.5,
-        isColumn ? -centerRadius * 0.02 + index * 0.012 : Math.sin(angle) * radius,
+        isColumn
+          ? -centerRadius * 0.02 + index * 0.012
+          : Math.sin(angle) * radius,
       );
       transform.rotation.set(
         isColumn ? 0.16 : 0,
@@ -122,7 +136,9 @@ export function FlowerReproductiveDetails({
 
       transform.position.set(
         isColumn
-          ? (index % 2 === 0 ? -radius * 0.75 : radius * 0.75)
+          ? index % 2 === 0
+            ? -radius * 0.75
+            : radius * 0.75
           : Math.cos(angle) * radius + Math.cos(angle + 0.8) * 0.009,
         baseHeight + filamentHeight + 0.012,
         isColumn
@@ -277,11 +293,19 @@ export function FlowerReproductiveDetails({
           <mesh
             key={index}
             position={[
-              isColumn ? (index % 2 === 0 ? -radius : radius) : Math.cos(angle) * radius,
+              isColumn
+                ? index % 2 === 0
+                  ? -radius
+                  : radius
+                : Math.cos(angle) * radius,
               pistilHeight + 0.025,
               isColumn ? index * 0.01 : Math.sin(angle) * radius,
             ]}
-            rotation={[0, isColumn ? (index % 2 === 0 ? 0.5 : -0.5) : -angle, Math.PI / 2]}
+            rotation={[
+              0,
+              isColumn ? (index % 2 === 0 ? 0.5 : -0.5) : -angle,
+              Math.PI / 2,
+            ]}
             scale={[
               0.01 * stigmaSize,
               centerRadius * (isColumn ? 0.1 : 0.08) * stigmaSize,

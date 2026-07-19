@@ -153,7 +153,9 @@ function CanvasControlPanel({
             onChange={(event) => {
               const composition = event.target.value as CameraComposition;
               setCameraComposition(composition);
-              setFocalLength(cameraCompositions[composition].defaultFocalLength);
+              setFocalLength(
+                cameraCompositions[composition].defaultFocalLength,
+              );
             }}
           >
             {cameraCompositionOptions.map((composition) => (
@@ -229,10 +231,7 @@ function CanvasControlPanel({
         )}
       </section>
 
-      <section
-        className="canvas-control-section"
-        aria-label="Quality controls"
-      >
+      <section className="canvas-control-section" aria-label="Quality controls">
         <span>QUALITY</span>
         <label>
           <select
@@ -634,7 +633,9 @@ export function FlowerStudio({
                     ))}
                   </ul>
                   <div className="hero-checks">
-                    <span className="hero-reference-kicker">Reference checks</span>
+                    <span className="hero-reference-kicker">
+                      Reference checks
+                    </span>
                     <ul className="hero-check-list">
                       {heroProfile.referenceChecks.map((check) => (
                         <li key={check}>{check}</li>

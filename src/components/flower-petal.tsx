@@ -9,7 +9,10 @@ import {
   seededRandom,
 } from "@/lib/flower-geometry";
 import { getHeroPetalTuning } from "@/lib/flower-petal-tuning";
-import { getFlowerGrowthState, getFlowerPhaseTuning } from "@/lib/flower-growth";
+import {
+  getFlowerGrowthState,
+  getFlowerPhaseTuning,
+} from "@/lib/flower-growth";
 import {
   getBotanicalAgeTexture,
   getBotanicalMaterialTexture,
@@ -202,9 +205,9 @@ export function FlowerPetal({
         markingSeed: seed + index * 101,
         asymmetry:
           settings.petalAsymmetry *
-          tuning.asymmetryScale *
-          (seededRandom(seed + index * 149) - 0.5) *
-          2 +
+            tuning.asymmetryScale *
+            (seededRandom(seed + index * 149) - 0.5) *
+            2 +
           tuning.asymmetryBias,
         edgeWear: settings.petalEdgeWear,
         outline: layer.outline ?? structure.petalOutline,
@@ -212,7 +215,8 @@ export function FlowerPetal({
           (layer.longitudinalCurve ?? structure.longitudinalCurve ?? 0) +
           tuning.longitudinalCurveBias,
         lateralCup:
-          (layer.lateralCup ?? structure.lateralCup ?? 1) + tuning.lateralCupBias,
+          (layer.lateralCup ?? structure.lateralCup ?? 1) +
+          tuning.lateralCupBias,
         lengthSegments:
           quality === "draft" ? 12 : quality === "ultra" ? 28 : 18,
         widthSegments: quality === "draft" ? 6 : quality === "ultra" ? 12 : 8,
@@ -237,7 +241,7 @@ export function FlowerPetal({
   );
 
   return (
-      <mesh
+    <mesh
       dispose={null}
       geometry={geometry}
       rotation={[0, placementAngle, placement.roll + tuning.placementRollBias]}
@@ -280,7 +284,7 @@ export function FlowerPetal({
               clearcoat={
                 photorealistic
                   ? Math.max(0.012, settings.petalSheen * 0.12) *
-                      tuning.sheenScale *
+                    tuning.sheenScale *
                     growth.moisture
                   : 0
               }

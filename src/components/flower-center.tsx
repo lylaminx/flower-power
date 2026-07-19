@@ -11,7 +11,10 @@ import {
 } from "@/lib/botanical-textures";
 import { getHeroCenterTuning } from "@/lib/flower-center-tuning";
 import { useFlowerStore } from "@/lib/flower-store";
-import { getFlowerGrowthState, getFlowerPhaseTuning } from "@/lib/flower-growth";
+import {
+  getFlowerGrowthState,
+  getFlowerPhaseTuning,
+} from "@/lib/flower-growth";
 import { useRenderQuality } from "./render-quality-context";
 import { getTextureResolution } from "@/lib/flower-quality";
 import { useShallow } from "zustand/react/shallow";
@@ -185,7 +188,7 @@ export function FlowerCenter({
     const outer = new THREE.Color(
       architecture === "composite"
         ? (structure.diskOuterColor ?? centerColor)
-      : displayCenterColor,
+        : displayCenterColor,
     )
       .multiplyScalar(THREE.MathUtils.lerp(0.82, 0.92, centerMoisture))
       .lerp(new THREE.Color("#76553a"), centerWilt * 0.36);
@@ -201,21 +204,20 @@ export function FlowerCenter({
       const radius =
         progress *
         centerRadius *
-        (architecture === "column"
-          ? 0.32
-          : seedpodArchitecture
-            ? 0.76
-            : 0.92) *
+        (architecture === "column" ? 0.32 : seedpodArchitecture ? 0.76 : 0.92) *
         topology.radiusBias *
         radialShape *
         settings.centerSpread *
         tuning.spreadScale;
       const innerCompaction =
         architecture === "composite"
-          ? THREE.MathUtils.lerp(0.86, 1.1, centerExposure) * topology.verticalBias
+          ? THREE.MathUtils.lerp(0.86, 1.1, centerExposure) *
+            topology.verticalBias
           : architecture === "column"
-            ? THREE.MathUtils.lerp(0.72, 0.9, centerExposure) * topology.verticalBias
-            : THREE.MathUtils.lerp(0.9, 1, centerExposure) * topology.verticalBias;
+            ? THREE.MathUtils.lerp(0.72, 0.9, centerExposure) *
+              topology.verticalBias
+            : THREE.MathUtils.lerp(0.9, 1, centerExposure) *
+              topology.verticalBias;
       const verticalBias =
         architecture === "composite"
           ? THREE.MathUtils.lerp(1.04, 0.96, progress)
@@ -225,10 +227,11 @@ export function FlowerCenter({
       transform.position.set(
         Math.cos(angle) * radius,
         0.1 +
-          centerHeight * (1 - progress * progress) *
-          innerCompaction *
-          verticalBias *
-          THREE.MathUtils.lerp(1, 0.92, centerWilt),
+          centerHeight *
+            (1 - progress * progress) *
+            innerCompaction *
+            verticalBias *
+            THREE.MathUtils.lerp(1, 0.92, centerWilt),
         Math.sin(angle) * radius,
       );
       transform.rotation.set(0, -angle, 0);
@@ -238,19 +241,19 @@ export function FlowerCenter({
         1.35,
       );
       const size =
-          THREE.MathUtils.lerp(
-            architecture === "composite"
-              ? 0.03 * tuning.floretSizeScale
-              : seedpodArchitecture
-                ? 0.044 * tuning.floretSizeScale
-                : 0.035 * tuning.floretSizeScale,
+        THREE.MathUtils.lerp(
+          architecture === "composite"
+            ? 0.03 * tuning.floretSizeScale
+            : seedpodArchitecture
+              ? 0.044 * tuning.floretSizeScale
+              : 0.035 * tuning.floretSizeScale,
           architecture === "column"
             ? 0.04 * tuning.floretSizeScale
             : seedpodArchitecture
               ? 0.028 * tuning.floretSizeScale
               : 0.024 * tuning.floretSizeScale,
           progress,
-          ) *
+        ) *
         densityScale *
         settings.centerFloretSize *
         THREE.MathUtils.lerp(0.28, 1, centerExposure) *
@@ -281,7 +284,11 @@ export function FlowerCenter({
           size *
             0.72 *
             topology.crownBias *
-            THREE.MathUtils.lerp(0.3, 1, growth.reproductiveMaturity * crownScale) *
+            THREE.MathUtils.lerp(
+              0.3,
+              1,
+              growth.reproductiveMaturity * crownScale,
+            ) *
             THREE.MathUtils.lerp(1, 0.86, centerWilt),
         );
         transform.updateMatrix();

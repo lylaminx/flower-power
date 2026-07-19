@@ -45,8 +45,7 @@ export function FlowerStemDetails({
 
     for (let index = 0; index < hairCount; index += 1) {
       const t =
-        0.08 +
-        (index / hairCount) * (0.86 + tuning.stemNodeSpacingBias * 0.45);
+        0.08 + (index / hairCount) * (0.86 + tuning.stemNodeSpacingBias * 0.45);
       const point = curve.getPointAt(t);
       const angle = index * 2.399963;
       const outward = new THREE.Vector3(
@@ -54,7 +53,9 @@ export function FlowerStemDetails({
         0.3,
         Math.sin(angle),
       ).normalize();
-      transform.position.copy(point).addScaledVector(outward, 0.055 * tuning.stemNodeBulgeScale);
+      transform.position
+        .copy(point)
+        .addScaledVector(outward, 0.055 * tuning.stemNodeBulgeScale);
       transform.quaternion.setFromUnitVectors(up, outward);
       transform.scale.set(
         0.0025,
@@ -77,7 +78,9 @@ export function FlowerStemDetails({
         0,
         Math.sin(angle),
       ).normalize();
-      transform.position.copy(point).addScaledVector(outward, 0.057 * tuning.stemNodeBulgeScale);
+      transform.position
+        .copy(point)
+        .addScaledVector(outward, 0.057 * tuning.stemNodeBulgeScale);
       transform.quaternion.setFromUnitVectors(up, outward);
       transform.scale.set(
         (0.009 + (index % 3) * 0.002) * tuning.stemLenticelScale,
@@ -107,14 +110,14 @@ export function FlowerStemDetails({
     <group>
       {nodes.map((point, index) => (
         <group key={index} position={point}>
-            <mesh
-              dispose={null}
-              scale={[
-                1.45 * tuning.stemNodeBulgeScale,
-                0.72 * tuning.stemNodeBulgeScale,
-                1.45 * tuning.stemNodeBulgeScale,
-              ]}
-            >
+          <mesh
+            dispose={null}
+            scale={[
+              1.45 * tuning.stemNodeBulgeScale,
+              0.72 * tuning.stemNodeBulgeScale,
+              1.45 * tuning.stemNodeBulgeScale,
+            ]}
+          >
             <primitive object={stemNodeSphereGeometry} attach="geometry" />
             {lineDrawing ? (
               <meshBasicMaterial color="#ffffff" />

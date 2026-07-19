@@ -50,7 +50,9 @@ const selfScope = self as unknown as {
     type: "message",
     listener: (event: MessageEvent<GeometryWarmupMessage>) => void,
   ) => void;
-  postMessage: (message: GeometryWarmupResponse | { requestId: number; error: string }) => void;
+  postMessage: (
+    message: GeometryWarmupResponse | { requestId: number; error: string },
+  ) => void;
 };
 
 selfScope.addEventListener("message", (event) => {

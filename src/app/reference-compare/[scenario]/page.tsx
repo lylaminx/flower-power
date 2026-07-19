@@ -43,7 +43,10 @@ export default async function ReferenceComparePage({
           <Link className="secondary-button" href="/reference-boards">
             All boards
           </Link>
-          <Link className="secondary-button" href={`/visual-test/${scenario.id}`}>
+          <Link
+            className="secondary-button"
+            href={`/visual-test/${scenario.id}`}
+          >
             Open render only
           </Link>
         </div>
@@ -64,9 +67,7 @@ export default async function ReferenceComparePage({
             </Link>
           </div>
 
-          <p className="reference-board-summary">
-            {board.traits.join(" · ")}
-          </p>
+          <p className="reference-board-summary">{board.traits.join(" · ")}</p>
 
           <div className="reference-image-grid reference-image-grid--compact">
             {board.images.map((image) => (

@@ -4,7 +4,8 @@ import { getReferenceBoards } from "@/lib/flower-reference-boards";
 
 export const metadata = {
   title: "Reference boards · FlowerPower",
-  description: "Licensed photographic reference boards for the six hero species.",
+  description:
+    "Licensed photographic reference boards for the six hero species.",
 };
 
 export default async function ReferenceBoardsPage() {
@@ -17,8 +18,8 @@ export default async function ReferenceBoardsPage() {
           <span className="reference-kicker">PHOTOGRAPHIC REFERENCE</span>
           <h1>Hero species reference boards</h1>
           <p>
-            Licensed reference photos for the six hero species, grouped by
-            view, provenance, and the anatomy checks they inform.
+            Licensed reference photos for the six hero species, grouped by view,
+            provenance, and the anatomy checks they inform.
           </p>
         </div>
         <div className="reference-hero-actions">

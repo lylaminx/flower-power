@@ -8,12 +8,12 @@ import type { FlowerSpecies } from "@/lib/flower-species";
 import { useFlowerStore } from "@/lib/flower-store";
 import { useEffect } from "react";
 import * as THREE from "three";
-import {
-  createPetalPlacement,
-  seededRandom,
-} from "@/lib/flower-geometry";
+import { createPetalPlacement, seededRandom } from "@/lib/flower-geometry";
 import { getHeroPetalTuning } from "@/lib/flower-petal-tuning";
-import { getFlowerGrowthState, getFlowerPhaseTuning } from "@/lib/flower-growth";
+import {
+  getFlowerGrowthState,
+  getFlowerPhaseTuning,
+} from "@/lib/flower-growth";
 import { warmPetalGeometry } from "@/lib/geometry-worker-client";
 
 export function FlowerBloom({
@@ -102,19 +102,15 @@ export function FlowerBloom({
           notch: structure.notch * settings.petalNotch,
           profile: structure.profile * tuning.profileScale,
           edgeRuffle:
-            structure.edgeRuffle * settings.petalRuffle * tuning.edgeRuffleScale,
+            structure.edgeRuffle *
+            settings.petalRuffle *
+            tuning.edgeRuffleScale,
           baseDarkening: structure.baseDarkening * tuning.baseDarkeningScale,
           waviness: settings.petalWaviness,
           wavePhase: random * Math.PI * 2,
           thicknessScale: settings.petalThickness * tuning.thicknessScale,
-          fold:
-            settings.petalFold +
-            tuning.foldBias +
-            growth.wilt * 0.05,
-          twist:
-            settings.petalTwist +
-            tuning.twistBias +
-            growth.wilt * 0.03,
+          fold: settings.petalFold + tuning.foldBias + growth.wilt * 0.05,
+          twist: settings.petalTwist + tuning.twistBias + growth.wilt * 0.03,
           baseWidth: settings.petalBaseWidth * tuning.baseWidthScale,
           spots: settings.petalSpots * tuning.spotScale,
           guideStrength:
@@ -122,9 +118,9 @@ export function FlowerBloom({
           markingSeed: seed + index * 101,
           asymmetry:
             settings.petalAsymmetry *
-            tuning.asymmetryScale *
-            (seededRandom(seed + index * 149) - 0.5) *
-            2 +
+              tuning.asymmetryScale *
+              (seededRandom(seed + index * 149) - 0.5) *
+              2 +
             tuning.asymmetryBias,
           edgeWear: settings.petalEdgeWear,
           outline: layer.outline ?? structure.petalOutline,

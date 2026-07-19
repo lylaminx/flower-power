@@ -140,10 +140,7 @@ export function createPetalPlacement({
   };
 }
 
-function insertGeometryIntoCache(
-  key: string,
-  geometry: THREE.BufferGeometry,
-) {
+function insertGeometryIntoCache(key: string, geometry: THREE.BufferGeometry) {
   const existing = geometryCache.get(key);
   if (existing && existing !== geometry) {
     geometryCache.delete(key);
@@ -167,10 +164,7 @@ export function primeGeometryCache(
   insertGeometryIntoCache(key, geometry);
 }
 
-function getCachedGeometry(
-  key: string,
-  build: () => THREE.BufferGeometry,
-) {
+function getCachedGeometry(key: string, build: () => THREE.BufferGeometry) {
   const cached = geometryCache.get(key);
   if (cached) {
     geometryCache.delete(key);
@@ -379,189 +373,192 @@ export function createPetalGeometry({
   });
 
   return getCachedGeometry(cacheKey, () => {
-  const geometry = new THREE.BufferGeometry();
-  const faceSize = (lengthSegments + 1) * (widthSegments + 1);
-  const thickness = Math.max(0.004, width * 0.025 * thicknessScale);
-  const positions: number[] = [];
-  const colors: number[] = [];
-  const uvs: number[] = [];
-  const frontIndices: number[] = [];
-  const backIndices: number[] = [];
-  const edgeIndices: number[] = [];
-  const from = new THREE.Color(baseColor).multiplyScalar(0.9);
-  const to = new THREE.Color(tipColor);
+    const geometry = new THREE.BufferGeometry();
+    const faceSize = (lengthSegments + 1) * (widthSegments + 1);
+    const thickness = Math.max(0.004, width * 0.025 * thicknessScale);
+    const positions: number[] = [];
+    const colors: number[] = [];
+    const uvs: number[] = [];
+    const frontIndices: number[] = [];
+    const backIndices: number[] = [];
+    const edgeIndices: number[] = [];
+    const from = new THREE.Color(baseColor).multiplyScalar(0.9);
+    const to = new THREE.Color(tipColor);
 
-  for (let face = 0; face < 2; face += 1) {
-    for (let row = 0; row <= lengthSegments; row += 1) {
-      const t = row / lengthSegments;
-      const roundedWidth = getPetalOutlineWidth(t, profile, outline);
-      const ruffle =
-        1 +
-        edgeRuffle *
-          (Math.sin(t * Math.PI * 17) + Math.sin(t * Math.PI * 31)) *
-          0.5;
-      const basalWidth = 0.045 * baseWidth * (1 - t) * (1 - t);
-      const halfWidth = width * (basalWidth + roundedWidth * 0.5) * ruffle;
-
-      for (let column = 0; column <= widthSegments; column += 1) {
-        const across = (column / widthSegments) * 2 - 1;
-        const edgeCup =
-          across * across * 0.085 * lateralCup * Math.sin(Math.PI * t);
-        const centerFold =
-          (1 - across * across) * 0.07 * fold * Math.sin(Math.PI * t);
-        const bladeTwist = across * t * t * twist * 0.11;
-        const tipNotch =
-          notch *
-          Math.exp(-Math.pow(across / 0.27, 2)) *
-          Math.pow(Math.max(0, (t - 0.76) / 0.24), 2);
-        const vein = Math.exp(-Math.pow(across / 0.12, 2));
-        const basalTone = THREE.MathUtils.lerp(
-          baseDarkening,
-          1,
-          THREE.MathUtils.smoothstep(t, 0.05, 0.46),
-        );
-        const edgeWeight = Math.pow(Math.abs(across), 5);
-        const edgeRipple =
+    for (let face = 0; face < 2; face += 1) {
+      for (let row = 0; row <= lengthSegments; row += 1) {
+        const t = row / lengthSegments;
+        const roundedWidth = getPetalOutlineWidth(t, profile, outline);
+        const ruffle =
+          1 +
           edgeRuffle *
-          edgeWeight *
-          Math.sin(t * Math.PI * 43 + (across > 0 ? 1.7 : 0.2));
-        const wornEdge =
-          edgeWear *
-          Math.pow(Math.abs(across), 8) *
-          Math.pow(Math.sin(Math.PI * t), 0.4) *
-          (0.35 + seededRandom(markingSeed + row * 97 + column * 53) * 0.65);
-        const waveEnvelope = Math.pow(t, 0.7) * Math.sin(Math.PI * t);
-        const surfaceWave =
-          waviness *
-          waveEnvelope *
-          (Math.sin(t * Math.PI * 5.2 + across * 2.4 + wavePhase) * 0.045 +
-            Math.sin(t * Math.PI * 9.4 - across * 4.1 + wavePhase * 0.7) *
-              0.018);
-        const lateralWave =
-          waviness *
-          Math.pow(t, 1.25) *
-          Math.sin(across * Math.PI * 1.5 + t * 7 + wavePhase) *
-          0.035;
-        const localThickness =
-          thickness *
-          (0.18 + Math.pow(Math.sin(Math.PI * t), 0.45) * 0.82) *
-          (0.16 + (1 - Math.pow(Math.abs(across), 5)) * 0.84);
-        const surfaceOffset =
-          (face === 0 ? 0.5 : -0.5) * Math.max(0.0005, localThickness);
-        const color = from
-          .clone()
-          .lerp(to, Math.pow(t, 1.55))
-          .multiplyScalar(
-            (() => {
-              const guide =
-                1 -
-                guideStrength *
-                  Math.exp(-Math.pow(across / 0.34, 2)) *
-                  Math.pow(1 - t, 2) *
-                  0.45;
-              const spotNoise = seededRandom(
-                markingSeed + row * 71 + column * 137,
-              );
-              const spot = spotNoise > 1 - spots * 0.16 && t > 0.18 ? 0.62 : 1;
-              return (
-                basalTone *
-                (0.95 + vein * 0.05 + seededRandom(row * 31 + column) * 0.025) *
-                guide *
-                spot
-              );
-            })(),
-          );
+            (Math.sin(t * Math.PI * 17) + Math.sin(t * Math.PI * 31)) *
+            0.5;
+        const basalWidth = 0.045 * baseWidth * (1 - t) * (1 - t);
+        const halfWidth = width * (basalWidth + roundedWidth * 0.5) * ruffle;
 
-        positions.push(
-          across *
-            halfWidth *
-            (1 + Math.sign(across) * asymmetry * Math.sin(Math.PI * t)),
-          t * lift +
-            t * t * curl * 0.3 +
-            edgeCup +
-            centerFold +
-            surfaceOffset +
-            edgeRipple * 0.025 +
-            surfaceWave +
-            Math.sin(Math.PI * t) * t * longitudinalCurve * 0.18,
-          t * length -
-            tipNotch -
-            wornEdge * 0.16 +
-            bladeTwist +
-            edgeRipple * 0.018 +
-            lateralWave,
-        );
-        colors.push(color.r, color.g, color.b);
-        uvs.push(column / widthSegments, t);
+        for (let column = 0; column <= widthSegments; column += 1) {
+          const across = (column / widthSegments) * 2 - 1;
+          const edgeCup =
+            across * across * 0.085 * lateralCup * Math.sin(Math.PI * t);
+          const centerFold =
+            (1 - across * across) * 0.07 * fold * Math.sin(Math.PI * t);
+          const bladeTwist = across * t * t * twist * 0.11;
+          const tipNotch =
+            notch *
+            Math.exp(-Math.pow(across / 0.27, 2)) *
+            Math.pow(Math.max(0, (t - 0.76) / 0.24), 2);
+          const vein = Math.exp(-Math.pow(across / 0.12, 2));
+          const basalTone = THREE.MathUtils.lerp(
+            baseDarkening,
+            1,
+            THREE.MathUtils.smoothstep(t, 0.05, 0.46),
+          );
+          const edgeWeight = Math.pow(Math.abs(across), 5);
+          const edgeRipple =
+            edgeRuffle *
+            edgeWeight *
+            Math.sin(t * Math.PI * 43 + (across > 0 ? 1.7 : 0.2));
+          const wornEdge =
+            edgeWear *
+            Math.pow(Math.abs(across), 8) *
+            Math.pow(Math.sin(Math.PI * t), 0.4) *
+            (0.35 + seededRandom(markingSeed + row * 97 + column * 53) * 0.65);
+          const waveEnvelope = Math.pow(t, 0.7) * Math.sin(Math.PI * t);
+          const surfaceWave =
+            waviness *
+            waveEnvelope *
+            (Math.sin(t * Math.PI * 5.2 + across * 2.4 + wavePhase) * 0.045 +
+              Math.sin(t * Math.PI * 9.4 - across * 4.1 + wavePhase * 0.7) *
+                0.018);
+          const lateralWave =
+            waviness *
+            Math.pow(t, 1.25) *
+            Math.sin(across * Math.PI * 1.5 + t * 7 + wavePhase) *
+            0.035;
+          const localThickness =
+            thickness *
+            (0.18 + Math.pow(Math.sin(Math.PI * t), 0.45) * 0.82) *
+            (0.16 + (1 - Math.pow(Math.abs(across), 5)) * 0.84);
+          const surfaceOffset =
+            (face === 0 ? 0.5 : -0.5) * Math.max(0.0005, localThickness);
+          const color = from
+            .clone()
+            .lerp(to, Math.pow(t, 1.55))
+            .multiplyScalar(
+              (() => {
+                const guide =
+                  1 -
+                  guideStrength *
+                    Math.exp(-Math.pow(across / 0.34, 2)) *
+                    Math.pow(1 - t, 2) *
+                    0.45;
+                const spotNoise = seededRandom(
+                  markingSeed + row * 71 + column * 137,
+                );
+                const spot =
+                  spotNoise > 1 - spots * 0.16 && t > 0.18 ? 0.62 : 1;
+                return (
+                  basalTone *
+                  (0.95 +
+                    vein * 0.05 +
+                    seededRandom(row * 31 + column) * 0.025) *
+                  guide *
+                  spot
+                );
+              })(),
+            );
+
+          positions.push(
+            across *
+              halfWidth *
+              (1 + Math.sign(across) * asymmetry * Math.sin(Math.PI * t)),
+            t * lift +
+              t * t * curl * 0.3 +
+              edgeCup +
+              centerFold +
+              surfaceOffset +
+              edgeRipple * 0.025 +
+              surfaceWave +
+              Math.sin(Math.PI * t) * t * longitudinalCurve * 0.18,
+            t * length -
+              tipNotch -
+              wornEdge * 0.16 +
+              bladeTwist +
+              edgeRipple * 0.018 +
+              lateralWave,
+          );
+          colors.push(color.r, color.g, color.b);
+          uvs.push(column / widthSegments, t);
+        }
       }
     }
-  }
 
-  for (let row = 0; row < lengthSegments; row += 1) {
-    for (let column = 0; column < widthSegments; column += 1) {
-      const front = row * (widthSegments + 1) + column;
-      const back = front + faceSize;
-      const nextFront = front + widthSegments + 1;
-      const nextBack = back + widthSegments + 1;
-      frontIndices.push(
-        front,
-        nextFront,
-        front + 1,
-        front + 1,
-        nextFront,
-        nextFront + 1,
-      );
-      backIndices.push(
-        back,
-        back + 1,
-        nextBack,
-        back + 1,
-        nextBack + 1,
-        nextBack,
-      );
+    for (let row = 0; row < lengthSegments; row += 1) {
+      for (let column = 0; column < widthSegments; column += 1) {
+        const front = row * (widthSegments + 1) + column;
+        const back = front + faceSize;
+        const nextFront = front + widthSegments + 1;
+        const nextBack = back + widthSegments + 1;
+        frontIndices.push(
+          front,
+          nextFront,
+          front + 1,
+          front + 1,
+          nextFront,
+          nextFront + 1,
+        );
+        backIndices.push(
+          back,
+          back + 1,
+          nextBack,
+          back + 1,
+          nextBack + 1,
+          nextBack,
+        );
+      }
     }
-  }
 
-  const boundary: number[] = [];
-  for (let column = 0; column <= widthSegments; column += 1)
-    boundary.push(column);
-  for (let row = 1; row <= lengthSegments; row += 1)
-    boundary.push(row * (widthSegments + 1) + widthSegments);
-  for (let column = widthSegments - 1; column >= 0; column -= 1)
-    boundary.push(lengthSegments * (widthSegments + 1) + column);
-  for (let row = lengthSegments - 1; row > 0; row -= 1)
-    boundary.push(row * (widthSegments + 1));
+    const boundary: number[] = [];
+    for (let column = 0; column <= widthSegments; column += 1)
+      boundary.push(column);
+    for (let row = 1; row <= lengthSegments; row += 1)
+      boundary.push(row * (widthSegments + 1) + widthSegments);
+    for (let column = widthSegments - 1; column >= 0; column -= 1)
+      boundary.push(lengthSegments * (widthSegments + 1) + column);
+    for (let row = lengthSegments - 1; row > 0; row -= 1)
+      boundary.push(row * (widthSegments + 1));
 
-  boundary.forEach((current, index) => {
-    const next = boundary[(index + 1) % boundary.length];
-    edgeIndices.push(
-      current,
-      current + faceSize,
-      next,
-      next,
-      current + faceSize,
-      next + faceSize,
+    boundary.forEach((current, index) => {
+      const next = boundary[(index + 1) % boundary.length];
+      edgeIndices.push(
+        current,
+        current + faceSize,
+        next,
+        next,
+        current + faceSize,
+        next + faceSize,
+      );
+    });
+
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3),
     );
-  });
-
-  geometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(positions, 3),
-  );
-  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
-  const indices = [...frontIndices, ...backIndices, ...edgeIndices];
-  geometry.setIndex(indices);
-  geometry.addGroup(0, frontIndices.length, 0);
-  geometry.addGroup(frontIndices.length, backIndices.length, 1);
-  geometry.addGroup(
-    frontIndices.length + backIndices.length,
-    edgeIndices.length,
-    2,
-  );
-  geometry.computeVertexNormals();
-  geometry.computeTangents();
-  return geometry;
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+    const indices = [...frontIndices, ...backIndices, ...edgeIndices];
+    geometry.setIndex(indices);
+    geometry.addGroup(0, frontIndices.length, 0);
+    geometry.addGroup(frontIndices.length, backIndices.length, 1);
+    geometry.addGroup(
+      frontIndices.length + backIndices.length,
+      edgeIndices.length,
+      2,
+    );
+    geometry.computeVertexNormals();
+    geometry.computeTangents();
+    return geometry;
   });
 }
 
@@ -605,98 +602,103 @@ export function createFusedCorollaGeometry({
   });
 
   return getCachedGeometry(cacheKey, () => {
-  const geometry = new THREE.BufferGeometry();
-  const ringSize = radialSegments + 1;
-  const faceSize = (rows + 1) * ringSize;
-  const thickness = Math.max(0.006, 0.018 * thicknessScale);
-  const positions: number[] = [];
-  const colors: number[] = [];
-  const uvs: number[] = [];
-  const indices: number[] = [];
-  const base = new THREE.Color(baseColor).multiplyScalar(0.82);
-  const tip = new THREE.Color(tipColor);
-  const phase = seededRandom(seed) * Math.PI * 2;
+    const geometry = new THREE.BufferGeometry();
+    const ringSize = radialSegments + 1;
+    const faceSize = (rows + 1) * ringSize;
+    const thickness = Math.max(0.006, 0.018 * thicknessScale);
+    const positions: number[] = [];
+    const colors: number[] = [];
+    const uvs: number[] = [];
+    const indices: number[] = [];
+    const base = new THREE.Color(baseColor).multiplyScalar(0.82);
+    const tip = new THREE.Color(tipColor);
+    const phase = seededRandom(seed) * Math.PI * 2;
 
-  for (let face = 0; face < 2; face += 1) {
-    for (let row = 0; row <= rows; row += 1) {
-      const t = row / rows;
-      const flare =
-        architecture === "bell"
-          ? THREE.MathUtils.smoothstep(t, 0.28, 1)
-          : Math.pow(t, 1.55);
-      const baseRadius = THREE.MathUtils.lerp(throatRadius, mouthRadius, flare);
-      const surfaceRadius = Math.max(
-        0.01,
-        baseRadius - (face === 0 ? 0 : thickness * (0.35 + t * 0.65)),
-      );
-
-      for (let segment = 0; segment <= radialSegments; segment += 1) {
-        const around = segment / radialSegments;
-        const angle = around * Math.PI * 2;
-        const rimEnvelope = Math.pow(t, 9);
-        const lobeWave = Math.cos(angle * lobes + phase);
-        const rimRadius = surfaceRadius * (1 + rimEnvelope * lobeWave * 0.055);
-        const rimLength =
-          rimEnvelope * (0.035 + mouthRadius * 0.035) * lobeWave;
-        const organic =
-          rimEnvelope *
-          (seededRandom(seed + segment * 73) - 0.5) *
-          mouthRadius *
-          0.018;
-
-        positions.push(
-          Math.cos(angle) * rimRadius,
-          length * t + rimLength + organic,
-          Math.sin(angle) * rimRadius,
+    for (let face = 0; face < 2; face += 1) {
+      for (let row = 0; row <= rows; row += 1) {
+        const t = row / rows;
+        const flare =
+          architecture === "bell"
+            ? THREE.MathUtils.smoothstep(t, 0.28, 1)
+            : Math.pow(t, 1.55);
+        const baseRadius = THREE.MathUtils.lerp(
+          throatRadius,
+          mouthRadius,
+          flare,
         );
-        const color = base.clone().lerp(tip, Math.pow(t, 0.8));
-        colors.push(color.r, color.g, color.b);
-        uvs.push(around, t);
+        const surfaceRadius = Math.max(
+          0.01,
+          baseRadius - (face === 0 ? 0 : thickness * (0.35 + t * 0.65)),
+        );
+
+        for (let segment = 0; segment <= radialSegments; segment += 1) {
+          const around = segment / radialSegments;
+          const angle = around * Math.PI * 2;
+          const rimEnvelope = Math.pow(t, 9);
+          const lobeWave = Math.cos(angle * lobes + phase);
+          const rimRadius =
+            surfaceRadius * (1 + rimEnvelope * lobeWave * 0.055);
+          const rimLength =
+            rimEnvelope * (0.035 + mouthRadius * 0.035) * lobeWave;
+          const organic =
+            rimEnvelope *
+            (seededRandom(seed + segment * 73) - 0.5) *
+            mouthRadius *
+            0.018;
+
+          positions.push(
+            Math.cos(angle) * rimRadius,
+            length * t + rimLength + organic,
+            Math.sin(angle) * rimRadius,
+          );
+          const color = base.clone().lerp(tip, Math.pow(t, 0.8));
+          colors.push(color.r, color.g, color.b);
+          uvs.push(around, t);
+        }
       }
     }
-  }
 
-  for (let row = 0; row < rows; row += 1) {
-    for (let segment = 0; segment < radialSegments; segment += 1) {
-      const front = row * ringSize + segment;
-      const nextFront = front + ringSize;
-      const back = front + faceSize;
-      const nextBack = back + ringSize;
-      indices.push(
-        front,
-        front + 1,
-        nextFront,
-        front + 1,
-        nextFront + 1,
-        nextFront,
-        back,
-        nextBack,
-        back + 1,
-        back + 1,
-        nextBack,
-        nextBack + 1,
-      );
+    for (let row = 0; row < rows; row += 1) {
+      for (let segment = 0; segment < radialSegments; segment += 1) {
+        const front = row * ringSize + segment;
+        const nextFront = front + ringSize;
+        const back = front + faceSize;
+        const nextBack = back + ringSize;
+        indices.push(
+          front,
+          front + 1,
+          nextFront,
+          front + 1,
+          nextFront + 1,
+          nextFront,
+          back,
+          nextBack,
+          back + 1,
+          back + 1,
+          nextBack,
+          nextBack + 1,
+        );
+      }
     }
-  }
 
-  for (const row of [0, rows]) {
-    for (let segment = 0; segment < radialSegments; segment += 1) {
-      const front = row * ringSize + segment;
-      const back = front + faceSize;
-      indices.push(front, back, front + 1, front + 1, back, back + 1);
+    for (const row of [0, rows]) {
+      for (let segment = 0; segment < radialSegments; segment += 1) {
+        const front = row * ringSize + segment;
+        const back = front + faceSize;
+        indices.push(front, back, front + 1, front + 1, back, back + 1);
+      }
     }
-  }
 
-  geometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(positions, 3),
-  );
-  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
-  geometry.setIndex(indices);
-  geometry.computeVertexNormals();
-  geometry.computeTangents();
-  return geometry;
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3),
+    );
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+    geometry.setIndex(indices);
+    geometry.computeVertexNormals();
+    geometry.computeTangents();
+    return geometry;
   });
 }
 
@@ -828,73 +830,73 @@ export function createLeafGeometry(
   );
 
   return getCachedGeometry(cacheKey, () => {
-  const geometry = new THREE.BufferGeometry();
-  const rows = 16;
-  const columns = 6;
-  const positions: number[] = [];
-  const colors: number[] = [];
-  const uvs: number[] = [];
-  const indices: number[] = [];
+    const geometry = new THREE.BufferGeometry();
+    const rows = 16;
+    const columns = 6;
+    const positions: number[] = [];
+    const colors: number[] = [];
+    const uvs: number[] = [];
+    const indices: number[] = [];
 
-  for (let row = 0; row <= rows; row += 1) {
-    const t = row / rows;
-    const taper = getLeafOutlineWidth(t, shape);
-    const lobes =
-      shape === "lobed"
-        ? 0.76 + Math.pow(Math.abs(Math.sin(t * Math.PI * 4.5)), 0.7) * 0.3
-        : 1;
-    const serration = 1 + Math.sin(t * Math.PI * 12) * serrationStrength;
-    for (let column = 0; column <= columns; column += 1) {
-      const across = (column / columns) * 2 - 1;
-      const sideCharacter =
-        1 +
-        (seededRandom(seed + row * 23 + (across > 0 ? 101 : 211)) - 0.5) *
-          0.055;
-      const edgeIrregularity =
-        1 -
-        Math.pow(Math.abs(across), 7) * seededRandom(seed + row * 41) * 0.035;
-      positions.push(
-        across *
-          width *
-          taper *
-          lobes *
-          serration *
-          sideCharacter *
-          edgeIrregularity *
-          (1 + Math.sign(across) * asymmetry * Math.sin(Math.PI * t)),
-        t * 1.35,
-        Math.sin(Math.PI * t) * (0.055 + curl * 0.13) +
-          across * across * (0.018 + curl * 0.055) +
-          (seededRandom(seed + row) - 0.5) * 0.012,
-      );
-      const ageVariation = seededRandom(seed + row * 17 + column * 37);
-      const edgeShade = Math.abs(across) * 0.045;
-      const shade = THREE.MathUtils.clamp(
-        0.9 + t * 0.1 + (ageVariation - 0.5) * 0.035 - edgeShade,
-        0.78,
-        1,
-      );
-      colors.push(shade, shade, shade);
-      uvs.push(column / columns, t);
+    for (let row = 0; row <= rows; row += 1) {
+      const t = row / rows;
+      const taper = getLeafOutlineWidth(t, shape);
+      const lobes =
+        shape === "lobed"
+          ? 0.76 + Math.pow(Math.abs(Math.sin(t * Math.PI * 4.5)), 0.7) * 0.3
+          : 1;
+      const serration = 1 + Math.sin(t * Math.PI * 12) * serrationStrength;
+      for (let column = 0; column <= columns; column += 1) {
+        const across = (column / columns) * 2 - 1;
+        const sideCharacter =
+          1 +
+          (seededRandom(seed + row * 23 + (across > 0 ? 101 : 211)) - 0.5) *
+            0.055;
+        const edgeIrregularity =
+          1 -
+          Math.pow(Math.abs(across), 7) * seededRandom(seed + row * 41) * 0.035;
+        positions.push(
+          across *
+            width *
+            taper *
+            lobes *
+            serration *
+            sideCharacter *
+            edgeIrregularity *
+            (1 + Math.sign(across) * asymmetry * Math.sin(Math.PI * t)),
+          t * 1.35,
+          Math.sin(Math.PI * t) * (0.055 + curl * 0.13) +
+            across * across * (0.018 + curl * 0.055) +
+            (seededRandom(seed + row) - 0.5) * 0.012,
+        );
+        const ageVariation = seededRandom(seed + row * 17 + column * 37);
+        const edgeShade = Math.abs(across) * 0.045;
+        const shade = THREE.MathUtils.clamp(
+          0.9 + t * 0.1 + (ageVariation - 0.5) * 0.035 - edgeShade,
+          0.78,
+          1,
+        );
+        colors.push(shade, shade, shade);
+        uvs.push(column / columns, t);
+      }
     }
-  }
 
-  for (let row = 0; row < rows; row += 1) {
-    for (let column = 0; column < columns; column += 1) {
-      const current = row * (columns + 1) + column;
-      const next = current + columns + 1;
-      indices.push(current, next, current + 1, current + 1, next, next + 1);
+    for (let row = 0; row < rows; row += 1) {
+      for (let column = 0; column < columns; column += 1) {
+        const current = row * (columns + 1) + column;
+        const next = current + columns + 1;
+        indices.push(current, next, current + 1, current + 1, next, next + 1);
+      }
     }
-  }
-  geometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(positions, 3),
-  );
-  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
-  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  geometry.setIndex(indices);
-  geometry.computeVertexNormals();
-  return geometry;
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3),
+    );
+    geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setIndex(indices);
+    geometry.computeVertexNormals();
+    return geometry;
   });
 }
 
@@ -916,73 +918,75 @@ export function createTaperedStem(
   );
 
   return getCachedGeometry(cacheKey, () => {
-  const geometry = new THREE.BufferGeometry();
-  const segments = 72;
-  const radialSegments = 12;
-  const frames = curve.computeFrenetFrames(segments, false);
-  const positions: number[] = [];
-  const colors: number[] = [];
-  const uvs: number[] = [];
-  const indices: number[] = [];
+    const geometry = new THREE.BufferGeometry();
+    const segments = 72;
+    const radialSegments = 12;
+    const frames = curve.computeFrenetFrames(segments, false);
+    const positions: number[] = [];
+    const colors: number[] = [];
+    const uvs: number[] = [];
+    const indices: number[] = [];
 
-  for (let segment = 0; segment <= segments; segment += 1) {
-    const t = segment / segments;
-    const point = curve.getPointAt(t);
-    const baseRadius = 0.076 * thickness;
-    const radius =
-      THREE.MathUtils.lerp(baseRadius, baseRadius * (1 - taper), t) *
-      (1 + Math.sin(t * 31) * 0.025);
-    for (let ring = 0; ring < radialSegments; ring += 1) {
-      const angle = (ring / radialSegments) * Math.PI * 2;
-      const ribScale =
-        1 +
-        Math.cos(angle * 5 + seededRandom(seed) * Math.PI * 2) * ribbing * 0.08;
-      const offset = frames.normals[segment]
-        .clone()
-        .multiplyScalar(
-          Math.cos(angle) * radius * (1 + eccentricity) * ribScale,
-        )
-        .add(
-          frames.binormals[segment]
-            .clone()
-            .multiplyScalar(
-              Math.sin(angle) * radius * (1 - eccentricity) * ribScale,
-            ),
+    for (let segment = 0; segment <= segments; segment += 1) {
+      const t = segment / segments;
+      const point = curve.getPointAt(t);
+      const baseRadius = 0.076 * thickness;
+      const radius =
+        THREE.MathUtils.lerp(baseRadius, baseRadius * (1 - taper), t) *
+        (1 + Math.sin(t * 31) * 0.025);
+      for (let ring = 0; ring < radialSegments; ring += 1) {
+        const angle = (ring / radialSegments) * Math.PI * 2;
+        const ribScale =
+          1 +
+          Math.cos(angle * 5 + seededRandom(seed) * Math.PI * 2) *
+            ribbing *
+            0.08;
+        const offset = frames.normals[segment]
+          .clone()
+          .multiplyScalar(
+            Math.cos(angle) * radius * (1 + eccentricity) * ribScale,
+          )
+          .add(
+            frames.binormals[segment]
+              .clone()
+              .multiplyScalar(
+                Math.sin(angle) * radius * (1 - eccentricity) * ribScale,
+              ),
+          );
+        positions.push(
+          point.x + offset.x,
+          point.y + offset.y,
+          point.z + offset.z,
         );
-      positions.push(
-        point.x + offset.x,
-        point.y + offset.y,
-        point.z + offset.z,
-      );
-      const longitudinal = 0.9 + Math.sin(angle * 5 + t * 9) * 0.025;
-      const growthTone = THREE.MathUtils.lerp(0.84, 1, t) * longitudinal;
-      colors.push(growthTone, growthTone, growthTone);
-      uvs.push(ring / radialSegments, t);
+        const longitudinal = 0.9 + Math.sin(angle * 5 + t * 9) * 0.025;
+        const growthTone = THREE.MathUtils.lerp(0.84, 1, t) * longitudinal;
+        colors.push(growthTone, growthTone, growthTone);
+        uvs.push(ring / radialSegments, t);
+      }
     }
-  }
 
-  for (let segment = 0; segment < segments; segment += 1) {
-    for (let ring = 0; ring < radialSegments; ring += 1) {
-      const nextRing = (ring + 1) % radialSegments;
-      const current = segment * radialSegments + ring;
-      const next = (segment + 1) * radialSegments + ring;
-      indices.push(current, next, segment * radialSegments + nextRing);
-      indices.push(
-        segment * radialSegments + nextRing,
-        next,
-        (segment + 1) * radialSegments + nextRing,
-      );
+    for (let segment = 0; segment < segments; segment += 1) {
+      for (let ring = 0; ring < radialSegments; ring += 1) {
+        const nextRing = (ring + 1) % radialSegments;
+        const current = segment * radialSegments + ring;
+        const next = (segment + 1) * radialSegments + ring;
+        indices.push(current, next, segment * radialSegments + nextRing);
+        indices.push(
+          segment * radialSegments + nextRing,
+          next,
+          (segment + 1) * radialSegments + nextRing,
+        );
+      }
     }
-  }
-  geometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(positions, 3),
-  );
-  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
-  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  geometry.setIndex(indices);
-  geometry.computeVertexNormals();
-  return geometry;
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3),
+    );
+    geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setIndex(indices);
+    geometry.computeVertexNormals();
+    return geometry;
   });
 }
 
@@ -1009,7 +1013,9 @@ export function getStemGeometryCacheKey(
 ) {
   return [
     "stem",
-    curve.points.map((point) => [point.x, point.y, point.z].join(",")).join(";"),
+    curve.points
+      .map((point) => [point.x, point.y, point.z].join(","))
+      .join(";"),
     thickness,
     taper,
     eccentricity,

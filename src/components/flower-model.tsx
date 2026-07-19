@@ -12,13 +12,19 @@ import {
   seededRandom,
   createTaperedStem,
 } from "@/lib/flower-geometry";
-import { warmLeafGeometry, warmStemGeometry } from "@/lib/geometry-worker-client";
+import {
+  warmLeafGeometry,
+  warmStemGeometry,
+} from "@/lib/geometry-worker-client";
 import {
   getBotanicalMaterialTexture,
   getBotanicalTexture,
 } from "@/lib/botanical-textures";
 import { flowerSpecies } from "@/lib/flower-species";
-import { getFlowerGrowthState, getFlowerPhaseTuning } from "@/lib/flower-growth";
+import {
+  getFlowerGrowthState,
+  getFlowerPhaseTuning,
+} from "@/lib/flower-growth";
 import { getHeroLeafTuning } from "@/lib/flower-leaf-tuning";
 import { getHeroStemTuning } from "@/lib/flower-stem-tuning";
 import { useFlowerStore } from "@/lib/flower-store";
@@ -35,7 +41,11 @@ export function FlowerModel() {
   const stemTuning = getHeroStemTuning(settings.preset, structure);
   const growth = getFlowerGrowthState(settings.bloom, settings.petalAge);
   const phaseTuning = getFlowerPhaseTuning(growth.phase);
-  const stemRelax = THREE.MathUtils.lerp(1, 0.9, growth.wilt * phaseTuning.wiltScale);
+  const stemRelax = THREE.MathUtils.lerp(
+    1,
+    0.9,
+    growth.wilt * phaseTuning.wiltScale,
+  );
   const stemPath = useMemo(
     () =>
       new THREE.CatmullRomCurve3([
@@ -113,7 +123,8 @@ export function FlowerModel() {
     });
 
     leafAttachments.forEach((attachment) => {
-      const leafSeed = settings.seed + attachment.side * 17 + attachment.t * 3100;
+      const leafSeed =
+        settings.seed + attachment.side * 17 + attachment.t * 3100;
       const leafAsymmetry =
         settings.leafAsymmetry *
         leafTuning.asymmetryScale *

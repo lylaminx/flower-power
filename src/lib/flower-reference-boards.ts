@@ -1,6 +1,9 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { heroFlowerProfiles, type HeroFlowerPreset } from "./hero-flower-profiles";
+import {
+  heroFlowerProfiles,
+  type HeroFlowerPreset,
+} from "./hero-flower-profiles";
 import { visualTestScenarios } from "./visual-test-scenarios";
 
 type WikimediaMetadata = {
@@ -77,8 +80,9 @@ export async function loadReferenceBoard(species: HeroFlowerPreset) {
   return {
     species,
     label: heroFlowerProfiles[species].label,
-    scenarioId:
-      visualTestScenarios.find((scenario) => scenario.species === species)?.id,
+    scenarioId: visualTestScenarios.find(
+      (scenario) => scenario.species === species,
+    )?.id,
     traits: heroFlowerProfiles[species].traits,
     referenceChecks: heroFlowerProfiles[species].referenceChecks,
     images,
@@ -137,7 +141,10 @@ async function readMetadata(metadataPath: string) {
 
 function normalizeMetadataValue(value?: string) {
   if (!value) return undefined;
-  return value.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+  return value
+    .replace(/<[^>]+>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function prettifyFileName(value: string) {

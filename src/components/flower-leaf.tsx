@@ -15,7 +15,10 @@ import {
 } from "@/lib/botanical-textures";
 import { flowerSpecies } from "@/lib/flower-species";
 import { getHeroLeafTuning } from "@/lib/flower-leaf-tuning";
-import { getFlowerGrowthState, getFlowerPhaseTuning } from "@/lib/flower-growth";
+import {
+  getFlowerGrowthState,
+  getFlowerPhaseTuning,
+} from "@/lib/flower-growth";
 import { useFlowerStore } from "@/lib/flower-store";
 import { useRenderQuality } from "./render-quality-context";
 import { getTextureResolution } from "@/lib/flower-quality";
@@ -152,10 +155,7 @@ export function FlowerLeaf({
         attachment.z,
       ]}
       rotation={[
-        0.18 +
-          leafDroop * 0.28 +
-          tuning.droopBias +
-          tuning.bladePitch,
+        0.18 + leafDroop * 0.28 + tuning.droopBias + tuning.bladePitch,
         side * (0.5 + tuning.bladeYaw),
         side * (-0.88 - leafDroop * 0.48 + tuning.bladeRoll),
       ]}

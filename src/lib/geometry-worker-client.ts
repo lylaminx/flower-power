@@ -35,18 +35,17 @@ function getWorker() {
   return worker;
 }
 
-function hydrateGeometry(key: string, geometryJson: WarmupResponse["geometry"]) {
+function hydrateGeometry(
+  key: string,
+  geometryJson: WarmupResponse["geometry"],
+) {
   if (!geometryJson) return;
   const loader = new THREE.BufferGeometryLoader();
   const geometry = loader.parse(geometryJson);
   primeGeometryCache(key, geometry);
 }
 
-function warmGeometry(
-  key: string,
-  kind: GeometryKind,
-  payload: unknown,
-) {
+function warmGeometry(key: string, kind: GeometryKind, payload: unknown) {
   if (typeof window === "undefined") return Promise.resolve();
   const existing = pendingRequests.get(key);
   if (existing) return existing;
@@ -110,11 +109,7 @@ export function warmPetalGeometry(params: {
   lengthSegments?: number;
   widthSegments?: number;
 }) {
-  return warmGeometry(
-    getPetalGeometryCacheKey(params),
-    "petal",
-    params,
-  );
+  return warmGeometry(getPetalGeometryCacheKey(params), "petal", params);
 }
 
 export function warmLeafGeometry(

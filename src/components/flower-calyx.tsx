@@ -8,7 +8,10 @@ import {
   getBotanicalTexture,
 } from "@/lib/botanical-textures";
 import { createPetalGeometry } from "@/lib/flower-geometry";
-import { getFlowerGrowthState, getFlowerPhaseTuning } from "@/lib/flower-growth";
+import {
+  getFlowerGrowthState,
+  getFlowerPhaseTuning,
+} from "@/lib/flower-growth";
 import type { FlowerSpecies } from "@/lib/flower-species";
 import { getHeroStemTuning } from "@/lib/flower-stem-tuning";
 import { useFlowerStore } from "@/lib/flower-store";
