@@ -3,6 +3,7 @@
 import { FolderOpen, LoaderCircle, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import type { SavedFlower, SavedFlowerSummary } from "@/lib/flower-design";
+import { BrandLogo } from "./brand-logo";
 import { useFlowerStore } from "@/lib/flower-store";
 
 type LoadState = "idle" | "loading" | "error";
@@ -103,10 +104,12 @@ export function SavedFlowersDialog() {
                   No saved flowers yet. Save a study to begin your collection.
                 </p>
               )}
-              {state === "idle" &&
+                {state === "idle" &&
                 flowers.map((flower) => (
                   <article className="saved-flower-card" key={flower.id}>
-                    <div className="saved-flower-mark">✿</div>
+                    <div className="saved-flower-mark">
+                      <BrandLogo markOnly />
+                    </div>
                     <div>
                       <h3>{flower.name}</h3>
                       <p>

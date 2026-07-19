@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { heroFlowerProfiles } from "./hero-flower-profiles";
 
 export const flowerPresets = [
   "Daisy",
@@ -43,6 +44,18 @@ export const flowerPresets = [
   "Primrose",
   "Plumeria",
   "Poinsettia",
+  "Lisianthus",
+  "Sweet Pea",
+  "Freesia",
+  "Azalea",
+  "Passionflower",
+  "Dogwood",
+  "Rhododendron",
+  "Begonia",
+  "Petunia",
+  "Nasturtium",
+  "Gladiolus",
+  "Apple Blossom",
 ] as const;
 
 export type FlowerPreset = (typeof flowerPresets)[number];
@@ -65,6 +78,10 @@ export type FlowerSettings = {
   petalAge: number;
   petalSpots: number;
   petalGuideStrength: number;
+  petalAsymmetry: number;
+  petalTranslucency: number;
+  petalEdgeWear: number;
+  petalSheen: number;
   bloom: number;
   variation: number;
   petalColor: string;
@@ -78,6 +95,8 @@ export type FlowerSettings = {
   centerStamenLength: number;
   centerAntherSize: number;
   centerStigmaSize: number;
+  sepalSize: number;
+  sepalSpread: number;
   stemColor: string;
   backgroundColor: string;
   stemCurve: number;
@@ -93,6 +112,8 @@ export type FlowerSettings = {
   leafSerration: number;
   leafVeinDensity: number;
   leafDroop: number;
+  leafAsymmetry: number;
+  leafAge: number;
   bloomTilt: number;
   bloomTurn: number;
   lightIntensity: number;
@@ -107,7 +128,7 @@ export type FlowerState = FlowerSettings & {
     key: K,
     value: FlowerSettings[K],
   ) => void;
-  applyPreset: (preset: FlowerPreset) => void;
+  applyPreset: (preset: FlowerPreset, seed?: number) => void;
   randomize: () => void;
   togglePanel: () => void;
   toggleRightPanel: () => void;
@@ -155,17 +176,7 @@ const presets: Record<FlowerPreset, Partial<FlowerSettings>> = {
     backgroundColor: "#ffffff",
   },
   Poppy: {
-    petalCount: 6,
-    petalLength: 1.55,
-    petalWidth: 0.95,
-    petalCurl: 0.2,
-    bloom: 0.86,
-    variation: 0.3,
-    petalColor: "#c9342f",
-    petalTipColor: "#f06a55",
-    centerColor: "#2b211e",
-    stemColor: "#4a693f",
-    backgroundColor: "#ffffff",
+    ...heroFlowerProfiles.Poppy.store,
   },
   Coneflower: {
     petalCount: 18,
@@ -194,30 +205,10 @@ const presets: Record<FlowerPreset, Partial<FlowerSettings>> = {
     backgroundColor: "#ffffff",
   },
   Rose: {
-    petalCount: 18,
-    petalLength: 1.25,
-    petalWidth: 0.68,
-    petalCurl: 0.62,
-    bloom: 0.58,
-    variation: 0.12,
-    petalColor: "#b93657",
-    petalTipColor: "#ef8da0",
-    centerColor: "#7d283e",
-    stemColor: "#315d38",
-    backgroundColor: "#ffffff",
+    ...heroFlowerProfiles.Rose.store,
   },
   Sunflower: {
-    petalCount: 28,
-    petalLength: 1.65,
-    petalWidth: 0.4,
-    petalCurl: 0.16,
-    bloom: 0.9,
-    variation: 0.14,
-    petalColor: "#e7a51e",
-    petalTipColor: "#f6cb43",
-    centerColor: "#55351f",
-    stemColor: "#3f6335",
-    backgroundColor: "#ffffff",
+    ...heroFlowerProfiles.Sunflower.store,
   },
   Peony: {
     petalCount: 20,
@@ -233,17 +224,7 @@ const presets: Record<FlowerPreset, Partial<FlowerSettings>> = {
     backgroundColor: "#ffffff",
   },
   Lotus: {
-    petalCount: 16,
-    petalLength: 1.55,
-    petalWidth: 0.7,
-    petalCurl: 0.32,
-    bloom: 0.62,
-    variation: 0.09,
-    petalColor: "#e39bad",
-    petalTipColor: "#f5d5dc",
-    centerColor: "#d5aa3d",
-    stemColor: "#48715b",
-    backgroundColor: "#ffffff",
+    ...heroFlowerProfiles.Lotus.store,
   },
   Anemone: {
     petalCount: 9,
@@ -298,30 +279,10 @@ const presets: Record<FlowerPreset, Partial<FlowerSettings>> = {
     backgroundColor: "#ffffff",
   },
   Lily: {
-    petalCount: 6,
-    petalLength: 2.05,
-    petalWidth: 0.65,
-    petalCurl: 0.36,
-    bloom: 0.86,
-    variation: 0.09,
-    petalColor: "#f0d8d4",
-    petalTipColor: "#d87582",
-    centerColor: "#b6a84a",
-    stemColor: "#416c3d",
-    backgroundColor: "#ffffff",
+    ...heroFlowerProfiles.Lily.store,
   },
   Orchid: {
-    petalCount: 5,
-    petalLength: 1.62,
-    petalWidth: 0.82,
-    petalCurl: 0.3,
-    bloom: 0.8,
-    variation: 0.08,
-    petalColor: "#ead9ed",
-    petalTipColor: "#ae5a9d",
-    centerColor: "#d58b42",
-    stemColor: "#47704a",
-    backgroundColor: "#ffffff",
+    ...heroFlowerProfiles.Orchid.store,
   },
   Carnation: {
     petalCount: 28,
@@ -661,6 +622,180 @@ const presets: Record<FlowerPreset, Partial<FlowerSettings>> = {
     stemColor: "#3f613c",
     backgroundColor: "#ffffff",
   },
+  Lisianthus: {
+    petalCount: 18,
+    petalLength: 1.52,
+    petalWidth: 0.82,
+    petalCurl: 0.36,
+    petalRuffle: 1.25,
+    bloom: 0.72,
+    variation: 0.12,
+    petalColor: "#d8c5df",
+    petalTipColor: "#f0e8f2",
+    centerColor: "#b6a34d",
+    stemColor: "#486647",
+    backgroundColor: "#ffffff",
+  },
+  "Sweet Pea": {
+    petalCount: 5,
+    petalLength: 1.58,
+    petalWidth: 1.05,
+    petalCurl: 0.48,
+    petalRuffle: 1.45,
+    petalAsymmetry: 0.28,
+    bloom: 0.68,
+    variation: 0.2,
+    petalColor: "#c26f9a",
+    petalTipColor: "#ebbed2",
+    centerColor: "#ead9b2",
+    stemColor: "#496b48",
+    backgroundColor: "#ffffff",
+  },
+  Freesia: {
+    petalCount: 6,
+    petalLength: 1.46,
+    petalWidth: 0.78,
+    petalCurl: 0.18,
+    bloom: 0.66,
+    variation: 0.08,
+    petalColor: "#e6c84f",
+    petalTipColor: "#f5e89d",
+    centerColor: "#b9792f",
+    stemColor: "#4b7048",
+    backgroundColor: "#ffffff",
+  },
+  Azalea: {
+    petalCount: 5,
+    petalLength: 1.62,
+    petalWidth: 1.02,
+    petalCurl: 0.22,
+    petalRuffle: 1.2,
+    petalSpots: 0.4,
+    bloom: 0.9,
+    variation: 0.12,
+    petalColor: "#d75b83",
+    petalTipColor: "#ef9eb7",
+    centerColor: "#d9bd82",
+    stemColor: "#405f3f",
+    backgroundColor: "#ffffff",
+  },
+  Passionflower: {
+    petalCount: 10,
+    petalLength: 1.7,
+    petalWidth: 0.42,
+    petalCurl: 0.12,
+    petalGuideStrength: 0.75,
+    bloom: 0.96,
+    variation: 0.08,
+    petalColor: "#eee9f0",
+    petalTipColor: "#b9a3ce",
+    centerColor: "#584276",
+    stemColor: "#416443",
+    backgroundColor: "#ffffff",
+  },
+  Dogwood: {
+    petalCount: 4,
+    petalLength: 1.72,
+    petalWidth: 1.08,
+    petalCurl: 0.12,
+    petalNotch: 1.65,
+    bloom: 0.94,
+    variation: 0.05,
+    petalColor: "#eee9e3",
+    petalTipColor: "#d7b7b2",
+    centerColor: "#a6a342",
+    stemColor: "#435e40",
+    backgroundColor: "#ffffff",
+  },
+  Rhododendron: {
+    petalCount: 5,
+    petalLength: 1.68,
+    petalWidth: 1.08,
+    petalCurl: 0.2,
+    petalRuffle: 1.15,
+    petalSpots: 0.52,
+    bloom: 0.88,
+    variation: 0.1,
+    petalColor: "#c95d88",
+    petalTipColor: "#eaa8c1",
+    centerColor: "#d8c38b",
+    stemColor: "#3f5d3e",
+    backgroundColor: "#ffffff",
+  },
+  Begonia: {
+    petalCount: 12,
+    petalLength: 1.42,
+    petalWidth: 0.94,
+    petalCurl: 0.32,
+    petalRuffle: 1.3,
+    petalAsymmetry: 0.14,
+    bloom: 0.76,
+    variation: 0.16,
+    petalColor: "#db6f78",
+    petalTipColor: "#f0a5a7",
+    centerColor: "#d5a33d",
+    stemColor: "#476344",
+    backgroundColor: "#ffffff",
+  },
+  Petunia: {
+    petalCount: 5,
+    petalLength: 1.58,
+    petalWidth: 1.16,
+    petalCurl: 0.14,
+    petalRuffle: 1.18,
+    petalGuideStrength: 0.62,
+    bloom: 0.9,
+    variation: 0.08,
+    petalColor: "#7d4b9e",
+    petalTipColor: "#b990cf",
+    centerColor: "#e1ce9a",
+    stemColor: "#486947",
+    backgroundColor: "#ffffff",
+  },
+  Nasturtium: {
+    petalCount: 5,
+    petalLength: 1.5,
+    petalWidth: 1.02,
+    petalCurl: 0.22,
+    petalRuffle: 1.22,
+    petalGuideStrength: 0.38,
+    bloom: 0.86,
+    variation: 0.12,
+    petalColor: "#e66f24",
+    petalTipColor: "#f4aa39",
+    centerColor: "#9a4c25",
+    stemColor: "#4b6b43",
+    backgroundColor: "#ffffff",
+  },
+  Gladiolus: {
+    petalCount: 6,
+    petalLength: 1.82,
+    petalWidth: 0.88,
+    petalCurl: 0.3,
+    petalRuffle: 1.12,
+    petalAsymmetry: 0.18,
+    bloom: 0.72,
+    variation: 0.1,
+    petalColor: "#d85f73",
+    petalTipColor: "#ef9da7",
+    centerColor: "#e4c58f",
+    stemColor: "#496d45",
+    backgroundColor: "#ffffff",
+  },
+  "Apple Blossom": {
+    petalCount: 5,
+    petalLength: 1.38,
+    petalWidth: 1.02,
+    petalCurl: 0.12,
+    petalNotch: 0.8,
+    bloom: 0.94,
+    variation: 0.08,
+    petalColor: "#f0d8dd",
+    petalTipColor: "#d98799",
+    centerColor: "#d4a83b",
+    stemColor: "#4a6040",
+    backgroundColor: "#ffffff",
+  },
 };
 
 export const useFlowerStore = create<FlowerState>((set) => ({
@@ -681,6 +816,10 @@ export const useFlowerStore = create<FlowerState>((set) => ({
   petalAge: 0,
   petalSpots: 0,
   petalGuideStrength: 0.12,
+  petalAsymmetry: 0.08,
+  petalTranslucency: 0.18,
+  petalEdgeWear: 0.05,
+  petalSheen: 0.2,
   bloom: 0.82,
   variation: 0.2,
   petalColor: "#d47a9a",
@@ -694,6 +833,8 @@ export const useFlowerStore = create<FlowerState>((set) => ({
   centerStamenLength: 1,
   centerAntherSize: 1,
   centerStigmaSize: 1,
+  sepalSize: 1,
+  sepalSpread: 0.35,
   stemColor: "#355a39",
   backgroundColor: "#ffffff",
   stemCurve: 0.35,
@@ -709,6 +850,8 @@ export const useFlowerStore = create<FlowerState>((set) => ({
   leafSerration: 1,
   leafVeinDensity: 1,
   leafDroop: 0.25,
+  leafAsymmetry: 0.08,
+  leafAge: 0,
   bloomTilt: 0,
   bloomTurn: 0,
   lightIntensity: 1.4,
@@ -717,11 +860,11 @@ export const useFlowerStore = create<FlowerState>((set) => ({
   panelOpen: true,
   rightPanelOpen: true,
   set: (key, value) => set({ [key]: value }),
-  applyPreset: (preset) =>
+  applyPreset: (preset, seed) =>
     set({
       preset,
       ...presets[preset],
-      seed: Math.floor(Math.random() * 10000),
+      seed: seed ?? Math.floor(Math.random() * 10000),
     }),
   randomize: () =>
     set((state) => ({

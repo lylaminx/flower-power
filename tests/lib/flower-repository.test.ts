@@ -36,6 +36,10 @@ const detailRow = {
   petal_age: 0.2,
   petal_spots: 0.35,
   petal_guide_strength: 0.5,
+  petal_asymmetry: 0.12,
+  petal_translucency: 0.4,
+  petal_edge_wear: 0.25,
+  petal_sheen: 0.45,
   bloom: 0.82,
   variation: 0.2,
   petal_color: "#d47a9a",
@@ -49,6 +53,8 @@ const detailRow = {
   center_stamen_length: 1.4,
   center_anther_size: 0.9,
   center_stigma_size: 1.25,
+  sepal_size: 1.2,
+  sepal_spread: 0.45,
   stem_color: "#355a39",
   background_color: "#ffffff",
   stem_curve: 0.18,
@@ -64,6 +70,8 @@ const detailRow = {
   leaf_serration: 1.3,
   leaf_vein_density: 1.5,
   leaf_droop: 0.4,
+  leaf_asymmetry: 0.16,
+  leaf_age: 0.3,
   bloom_tilt: 0.2,
   bloom_turn: -0.5,
   light_intensity: 1.1,
@@ -98,9 +106,13 @@ describe("flower repository", () => {
     expect(query.mock.calls[0][0]).toContain(
       "('poinsettia', 'Poinsettia', 42)",
     );
+    expect(query.mock.calls[0][0]).toContain("('dogwood', 'Dogwood', 48)");
+    expect(query.mock.calls[0][0]).toContain(
+      "('apple-blossom', 'Apple Blossom', 54)",
+    );
     expect(query.mock.calls[1][0]).toContain("INSERT INTO flower_petals");
     expect(query.mock.calls[1][0]).toContain("INSERT INTO flower_scenes");
-    expect(query.mock.calls[1][1]).toHaveLength(51);
+    expect(query.mock.calls[1][1]).toHaveLength(59);
     expect(query.mock.calls[1][1][0]).toBe("Cosmos study");
     expect(saved).toEqual({
       id: row.id,

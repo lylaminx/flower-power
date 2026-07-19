@@ -4,6 +4,14 @@ import { Edges } from "@react-three/drei";
 import { useLayoutEffect, useRef } from "react";
 import * as THREE from "three";
 import { getBotanicalTexture } from "@/lib/botanical-textures";
+import { useRenderQuality } from "./render-quality-context";
+import { getTextureResolution } from "@/lib/flower-quality";
+import type { StemTuning } from "@/lib/flower-stem-tuning";
+
+const stemNodeSphereGeometry = new THREE.SphereGeometry(0.064, 16, 9);
+const stemNodeConeGeometry = new THREE.ConeGeometry(1, 1, 7);
+const stemHairGeometry = new THREE.ConeGeometry(1, 1, 5);
+const stemLenticelGeometry = new THREE.SphereGeometry(1, 7, 5);
 
 export function FlowerStemDetails({
   curve,
@@ -11,17 +19,23 @@ export function FlowerStemDetails({
   lineDrawing,
   hairiness,
   nodeCount,
+  tuning,
 }: {
   curve: THREE.CatmullRomCurve3;
   color: string;
   lineDrawing: boolean;
   hairiness: number;
   nodeCount: number;
+  tuning: StemTuning;
 }) {
+  const textureResolution = getTextureResolution(useRenderQuality());
   const hairs = useRef<THREE.InstancedMesh>(null);
   const lenticels = useRef<THREE.InstancedMesh>(null);
-  const hairCount = Math.max(1, Math.round(28 * hairiness));
-  const lenticelCount = 22;
+  const hairCount = Math.max(
+    1,
+    Math.round(28 * hairiness * tuning.stemHairinessScale),
+  );
+  const lenticelCount = Math.max(8, Math.round(22 * tuning.stemLenticelScale));
 
   useLayoutEffect(() => {
     if (lineDrawing) return;
@@ -30,7 +44,9 @@ export function FlowerStemDetails({
     const up = new THREE.Vector3(0, 1, 0);
 
     for (let index = 0; index < hairCount; index += 1) {
-      const t = 0.08 + (index / hairCount) * 0.86;
+      const t =
+        0.08 +
+        (index / hairCount) * (0.86 + tuning.stemNodeSpacingBias * 0.45);
       const point = curve.getPointAt(t);
       const angle = index * 2.399963;
       const outward = new THREE.Vector3(
@@ -38,16 +54,22 @@ export function FlowerStemDetails({
         0.3,
         Math.sin(angle),
       ).normalize();
-      transform.position.copy(point).addScaledVector(outward, 0.055);
+      transform.position.copy(point).addScaledVector(outward, 0.055 * tuning.stemNodeBulgeScale);
       transform.quaternion.setFromUnitVectors(up, outward);
-      transform.scale.set(0.0025, 0.035 + (index % 3) * 0.006, 0.0025);
+      transform.scale.set(
+        0.0025,
+        (0.035 + (index % 3) * 0.006) * tuning.stemHairinessScale,
+        0.0025,
+      );
       transform.updateMatrix();
       hairs.current.setMatrixAt(index, transform.matrix);
     }
     hairs.current.instanceMatrix.needsUpdate = true;
 
     for (let index = 0; index < lenticelCount; index += 1) {
-      const t = 0.12 + (index / lenticelCount) * 0.78;
+      const t =
+        0.12 +
+        (index / lenticelCount) * (0.78 + tuning.stemNodeSpacingBias * 0.32);
       const point = curve.getPointAt(t);
       const angle = index * 3.88322;
       const outward = new THREE.Vector3(
@@ -55,43 +77,67 @@ export function FlowerStemDetails({
         0,
         Math.sin(angle),
       ).normalize();
-      transform.position.copy(point).addScaledVector(outward, 0.057);
+      transform.position.copy(point).addScaledVector(outward, 0.057 * tuning.stemNodeBulgeScale);
       transform.quaternion.setFromUnitVectors(up, outward);
-      transform.scale.set(0.009 + (index % 3) * 0.002, 0.003, 0.005);
+      transform.scale.set(
+        (0.009 + (index % 3) * 0.002) * tuning.stemLenticelScale,
+        0.003,
+        0.005,
+      );
       transform.updateMatrix();
       lenticels.current.setMatrixAt(index, transform.matrix);
     }
     lenticels.current.instanceMatrix.needsUpdate = true;
   }, [curve, hairCount, lineDrawing]);
 
-  const nodes = Array.from({ length: nodeCount }, (_, index) =>
-    curve.getPointAt(0.3 + ((index + 1) / (nodeCount + 1)) * 0.42),
+  const adjustedNodeCount = Math.max(
+    0,
+    Math.round(nodeCount * tuning.stemNodeCountScale),
   );
+  const nodes = Array.from({ length: adjustedNodeCount }, (_, index) => {
+    const t =
+      0.3 +
+      ((index + 1) / (adjustedNodeCount + 1)) *
+        (0.42 + tuning.stemNodeSpacingBias * 0.2);
+    return curve.getPointAt(t);
+  });
   const nodeColor = new THREE.Color(color).multiplyScalar(0.82);
 
   return (
     <group>
       {nodes.map((point, index) => (
         <group key={index} position={point}>
-          <mesh scale={[1.45, 0.72, 1.45]}>
-            <sphereGeometry args={[0.064, 16, 9]} />
+            <mesh
+              dispose={null}
+              scale={[
+                1.45 * tuning.stemNodeBulgeScale,
+                0.72 * tuning.stemNodeBulgeScale,
+                1.45 * tuning.stemNodeBulgeScale,
+              ]}
+            >
+            <primitive object={stemNodeSphereGeometry} attach="geometry" />
             {lineDrawing ? (
               <meshBasicMaterial color="#ffffff" />
             ) : (
               <meshStandardMaterial
                 color={nodeColor}
                 roughness={0.82}
-                bumpMap={getBotanicalTexture("stem")}
+                bumpMap={getBotanicalTexture("stem", textureResolution)}
                 bumpScale={0.025}
               />
             )}
           </mesh>
           <mesh
+            dispose={null}
             position={[index % 2 === 0 ? 0.07 : -0.07, 0.055, 0.015]}
             rotation={[0.2, 0, index % 2 === 0 ? -0.55 : 0.55]}
-            scale={[0.032, 0.095, 0.032]}
+            scale={[
+              0.032 * tuning.stemNodeBulgeScale,
+              0.095 * tuning.stemNodeBulgeScale,
+              0.032 * tuning.stemNodeBulgeScale,
+            ]}
           >
-            <coneGeometry args={[1, 1, 7]} />
+            <primitive object={stemNodeConeGeometry} attach="geometry" />
             <meshStandardMaterial
               color={lineDrawing ? "#ffffff" : color}
               roughness={0.86}
@@ -104,10 +150,11 @@ export function FlowerStemDetails({
         <>
           <instancedMesh
             ref={hairs}
+            dispose={null}
             args={[undefined, undefined, hairCount]}
             visible={hairiness > 0}
           >
-            <coneGeometry args={[1, 1, 5]} />
+            <primitive object={stemHairGeometry} attach="geometry" />
             <meshBasicMaterial
               color="#d5ddcd"
               transparent
@@ -117,9 +164,10 @@ export function FlowerStemDetails({
           </instancedMesh>
           <instancedMesh
             ref={lenticels}
+            dispose={null}
             args={[undefined, undefined, lenticelCount]}
           >
-            <sphereGeometry args={[1, 7, 5]} />
+            <primitive object={stemLenticelGeometry} attach="geometry" />
             <meshStandardMaterial color={nodeColor} roughness={0.94} />
           </instancedMesh>
         </>

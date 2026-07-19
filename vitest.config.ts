@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   test: {
+    exclude: ["tests/visual/**", "node_modules/**", ".next/**"],
     environment: "node",
     environmentOptions: {
       jsdom: { url: "http://localhost:3000" },
