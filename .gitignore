@@ -15,5 +15,4 @@ image-tests/references/*
 *.tsbuildinfo
 .DS_Store
 references/*
-playwright*
 PLAN.md
