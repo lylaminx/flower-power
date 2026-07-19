@@ -42,6 +42,10 @@ export function selectFlowerSettings(state: FlowerState): FlowerSettings {
     petalAge: state.petalAge,
     petalSpots: state.petalSpots,
     petalGuideStrength: state.petalGuideStrength,
+    petalAsymmetry: state.petalAsymmetry,
+    petalTranslucency: state.petalTranslucency,
+    petalEdgeWear: state.petalEdgeWear,
+    petalSheen: state.petalSheen,
     bloom: state.bloom,
     variation: state.variation,
     petalColor: state.petalColor,
@@ -55,6 +59,8 @@ export function selectFlowerSettings(state: FlowerState): FlowerSettings {
     centerStamenLength: state.centerStamenLength,
     centerAntherSize: state.centerAntherSize,
     centerStigmaSize: state.centerStigmaSize,
+    sepalSize: state.sepalSize,
+    sepalSpread: state.sepalSpread,
     stemColor: state.stemColor,
     backgroundColor: state.backgroundColor,
     stemCurve: state.stemCurve,
@@ -70,6 +76,8 @@ export function selectFlowerSettings(state: FlowerState): FlowerSettings {
     leafSerration: state.leafSerration,
     leafVeinDensity: state.leafVeinDensity,
     leafDroop: state.leafDroop,
+    leafAsymmetry: state.leafAsymmetry,
+    leafAge: state.leafAge,
     bloomTilt: state.bloomTilt,
     bloomTurn: state.bloomTurn,
     lightIntensity: state.lightIntensity,
@@ -111,6 +119,10 @@ export function isSaveFlowerInput(value: unknown): value is SaveFlowerInput {
     isNumber(settings.petalAge, 0, 1) &&
     isNumber(settings.petalSpots, 0, 1) &&
     isNumber(settings.petalGuideStrength, 0, 1) &&
+    isNumber(settings.petalAsymmetry, 0, 0.4) &&
+    isNumber(settings.petalTranslucency, 0, 1) &&
+    isNumber(settings.petalEdgeWear, 0, 1) &&
+    isNumber(settings.petalSheen, 0, 1) &&
     isNumber(settings.bloom, 0, 1) &&
     isNumber(settings.variation, 0, 1) &&
     isColor(settings.petalColor) &&
@@ -124,6 +136,8 @@ export function isSaveFlowerInput(value: unknown): value is SaveFlowerInput {
     isNumber(settings.centerStamenLength, 0.4, 2) &&
     isNumber(settings.centerAntherSize, 0.4, 2) &&
     isNumber(settings.centerStigmaSize, 0.4, 2) &&
+    isNumber(settings.sepalSize, 0.5, 1.8) &&
+    isNumber(settings.sepalSpread, 0, 1) &&
     isColor(settings.stemColor) &&
     isColor(settings.backgroundColor) &&
     isNumber(settings.stemCurve, 0) &&
@@ -141,6 +155,8 @@ export function isSaveFlowerInput(value: unknown): value is SaveFlowerInput {
     isNumber(settings.leafSerration, 0, 2) &&
     isNumber(settings.leafVeinDensity, 0.25, 2) &&
     isNumber(settings.leafDroop, 0, 1) &&
+    isNumber(settings.leafAsymmetry, 0, 0.4) &&
+    isNumber(settings.leafAge, 0, 1) &&
     isNumber(settings.bloomTilt, -0.6, 0.6) &&
     isNumber(settings.bloomTurn, -3.15, 3.15) &&
     isNumber(settings.lightIntensity, 0) &&

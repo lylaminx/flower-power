@@ -39,6 +39,7 @@ describe("FlowerStudio", () => {
     useFlowerStore.setState(initialState, true);
     exportPng.mockClear();
     localStorage.clear();
+    document.documentElement.dataset.theme = "light";
     vi.restoreAllMocks();
     vi.stubGlobal(
       "fetch",
@@ -65,6 +66,132 @@ describe("FlowerStudio", () => {
     ).toBeVisible();
     expect(
       screen.getByRole("button", { name: "Reset canvas view" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("combobox", { name: "Photographic lighting preset" }),
+    ).toHaveValue("botanicalStudio");
+    expect(
+      screen.getByRole("combobox", { name: "Camera composition" }),
+    ).toHaveValue("threeQuarter");
+    expect(
+      screen.getByRole("slider", { name: "Camera focal length" }),
+    ).toHaveValue("52");
+    expect(
+      screen.getByRole("checkbox", { name: "Enable depth of field" }),
+    ).not.toBeChecked();
+    expect(
+      screen.getByRole("checkbox", { name: "Enable highlight bloom" }),
+    ).not.toBeChecked();
+    expect(
+      screen.getByRole("checkbox", { name: "Enable ambient occlusion" }),
+    ).not.toBeChecked();
+    expect(
+      screen.getByRole("combobox", { name: "Rendering quality" }),
+    ).toHaveValue("high");
+  });
+
+  it("changes rendering quality independently of flower settings", async () => {
+    const user = userEvent.setup();
+    render(<FlowerStudio />);
+    const preset = useFlowerStore.getState().preset;
+
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "Rendering quality" }),
+      "ultra",
+    );
+
+    expect(
+      screen.getByRole("combobox", { name: "Rendering quality" }),
+    ).toHaveValue("ultra");
+    expect(useFlowerStore.getState().preset).toBe(preset);
+  });
+
+  it("enables restrained ambient occlusion controls in photo mode", async () => {
+    const user = userEvent.setup();
+    render(<FlowerStudio />);
+
+    await user.click(
+      screen.getByRole("checkbox", { name: "Enable ambient occlusion" }),
+    );
+
+    expect(useFlowerStore.getState().renderMode).toBe("photo");
+    expect(
+      screen.getByRole("slider", { name: "Ambient occlusion strength" }),
+    ).toHaveValue("0.42");
+  });
+
+  it("enables restrained highlight bloom controls in photo mode", async () => {
+    const user = userEvent.setup();
+    render(<FlowerStudio />);
+
+    await user.click(
+      screen.getByRole("checkbox", { name: "Enable highlight bloom" }),
+    );
+
+    expect(useFlowerStore.getState().renderMode).toBe("photo");
+    expect(
+      screen.getByRole("slider", { name: "Highlight bloom strength" }),
+    ).toHaveValue("0.12");
+  });
+
+  it("enables restrained photographic depth of field controls", async () => {
+    const user = userEvent.setup();
+    render(<FlowerStudio />);
+
+    await user.click(
+      screen.getByRole("checkbox", { name: "Enable depth of field" }),
+    );
+
+    expect(useFlowerStore.getState().renderMode).toBe("photo");
+    expect(screen.getByRole("slider", { name: "Camera aperture" })).toHaveValue(
+      "5.6",
+    );
+    expect(
+      screen.getByRole("slider", { name: "Camera focus distance" }),
+    ).toHaveValue("7");
+  });
+
+  it("changes composition and adopts its default focal length", async () => {
+    const user = userEvent.setup();
+    render(<FlowerStudio />);
+
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "Camera composition" }),
+      "macro",
+    );
+
+    expect(
+      screen.getByRole("slider", { name: "Camera focal length" }),
+    ).toHaveValue("85");
+  });
+
+  it("selects a photographic lighting rig and enters photo mode", async () => {
+    const user = userEvent.setup();
+    render(<FlowerStudio />);
+
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "Photographic lighting preset" }),
+      "goldenHour",
+    );
+
+    expect(
+      screen.getByRole("combobox", { name: "Photographic lighting preset" }),
+    ).toHaveValue("goldenHour");
+    expect(useFlowerStore.getState().renderMode).toBe("photo");
+  });
+
+  it("toggles and remembers the color theme", async () => {
+    const user = userEvent.setup();
+    render(<FlowerStudio />);
+
+    await user.click(
+      screen.getByRole("button", { name: "Switch to dark theme" }),
+    );
+
+    expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+    expect(localStorage.getItem("flowerpower-theme")).toBe("dark");
+    expect(
+      screen.getByRole("button", { name: "Switch to light theme" }),
     ).toBeVisible();
   });
 
@@ -98,6 +225,16 @@ describe("FlowerStudio", () => {
     fireEvent.change(screen.getByRole("slider", { name: /Bloom tilt/ }), {
       target: { value: "0.3" },
     });
+    fireEvent.change(
+      screen.getByRole("slider", { name: /Natural asymmetry/ }),
+      { target: { value: "0.2" } },
+    );
+    fireEvent.change(screen.getByRole("slider", { name: /Edge wear/ }), {
+      target: { value: "0.3" },
+    });
+    fireEvent.change(screen.getByRole("slider", { name: /Sepal spread/ }), {
+      target: { value: "0.6" },
+    });
 
     expect(useFlowerStore.getState()).toMatchObject({
       petalCount: 24,
@@ -109,10 +246,13 @@ describe("FlowerStudio", () => {
       petalFold: 0.75,
       centerAntherSize: 1.35,
       bloomTilt: 0.3,
+      petalAsymmetry: 0.2,
+      petalEdgeWear: 0.3,
+      sepalSpread: 0.6,
     });
     expect(screen.getByText("24")).toBeVisible();
     expect(screen.getByText("#112233")).toBeVisible();
-  });
+  }, 10_000);
 
   it("applies presets and updates the live-study label", async () => {
     const user = userEvent.setup();

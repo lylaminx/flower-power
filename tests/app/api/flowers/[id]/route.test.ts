@@ -17,7 +17,7 @@ describe("/api/flowers/:id", () => {
     const response = await GET(
       new Request(`http://localhost/api/flowers/${id}`),
       {
-        params: { id },
+        params: Promise.resolve({ id }),
       },
     );
 
@@ -30,7 +30,7 @@ describe("/api/flowers/:id", () => {
     const response = await GET(
       new Request("http://localhost/api/flowers/nope"),
       {
-        params: { id: "nope" },
+        params: Promise.resolve({ id: "nope" }),
       },
     );
     expect(response.status).toBe(400);
@@ -42,7 +42,7 @@ describe("/api/flowers/:id", () => {
     const response = await GET(
       new Request(`http://localhost/api/flowers/${id}`),
       {
-        params: { id },
+        params: Promise.resolve({ id }),
       },
     );
     expect(response.status).toBe(404);
@@ -54,7 +54,7 @@ describe("/api/flowers/:id", () => {
     const response = await GET(
       new Request(`http://localhost/api/flowers/${id}`),
       {
-        params: { id },
+        params: Promise.resolve({ id }),
       },
     );
     expect(response.status).toBe(503);

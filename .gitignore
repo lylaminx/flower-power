@@ -3,7 +3,12 @@ node_modules/
 out/
 coverage/
 public/docs/
-image-tests/
+image-tests/*
+!image-tests/README.md
+!image-tests/scenarios.json
+!image-tests/references/
+image-tests/references/*
+!image-tests/references/README.md
 .env*
 !.env.example
 *.log

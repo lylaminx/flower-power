@@ -11,8 +11,8 @@ An artist-focused 3D botanical studio for shaping, lighting, and exporting flora
 The first milestone implements a responsive Next.js editor with:
 
 - A procedural, seeded 3D flower rendered with React Three Fiber
-- Twelve species-aware presets including daisy, cosmos, poppy, rose, sunflower,
-  peony, lotus, anemone, dahlia, and zinnia
+- Fifty-four species-aware presets spanning classic garden flowers, dramatic
+  botanical subjects, and popular cut flowers
 - Live petal count, proportions, curl, bloom, and variation controls
 - Editable flower, stem, center, and backdrop colors
 - Orbit, pan, zoom, lighting, composition grid, and stem controls
@@ -33,7 +33,7 @@ designs as versioned JSON files and loads them locally in the browser without
 sending their contents to a server:
 
 ```bash
-NEXT_PUBLIC_PERSISTENCE_MODE=file npm run dev
+NEXT_PUBLIC_PERSISTENCE_MODE=file
 ```
 
 Vercel builds default to file mode, so the repository can be deployed there
@@ -61,7 +61,7 @@ these tables idempotently on first use, including for an existing Compose data
 volume. `GET /api/flowers` lists saved designs, `GET /api/flowers/:id` restores
 a complete design, and `POST /api/flowers` saves the
 current design. The Compose initialization SQL contains the complete current
-schema and all 42 variety records for new database volumes.
+schema and all 54 variety records for new database volumes.
 
 Inspect or stop the stack with:
 

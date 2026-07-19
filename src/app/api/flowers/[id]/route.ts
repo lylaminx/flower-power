@@ -8,14 +8,15 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  if (!uuidPattern.test(params.id)) {
+  const { id } = await params;
+  if (!uuidPattern.test(id)) {
     return NextResponse.json({ error: "Invalid flower id" }, { status: 400 });
   }
 
   try {
-    const flower = await getFlower(params.id);
+    const flower = await getFlower(id);
     if (!flower) {
       return NextResponse.json({ error: "Flower not found" }, { status: 404 });
     }

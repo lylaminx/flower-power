@@ -32,6 +32,10 @@ type FlowerDetailRow = FlowerRow & {
   petal_age: number;
   petal_spots: number;
   petal_guide_strength: number;
+  petal_asymmetry: number;
+  petal_translucency: number;
+  petal_edge_wear: number;
+  petal_sheen: number;
   bloom: number;
   variation: number;
   petal_color: string;
@@ -45,6 +49,8 @@ type FlowerDetailRow = FlowerRow & {
   center_stamen_length: number;
   center_anther_size: number;
   center_stigma_size: number;
+  sepal_size: number;
+  sepal_spread: number;
   stem_color: string;
   background_color: string;
   stem_curve: number;
@@ -60,6 +66,8 @@ type FlowerDetailRow = FlowerRow & {
   leaf_serration: number;
   leaf_vein_density: number;
   leaf_droop: number;
+  leaf_asymmetry: number;
+  leaf_age: number;
   bloom_tilt: number;
   bloom_turn: number;
   light_intensity: number;
@@ -92,7 +100,13 @@ const schemaSql = `
     ('aster', 'Aster', 35), ('clematis', 'Clematis', 36),
     ('hellebore', 'Hellebore', 37), ('crocus', 'Crocus', 38),
     ('amaryllis', 'Amaryllis', 39), ('primrose', 'Primrose', 40),
-    ('plumeria', 'Plumeria', 41), ('poinsettia', 'Poinsettia', 42)
+    ('plumeria', 'Plumeria', 41), ('poinsettia', 'Poinsettia', 42),
+    ('lisianthus', 'Lisianthus', 43), ('sweet-pea', 'Sweet Pea', 44),
+    ('freesia', 'Freesia', 45), ('azalea', 'Azalea', 46),
+    ('passionflower', 'Passionflower', 47), ('dogwood', 'Dogwood', 48),
+    ('rhododendron', 'Rhododendron', 49), ('begonia', 'Begonia', 50),
+    ('petunia', 'Petunia', 51), ('nasturtium', 'Nasturtium', 52),
+    ('gladiolus', 'Gladiolus', 53), ('apple-blossom', 'Apple Blossom', 54)
   ON CONFLICT (slug) DO UPDATE SET
     display_name = EXCLUDED.display_name,
     sort_order = EXCLUDED.sort_order,
@@ -193,6 +207,22 @@ const schemaSql = `
     CHECK (bloom_tilt BETWEEN -0.6 AND 0.6);
   ALTER TABLE flower_scenes ADD COLUMN IF NOT EXISTS bloom_turn real NOT NULL DEFAULT 0
     CHECK (bloom_turn BETWEEN -3.15 AND 3.15);
+  ALTER TABLE flower_petals ADD COLUMN IF NOT EXISTS petal_asymmetry real NOT NULL DEFAULT 0.08
+    CHECK (petal_asymmetry BETWEEN 0 AND 0.4);
+  ALTER TABLE flower_petals ADD COLUMN IF NOT EXISTS petal_translucency real NOT NULL DEFAULT 0.18
+    CHECK (petal_translucency BETWEEN 0 AND 1);
+  ALTER TABLE flower_scenes ADD COLUMN IF NOT EXISTS sepal_size real NOT NULL DEFAULT 1
+    CHECK (sepal_size BETWEEN 0.5 AND 1.8);
+  ALTER TABLE flower_scenes ADD COLUMN IF NOT EXISTS sepal_spread real NOT NULL DEFAULT 0.35
+    CHECK (sepal_spread BETWEEN 0 AND 1);
+  ALTER TABLE flower_petals ADD COLUMN IF NOT EXISTS petal_edge_wear real NOT NULL DEFAULT 0.05
+    CHECK (petal_edge_wear BETWEEN 0 AND 1);
+  ALTER TABLE flower_petals ADD COLUMN IF NOT EXISTS petal_sheen real NOT NULL DEFAULT 0.2
+    CHECK (petal_sheen BETWEEN 0 AND 1);
+  ALTER TABLE flower_scenes ADD COLUMN IF NOT EXISTS leaf_asymmetry real NOT NULL DEFAULT 0.08
+    CHECK (leaf_asymmetry BETWEEN 0 AND 0.4);
+  ALTER TABLE flower_scenes ADD COLUMN IF NOT EXISTS leaf_age real NOT NULL DEFAULT 0
+    CHECK (leaf_age BETWEEN 0 AND 1);
   CREATE INDEX IF NOT EXISTS flower_designs_created_at_idx ON flower_designs (created_at DESC);
   ALTER TABLE flower_designs DROP CONSTRAINT IF EXISTS flower_designs_preset_check;
   ALTER TABLE flower_designs ADD CONSTRAINT flower_designs_preset_check
@@ -203,7 +233,9 @@ const schemaSql = `
       'Magnolia', 'Camellia', 'Chrysanthemum', 'Daffodil', 'Hibiscus', 'Marigold',
       'Pansy', 'Gardenia', 'Ranunculus', 'Gerbera', 'Bluebell', 'Protea',
       'Water Lily', 'Morning Glory', 'Calla Lily', 'Forget-me-not', 'Aster', 'Clematis',
-      'Hellebore', 'Crocus', 'Amaryllis', 'Primrose', 'Plumeria', 'Poinsettia'
+      'Hellebore', 'Crocus', 'Amaryllis', 'Primrose', 'Plumeria', 'Poinsettia',
+      'Lisianthus', 'Sweet Pea', 'Freesia', 'Azalea', 'Passionflower', 'Dogwood',
+      'Rhododendron', 'Begonia', 'Petunia', 'Nasturtium', 'Gladiolus', 'Apple Blossom'
     ));
   ALTER TABLE flower_designs DROP CONSTRAINT IF EXISTS flower_designs_render_mode_check;
   ALTER TABLE flower_designs ADD CONSTRAINT flower_designs_render_mode_check
@@ -239,10 +271,12 @@ export async function saveFlower(
         bloom, variation, petal_color, petal_tip_color, petal_waviness,
         petal_thickness, petal_fold, petal_twist, petal_ruffle,
         petal_notch, petal_vein_strength, petal_base_width,
-        petal_age, petal_spots, petal_guide_strength
+        petal_age, petal_spots, petal_guide_strength,
+        petal_asymmetry, petal_translucency, petal_edge_wear, petal_sheen
       )
       SELECT id, $5, $6, $7, $8, $9, $10, $11, $12, $20,
-        $32, $33, $34, $35, $36, $37, $38, $46, $47, $48 FROM design
+        $32, $33, $34, $35, $36, $37, $38, $46, $47, $48,
+        $52, $53, $56, $57 FROM design
     ), scene AS (
       INSERT INTO flower_scenes (
         flower_id, center_color, stem_color, background_color,
@@ -251,11 +285,13 @@ export async function saveFlower(
         leaf_density, leaf_length, leaf_width, leaf_curl, leaf_serration, leaf_vein_density,
         center_size, center_profile, center_floret_size, center_spread,
         center_stamen_length, center_anther_size, center_stigma_size,
-        leaf_droop, bloom_tilt, bloom_turn
+        leaf_droop, bloom_tilt, bloom_turn, sepal_size, sepal_spread,
+        leaf_asymmetry, leaf_age
       )
       SELECT id, $13, $14, $15, $16, $17, $18, $19,
         $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31,
-        $39, $40, $41, $42, $43, $44, $45, $49, $50, $51 FROM design
+        $39, $40, $41, $42, $43, $44, $45, $49, $50, $51,
+        $54, $55, $58, $59 FROM design
     )
     SELECT * FROM design`,
     [
@@ -310,6 +346,14 @@ export async function saveFlower(
       settings.leafDroop,
       settings.bloomTilt,
       settings.bloomTurn,
+      settings.petalAsymmetry,
+      settings.petalTranslucency,
+      settings.sepalSize,
+      settings.sepalSpread,
+      settings.petalEdgeWear,
+      settings.petalSheen,
+      settings.leafAsymmetry,
+      settings.leafAge,
     ],
   );
   return toSummary(result.rows[0]);
@@ -333,6 +377,7 @@ export async function getFlower(id: string): Promise<SavedFlower | null> {
        p.petal_thickness, p.petal_fold, p.petal_twist, p.petal_ruffle,
        p.petal_notch, p.petal_vein_strength, p.petal_base_width,
        p.petal_age, p.petal_spots, p.petal_guide_strength,
+       p.petal_asymmetry, p.petal_translucency, p.petal_edge_wear, p.petal_sheen,
        p.bloom, p.variation, p.petal_color, p.petal_tip_color,
        s.center_color, s.stem_color, s.background_color, s.stem_curve,
        s.light_intensity, s.grid_enabled, s.center_density, s.stem_height,
@@ -341,7 +386,8 @@ export async function getFlower(id: string): Promise<SavedFlower | null> {
        s.leaf_serration, s.leaf_vein_density, s.center_size, s.center_profile,
        s.center_floret_size, s.center_spread, s.center_stamen_length,
        s.center_anther_size, s.center_stigma_size, s.leaf_droop,
-       s.bloom_tilt, s.bloom_turn
+       s.bloom_tilt, s.bloom_turn, s.sepal_size, s.sepal_spread,
+       s.leaf_asymmetry, s.leaf_age
      FROM flower_designs d
      JOIN flower_petals p ON p.flower_id = d.id
      JOIN flower_scenes s ON s.flower_id = d.id
@@ -371,6 +417,10 @@ export async function getFlower(id: string): Promise<SavedFlower | null> {
       petalAge: row.petal_age,
       petalSpots: row.petal_spots,
       petalGuideStrength: row.petal_guide_strength,
+      petalAsymmetry: row.petal_asymmetry,
+      petalTranslucency: row.petal_translucency,
+      petalEdgeWear: row.petal_edge_wear,
+      petalSheen: row.petal_sheen,
       bloom: row.bloom,
       variation: row.variation,
       petalColor: row.petal_color,
@@ -391,6 +441,8 @@ export async function getFlower(id: string): Promise<SavedFlower | null> {
       leafSerration: row.leaf_serration,
       leafVeinDensity: row.leaf_vein_density,
       leafDroop: row.leaf_droop,
+      leafAsymmetry: row.leaf_asymmetry,
+      leafAge: row.leaf_age,
       bloomTilt: row.bloom_tilt,
       bloomTurn: row.bloom_turn,
       lightIntensity: row.light_intensity,
@@ -403,6 +455,8 @@ export async function getFlower(id: string): Promise<SavedFlower | null> {
       centerStamenLength: row.center_stamen_length,
       centerAntherSize: row.center_anther_size,
       centerStigmaSize: row.center_stigma_size,
+      sepalSize: row.sepal_size,
+      sepalSpread: row.sepal_spread,
     },
   };
 }

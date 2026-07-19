@@ -193,6 +193,34 @@ export function FlowerAdjustmentPanel() {
             step={0.01}
           />
           <RangeControl
+            label="Natural asymmetry"
+            property="petalAsymmetry"
+            min={0}
+            max={0.4}
+            step={0.01}
+          />
+          <RangeControl
+            label="Light translucency"
+            property="petalTranslucency"
+            min={0}
+            max={1}
+            step={0.01}
+          />
+          <RangeControl
+            label="Edge wear"
+            property="petalEdgeWear"
+            min={0}
+            max={1}
+            step={0.01}
+          />
+          <RangeControl
+            label="Surface sheen"
+            property="petalSheen"
+            min={0}
+            max={1}
+            step={0.01}
+          />
+          <RangeControl
             label="Bloom"
             property="bloom"
             min={0.25}
@@ -204,6 +232,24 @@ export function FlowerAdjustmentPanel() {
             property="variation"
             min={0}
             max={0.5}
+            step={0.01}
+          />
+        </div>
+
+        <div className="control-section">
+          <h2>Calyx and sepals</h2>
+          <RangeControl
+            label="Sepal size"
+            property="sepalSize"
+            min={0.5}
+            max={1.8}
+            step={0.01}
+          />
+          <RangeControl
+            label="Sepal spread"
+            property="sepalSpread"
+            min={0}
+            max={1}
             step={0.01}
           />
         </div>
@@ -300,6 +346,20 @@ export function FlowerAdjustmentPanel() {
           <RangeControl
             label="Leaf droop"
             property="leafDroop"
+            min={0}
+            max={1}
+            step={0.01}
+          />
+          <RangeControl
+            label="Leaf asymmetry"
+            property="leafAsymmetry"
+            min={0}
+            max={0.4}
+            step={0.01}
+          />
+          <RangeControl
+            label="Leaf age"
+            property="leafAge"
             min={0}
             max={1}
             step={0.01}

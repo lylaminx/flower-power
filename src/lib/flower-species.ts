@@ -1,4 +1,17 @@
 import type { FlowerPreset } from "./flower-store";
+import { heroFlowerProfiles } from "./hero-flower-profiles";
+
+export type PetalOutline =
+  "elliptic" | "obovate" | "fan" | "lanceolate" | "spatulate";
+
+export type PetalArrangement = "radial" | "phyllotactic" | "bilateral";
+export type PetalRole = "petal" | "sepal" | "lip" | "ray";
+export type CenterArchitecture = "simple" | "composite" | "column" | "seedpod";
+export type BloomArchitecture = "radial" | "bell" | "trumpet";
+export type InflorescenceArchitecture = "solitary" | "spike" | "cluster";
+export type LeafShape = "ovate" | "lance" | "linear" | "lobed" | "cordate";
+export type OvaryPosition = "superior" | "inferior";
+export type CalyxForm = "cupped" | "reflexed" | "bracted";
 
 export type PetalLayer = {
   count: number;
@@ -6,6 +19,12 @@ export type PetalLayer = {
   width: number;
   lift: number;
   offset: number;
+  role?: PetalRole;
+  outline?: PetalOutline;
+  lateralCup?: number;
+  longitudinalCurve?: number;
+  accentColor?: string;
+  accentStrength?: number;
 };
 
 export type FlowerSpecies = {
@@ -23,12 +42,40 @@ export type FlowerSpecies = {
   filamentColor: string;
   antherColor: string;
   stigmaColor: string;
+  pollenColor?: string;
+  styleLength?: number;
+  ovaryPosition?: OvaryPosition;
+  ovaryScale?: number;
+  calyxForm?: CalyxForm;
+  sepalLength?: number;
   edgeRuffle: number;
   baseDarkening: number;
-  leafShape?: "ovate" | "lance" | "linear" | "lobed";
+  petalOutline?: PetalOutline;
+  longitudinalCurve?: number;
+  lateralCup?: number;
+  petalArrangement?: PetalArrangement;
+  receptacleRadius?: number;
+  innerCompression?: number;
+  overlapJitter?: number;
+  centerArchitecture?: CenterArchitecture;
+  diskInnerColor?: string;
+  diskOuterColor?: string;
+  bloomArchitecture?: BloomArchitecture;
+  corollaLength?: number;
+  corollaThroatRadius?: number;
+  corollaMouthRadius?: number;
+  corollaLobes?: number;
+  centerAxialOffset?: number;
+  inflorescenceArchitecture?: InflorescenceArchitecture;
+  inflorescenceCount?: number;
+  inflorescenceSpacing?: number;
+  inflorescenceSpread?: number;
+  leafShape?: LeafShape;
   leafSerration?: number;
   leafPairs?: number;
   stemHairiness?: number;
+  stemEccentricity?: number;
+  stemRibbing?: number;
 };
 
 export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
@@ -50,6 +97,10 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     filamentColor: "#e7b94d",
     antherColor: "#8a5a22",
     stigmaColor: "#d9a537",
+    pollenColor: "#efc34d",
+    centerArchitecture: "composite",
+    diskInnerColor: "#c98f22",
+    diskOuterColor: "#72501c",
     edgeRuffle: 0.025,
     baseDarkening: 0.9,
   },
@@ -68,6 +119,10 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     filamentColor: "#e7b145",
     antherColor: "#765022",
     stigmaColor: "#d39b31",
+    pollenColor: "#edbd43",
+    centerArchitecture: "composite",
+    diskInnerColor: "#c48922",
+    diskOuterColor: "#6d4618",
     edgeRuffle: 0.055,
     baseDarkening: 0.8,
   },
@@ -93,25 +148,7 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     baseDarkening: 0.72,
   },
   Poppy: {
-    layers: [
-      { count: 1, length: 1, width: 1.15, lift: -0.04, offset: 0 },
-      { count: 0.7, length: 0.86, width: 1.08, lift: 0.08, offset: 0.5 },
-    ],
-    notch: 0.045,
-    profile: 0.34,
-    centerRadius: 0.34,
-    florets: 110,
-    sepals: 3,
-    leafWidth: 0.27,
-    centerHeight: 0.16,
-    floretAccent: "#171311",
-    stamenCount: 42,
-    stigmaLobes: 10,
-    filamentColor: "#342b27",
-    antherColor: "#171311",
-    stigmaColor: "#9aa17b",
-    edgeRuffle: 0.1,
-    baseDarkening: 0.42,
+    ...heroFlowerProfiles.Poppy.structure,
   },
   Coneflower: {
     layers: [{ count: 1, length: 1, width: 0.8, lift: -0.34, offset: 0 }],
@@ -155,56 +192,10 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     baseDarkening: 0.7,
   },
   Rose: {
-    layers: [
-      { count: 1, length: 1, width: 1, lift: -0.04, offset: 0 },
-      { count: 0.82, length: 0.82, width: 0.94, lift: 0.16, offset: 0.5 },
-      { count: 0.62, length: 0.64, width: 0.86, lift: 0.31, offset: 0 },
-      { count: 0.44, length: 0.48, width: 0.76, lift: 0.46, offset: 0.5 },
-      { count: 0.28, length: 0.34, width: 0.66, lift: 0.58, offset: 0 },
-    ],
-    notch: 0.018,
-    profile: 0.48,
-    centerRadius: 0.12,
-    florets: 30,
-    sepals: 5,
-    leafWidth: 0.36,
-    centerHeight: 0.1,
-    floretAccent: "#d48776",
-    stamenCount: 10,
-    stigmaLobes: 5,
-    filamentColor: "#c88963",
-    antherColor: "#75402f",
-    stigmaColor: "#9d594f",
-    edgeRuffle: 0.075,
-    baseDarkening: 0.68,
-    leafShape: "ovate",
-    leafSerration: 0.13,
-    leafPairs: 2,
+    ...heroFlowerProfiles.Rose.structure,
   },
   Sunflower: {
-    layers: [
-      { count: 1, length: 1, width: 0.88, lift: -0.04, offset: 0 },
-      { count: 0.82, length: 0.88, width: 0.82, lift: 0.07, offset: 0.5 },
-    ],
-    notch: 0.025,
-    profile: 0.8,
-    centerRadius: 0.62,
-    florets: 360,
-    sepals: 14,
-    leafWidth: 0.5,
-    centerHeight: 0.28,
-    floretAccent: "#d89a2b",
-    stamenCount: 40,
-    stigmaLobes: 5,
-    filamentColor: "#a66525",
-    antherColor: "#3d281b",
-    stigmaColor: "#6f4825",
-    edgeRuffle: 0.035,
-    baseDarkening: 0.7,
-    leafShape: "ovate",
-    leafSerration: 0.1,
-    leafPairs: 2,
-    stemHairiness: 1.5,
+    ...heroFlowerProfiles.Sunflower.structure,
   },
   Peony: {
     layers: [
@@ -230,26 +221,7 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     baseDarkening: 0.78,
   },
   Lotus: {
-    layers: [
-      { count: 1, length: 1, width: 1, lift: 0.08, offset: 0 },
-      { count: 0.75, length: 0.8, width: 0.9, lift: 0.3, offset: 0.5 },
-      { count: 0.5, length: 0.61, width: 0.8, lift: 0.47, offset: 0 },
-    ],
-    notch: 0,
-    profile: 0.74,
-    centerRadius: 0.34,
-    florets: 110,
-    sepals: 5,
-    leafWidth: 0.58,
-    centerHeight: 0.32,
-    floretAccent: "#f2cf66",
-    stamenCount: 34,
-    stigmaLobes: 8,
-    filamentColor: "#e7bd4d",
-    antherColor: "#9f712a",
-    stigmaColor: "#d1a943",
-    edgeRuffle: 0.018,
-    baseDarkening: 0.86,
+    ...heroFlowerProfiles.Lotus.structure,
   },
   Anemone: {
     layers: [{ count: 1, length: 1, width: 1.18, lift: -0.03, offset: 0 }],
@@ -309,6 +281,12 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     filamentColor: "#4b4030",
     antherColor: "#2e261e",
     stigmaColor: "#b4a14e",
+    pollenColor: "#b89a3d",
+    styleLength: 1.08,
+    ovaryPosition: "superior",
+    ovaryScale: 0.92,
+    calyxForm: "cupped",
+    sepalLength: 0.72,
     edgeRuffle: 0.015,
     baseDarkening: 0.48,
     leafShape: "linear",
@@ -342,55 +320,14 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     stemHairiness: 0.05,
   },
   Lily: {
-    layers: [
-      { count: 0.5, length: 1, width: 0.92, lift: -0.08, offset: 0 },
-      { count: 0.5, length: 0.94, width: 0.86, lift: 0.12, offset: 0.5 },
-    ],
-    notch: 0,
-    profile: 0.66,
-    centerRadius: 0.16,
-    florets: 24,
-    sepals: 3,
-    leafWidth: 0.4,
-    centerHeight: 0.2,
-    floretAccent: "#bd6d68",
-    stamenCount: 6,
-    stigmaLobes: 3,
-    filamentColor: "#d7c6a1",
-    antherColor: "#8d4a2b",
-    stigmaColor: "#809044",
-    edgeRuffle: 0.045,
-    baseDarkening: 0.6,
-    leafShape: "lance",
-    leafSerration: 0.015,
-    leafPairs: 3,
-    stemHairiness: 0.12,
+    ...heroFlowerProfiles.Lily.structure,
   },
   Orchid: {
-    layers: [
-      { count: 0.6, length: 1, width: 0.78, lift: 0.02, offset: 0 },
-      { count: 0.4, length: 0.86, width: 1.18, lift: 0.12, offset: 0.5 },
-      { count: 0.2, length: 0.58, width: 1.45, lift: -0.22, offset: 0 },
-    ],
-    notch: 0.1,
-    profile: 0.5,
-    centerRadius: 0.2,
-    florets: 16,
-    sepals: 3,
-    leafWidth: 0.72,
-    centerHeight: 0.24,
-    floretAccent: "#be6b9f",
-    stamenCount: 2,
-    stigmaLobes: 3,
-    filamentColor: "#eee0cf",
-    antherColor: "#d59b52",
-    stigmaColor: "#a6538e",
-    edgeRuffle: 0.075,
-    baseDarkening: 0.7,
-    leafShape: "linear",
-    leafSerration: 0,
-    leafPairs: 1,
-    stemHairiness: 0.05,
+    ...heroFlowerProfiles.Orchid.structure,
+    inflorescenceArchitecture: "spike",
+    inflorescenceCount: 5,
+    inflorescenceSpacing: 0.44,
+    inflorescenceSpread: 0.26,
   },
   Carnation: {
     layers: [
@@ -686,6 +623,13 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     leafSerration: 0,
     leafPairs: 2,
     stemHairiness: 0.08,
+    bloomArchitecture: "bell",
+    centerArchitecture: "column",
+    corollaLength: 1.3,
+    corollaThroatRadius: 0.2,
+    corollaMouthRadius: 0.58,
+    corollaLobes: 6,
+    centerAxialOffset: 1.08,
   },
   Protea: {
     layers: [
@@ -759,6 +703,13 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     leafSerration: 0.025,
     leafPairs: 2,
     stemHairiness: 0.35,
+    bloomArchitecture: "trumpet",
+    centerArchitecture: "column",
+    corollaLength: 0.76,
+    corollaThroatRadius: 0.18,
+    corollaMouthRadius: 0.9,
+    corollaLobes: 5,
+    centerAxialOffset: 0.58,
   },
   "Calla Lily": {
     layers: [{ count: 1, length: 1, width: 1.35, lift: 0.52, offset: 0 }],
@@ -989,6 +940,301 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     baseDarkening: 0.7,
     leafShape: "ovate",
     leafSerration: 0.06,
+    leafPairs: 2,
+    stemHairiness: 0.2,
+  },
+  Lisianthus: {
+    layers: [
+      { count: 1, length: 1, width: 1, lift: -0.02, offset: 0 },
+      { count: 0.72, length: 0.8, width: 0.92, lift: 0.16, offset: 0.5 },
+      { count: 0.46, length: 0.6, width: 0.82, lift: 0.32, offset: 0 },
+    ],
+    notch: 0.025,
+    profile: 0.42,
+    centerRadius: 0.18,
+    florets: 48,
+    sepals: 5,
+    leafWidth: 0.4,
+    centerHeight: 0.16,
+    floretAccent: "#d1bb62",
+    stamenCount: 12,
+    stigmaLobes: 5,
+    filamentColor: "#d6c87c",
+    antherColor: "#75612f",
+    stigmaColor: "#9c8a43",
+    edgeRuffle: 0.09,
+    baseDarkening: 0.7,
+    leafShape: "ovate",
+    leafSerration: 0,
+    leafPairs: 2,
+    stemHairiness: 0.1,
+  },
+  "Sweet Pea": {
+    layers: [
+      { count: 0.4, length: 1, width: 1.18, lift: 0.08, offset: 0 },
+      { count: 0.6, length: 0.72, width: 0.88, lift: 0.24, offset: 0.35 },
+    ],
+    notch: 0.04,
+    profile: 0.34,
+    centerRadius: 0.14,
+    florets: 28,
+    sepals: 5,
+    leafWidth: 0.34,
+    centerHeight: 0.18,
+    floretAccent: "#ead8b5",
+    stamenCount: 10,
+    stigmaLobes: 1,
+    filamentColor: "#eee0c5",
+    antherColor: "#8e6c48",
+    stigmaColor: "#a98d69",
+    edgeRuffle: 0.13,
+    baseDarkening: 0.62,
+    leafShape: "ovate",
+    leafSerration: 0,
+    leafPairs: 2,
+    stemHairiness: 0.15,
+  },
+  Freesia: {
+    layers: [
+      { count: 0.5, length: 1, width: 1.02, lift: 0.12, offset: 0 },
+      { count: 0.5, length: 0.9, width: 0.92, lift: 0.24, offset: 0.5 },
+    ],
+    notch: 0,
+    profile: 0.55,
+    centerRadius: 0.18,
+    florets: 34,
+    sepals: 3,
+    leafWidth: 0.3,
+    centerHeight: 0.25,
+    floretAccent: "#d38c35",
+    stamenCount: 6,
+    stigmaLobes: 3,
+    filamentColor: "#dca94f",
+    antherColor: "#82501f",
+    stigmaColor: "#b2782d",
+    edgeRuffle: 0.035,
+    baseDarkening: 0.7,
+    leafShape: "linear",
+    leafSerration: 0,
+    leafPairs: 2,
+    stemHairiness: 0.05,
+  },
+  Azalea: {
+    layers: [{ count: 1, length: 1, width: 1.12, lift: 0, offset: 0 }],
+    notch: 0.035,
+    profile: 0.35,
+    centerRadius: 0.2,
+    florets: 45,
+    sepals: 5,
+    leafWidth: 0.48,
+    centerHeight: 0.22,
+    floretAccent: "#e1c88e",
+    stamenCount: 10,
+    stigmaLobes: 5,
+    filamentColor: "#e6d6b2",
+    antherColor: "#745331",
+    stigmaColor: "#a17c52",
+    edgeRuffle: 0.1,
+    baseDarkening: 0.58,
+    leafShape: "ovate",
+    leafSerration: 0.05,
+    leafPairs: 2,
+    stemHairiness: 0.3,
+  },
+  Passionflower: {
+    layers: [
+      { count: 1, length: 1, width: 0.86, lift: -0.03, offset: 0 },
+      { count: 0.5, length: 0.62, width: 0.35, lift: 0.12, offset: 0.5 },
+    ],
+    notch: 0.015,
+    profile: 0.8,
+    centerRadius: 0.36,
+    florets: 260,
+    sepals: 5,
+    leafWidth: 0.5,
+    centerHeight: 0.48,
+    floretAccent: "#8c70ae",
+    stamenCount: 5,
+    stigmaLobes: 3,
+    filamentColor: "#c7b1dc",
+    antherColor: "#d4b342",
+    stigmaColor: "#6b8c48",
+    edgeRuffle: 0.02,
+    baseDarkening: 0.65,
+    leafShape: "lobed",
+    leafSerration: 0.04,
+    leafPairs: 2,
+    stemHairiness: 0.15,
+  },
+  Dogwood: {
+    layers: [{ count: 1, length: 1, width: 1.2, lift: -0.02, offset: 0 }],
+    notch: 0.15,
+    profile: 0.34,
+    centerRadius: 0.3,
+    florets: 105,
+    sepals: 4,
+    leafWidth: 0.55,
+    centerHeight: 0.16,
+    floretAccent: "#c7bd52",
+    stamenCount: 18,
+    stigmaLobes: 4,
+    filamentColor: "#d4ca72",
+    antherColor: "#76682d",
+    stigmaColor: "#9d913e",
+    edgeRuffle: 0.025,
+    baseDarkening: 0.78,
+    leafShape: "ovate",
+    leafSerration: 0.04,
+    leafPairs: 2,
+    stemHairiness: 0.12,
+  },
+  Rhododendron: {
+    layers: [{ count: 1, length: 1, width: 1.14, lift: 0, offset: 0 }],
+    notch: 0.035,
+    profile: 0.34,
+    centerRadius: 0.22,
+    florets: 52,
+    sepals: 5,
+    leafWidth: 0.58,
+    centerHeight: 0.24,
+    floretAccent: "#dec994",
+    stamenCount: 10,
+    stigmaLobes: 5,
+    filamentColor: "#e7d5b4",
+    antherColor: "#775332",
+    stigmaColor: "#a68158",
+    edgeRuffle: 0.09,
+    baseDarkening: 0.58,
+    leafShape: "lance",
+    leafSerration: 0,
+    leafPairs: 2,
+    stemHairiness: 0.2,
+    inflorescenceArchitecture: "cluster",
+    inflorescenceCount: 5,
+    inflorescenceSpacing: 0.28,
+    inflorescenceSpread: 0.72,
+  },
+  Begonia: {
+    layers: [
+      { count: 1, length: 1, width: 1.08, lift: -0.02, offset: 0 },
+      { count: 0.72, length: 0.78, width: 1, lift: 0.14, offset: 0.5 },
+      { count: 0.42, length: 0.55, width: 0.9, lift: 0.28, offset: 0 },
+    ],
+    notch: 0.02,
+    profile: 0.38,
+    centerRadius: 0.18,
+    florets: 56,
+    sepals: 4,
+    leafWidth: 0.62,
+    centerHeight: 0.16,
+    floretAccent: "#e2bd59",
+    stamenCount: 18,
+    stigmaLobes: 3,
+    filamentColor: "#d9ad45",
+    antherColor: "#7d5425",
+    stigmaColor: "#a87930",
+    edgeRuffle: 0.1,
+    baseDarkening: 0.65,
+    leafShape: "ovate",
+    leafSerration: 0.1,
+    leafPairs: 2,
+    stemHairiness: 0.25,
+  },
+  Petunia: {
+    layers: [{ count: 1, length: 1, width: 1.22, lift: 0.08, offset: 0 }],
+    notch: 0.045,
+    profile: 0.3,
+    centerRadius: 0.18,
+    florets: 34,
+    sepals: 5,
+    leafWidth: 0.44,
+    centerHeight: 0.28,
+    floretAccent: "#eadcb7",
+    stamenCount: 5,
+    stigmaLobes: 2,
+    filamentColor: "#e5d6b7",
+    antherColor: "#795f42",
+    stigmaColor: "#a9916d",
+    edgeRuffle: 0.095,
+    baseDarkening: 0.5,
+    leafShape: "ovate",
+    leafSerration: 0,
+    leafPairs: 2,
+    stemHairiness: 0.7,
+  },
+  Nasturtium: {
+    layers: [
+      { count: 0.6, length: 1, width: 1.12, lift: 0, offset: 0 },
+      { count: 0.4, length: 0.9, width: 1.02, lift: 0.14, offset: 0.5 },
+    ],
+    notch: 0.05,
+    profile: 0.38,
+    centerRadius: 0.2,
+    florets: 46,
+    sepals: 5,
+    leafWidth: 0.62,
+    centerHeight: 0.18,
+    floretAccent: "#b65c2b",
+    stamenCount: 8,
+    stigmaLobes: 3,
+    filamentColor: "#d98a3a",
+    antherColor: "#70401f",
+    stigmaColor: "#9b5a28",
+    edgeRuffle: 0.1,
+    baseDarkening: 0.62,
+    leafShape: "ovate",
+    leafSerration: 0,
+    leafPairs: 2,
+    stemHairiness: 0.12,
+  },
+  Gladiolus: {
+    layers: [
+      { count: 0.5, length: 1, width: 1.02, lift: 0.04, offset: 0 },
+      { count: 0.5, length: 0.88, width: 0.94, lift: 0.2, offset: 0.5 },
+    ],
+    notch: 0.025,
+    profile: 0.48,
+    centerRadius: 0.2,
+    florets: 38,
+    sepals: 3,
+    leafWidth: 0.35,
+    centerHeight: 0.3,
+    floretAccent: "#e4ce9b",
+    stamenCount: 3,
+    stigmaLobes: 3,
+    filamentColor: "#e4d2ad",
+    antherColor: "#805f3b",
+    stigmaColor: "#a98b61",
+    edgeRuffle: 0.08,
+    baseDarkening: 0.55,
+    leafShape: "linear",
+    leafSerration: 0,
+    leafPairs: 2,
+    stemHairiness: 0.05,
+    inflorescenceArchitecture: "spike",
+    inflorescenceCount: 5,
+    inflorescenceSpacing: 0.52,
+    inflorescenceSpread: 0.42,
+  },
+  "Apple Blossom": {
+    layers: [{ count: 1, length: 1, width: 1.15, lift: 0, offset: 0 }],
+    notch: 0.1,
+    profile: 0.36,
+    centerRadius: 0.25,
+    florets: 72,
+    sepals: 5,
+    leafWidth: 0.42,
+    centerHeight: 0.16,
+    floretAccent: "#e0b84d",
+    stamenCount: 20,
+    stigmaLobes: 5,
+    filamentColor: "#e2c56c",
+    antherColor: "#855d29",
+    stigmaColor: "#aa7e35",
+    edgeRuffle: 0.04,
+    baseDarkening: 0.72,
+    leafShape: "ovate",
+    leafSerration: 0.08,
     leafPairs: 2,
     stemHairiness: 0.2,
   },

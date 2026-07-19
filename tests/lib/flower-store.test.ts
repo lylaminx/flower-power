@@ -24,19 +24,19 @@ describe("useFlowerStore", () => {
     ["Daisy", 20, "#f7efe7"],
     ["Cosmos", 12, "#d47a9a"],
     ["Sunset", 16, "#d95f45"],
-    ["Poppy", 6, "#c9342f"],
+    ["Poppy", 4, "#d33731"],
     ["Coneflower", 18, "#b85f87"],
     ["Dahlia", 22, "#a82f58"],
-    ["Rose", 18, "#b93657"],
-    ["Sunflower", 28, "#e7a51e"],
+    ["Rose", 14, "#be4a76"],
+    ["Sunflower", 22, "#e6aa1d"],
     ["Peony", 20, "#dc829a"],
-    ["Lotus", 16, "#e39bad"],
+    ["Lotus", 18, "#f2e1da"],
     ["Anemone", 9, "#6f55a4"],
     ["Zinnia", 22, "#df5b4f"],
     ["Tulip", 6, "#c93f58"],
     ["Iris", 6, "#6551a2"],
-    ["Lily", 6, "#f0d8d4"],
-    ["Orchid", 5, "#ead9ed"],
+    ["Lily", 6, "#f0d891"],
+    ["Orchid", 5, "#f5f2ef"],
     ["Carnation", 28, "#d85f72"],
     ["Cherry Blossom", 5, "#f0c5cf"],
     ["Magnolia", 9, "#eee4df"],
@@ -63,6 +63,18 @@ describe("useFlowerStore", () => {
     ["Primrose", 5, "#e8cf58"],
     ["Plumeria", 5, "#eee9df"],
     ["Poinsettia", 12, "#b92f3c"],
+    ["Lisianthus", 18, "#d8c5df"],
+    ["Sweet Pea", 5, "#c26f9a"],
+    ["Freesia", 6, "#e6c84f"],
+    ["Azalea", 5, "#d75b83"],
+    ["Passionflower", 10, "#eee9f0"],
+    ["Dogwood", 4, "#eee9e3"],
+    ["Rhododendron", 5, "#c95d88"],
+    ["Begonia", 12, "#db6f78"],
+    ["Petunia", 5, "#7d4b9e"],
+    ["Nasturtium", 5, "#e66f24"],
+    ["Gladiolus", 6, "#d85f73"],
+    ["Apple Blossom", 5, "#f0d8dd"],
   ] as const)("applies the %s preset", (preset, petalCount, petalColor) => {
     vi.spyOn(Math, "random").mockReturnValue(0.1234);
 
@@ -84,6 +96,16 @@ describe("useFlowerStore", () => {
     expect(useFlowerStore.getState().panelOpen).toBe(!wasOpen);
   });
 
+  it("uses an explicit seed for reproducible preset renders", () => {
+    useFlowerStore.getState().applyPreset("Poppy", 2718);
+
+    expect(useFlowerStore.getState()).toMatchObject({
+      preset: "Poppy",
+      seed: 2718,
+      petalCount: 4,
+    });
+  });
+
   it("loads saved flower settings without closing the panels", () => {
     const settings = {
       renderMode: "line" as const,
@@ -103,6 +125,10 @@ describe("useFlowerStore", () => {
       petalAge: 0.2,
       petalSpots: 0.3,
       petalGuideStrength: 0.5,
+      petalAsymmetry: 0.12,
+      petalTranslucency: 0.4,
+      petalEdgeWear: 0.25,
+      petalSheen: 0.45,
       bloom: 0.8,
       variation: 0.1,
       petalColor: "#ffffff",
@@ -116,6 +142,8 @@ describe("useFlowerStore", () => {
       centerStamenLength: 1.4,
       centerAntherSize: 0.8,
       centerStigmaSize: 1.25,
+      sepalSize: 1.2,
+      sepalSpread: 0.45,
       stemColor: "#336633",
       backgroundColor: "#ffffff",
       stemCurve: 0.2,
@@ -131,6 +159,8 @@ describe("useFlowerStore", () => {
       leafSerration: 1.3,
       leafVeinDensity: 1.4,
       leafDroop: 0.5,
+      leafAsymmetry: 0.16,
+      leafAge: 0.3,
       bloomTilt: 0.2,
       bloomTurn: -0.4,
       lightIntensity: 1,
