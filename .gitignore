@@ -3,7 +3,13 @@ node_modules/
 out/
 coverage/
 public/docs/
-image-tests/
+src/app/api/reference-flowers/*
+src/app/reference-boards/*
+src/app/reference-compare/*
+src/app/visual-test/*
+image-tests/*
+references/*
+playwright*
 .env*
 !.env.example
 *.log
