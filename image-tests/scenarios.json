@@ -1,0 +1,238 @@
+[
+  {
+    "id": "rose-studio-front",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "poppy-studio-front",
+    "species": "Poppy",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "lily-studio-front",
+    "species": "Lily",
+    "seed": 3141,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "sunflower-studio-front",
+    "species": "Sunflower",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "orchid-studio-front",
+    "species": "Orchid",
+    "seed": 6180,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "lotus-studio-front",
+    "species": "Lotus",
+    "seed": 8128,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "bluebell-studio-front",
+    "species": "Bluebell",
+    "seed": 9021,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "morning-glory-studio-front",
+    "species": "Morning Glory",
+    "seed": 1047,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "gladiolus-spike-studio-front",
+    "species": "Gladiolus",
+    "seed": 7301,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "rhododendron-cluster-studio-front",
+    "species": "Rhododendron",
+    "seed": 4409,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.4,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "rose-overcast-front",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 58,
+    "camera": {
+      "position": [0, 0.55, 9.4],
+      "target": [0, -0.45, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "lily-morning-backlight",
+    "species": "Lily",
+    "seed": 3141,
+    "renderMode": "photo",
+    "lighting": "morningBacklight",
+    "lightIntensity": 1.3,
+    "focalLength": 65,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "sunflower-golden-hour",
+    "species": "Sunflower",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "goldenHour",
+    "lightIntensity": 1.2,
+    "focalLength": 52,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "orchid-museum-front",
+    "species": "Orchid",
+    "seed": 6180,
+    "renderMode": "photo",
+    "lighting": "museumIllustration",
+    "lightIntensity": 1.15,
+    "focalLength": 58,
+    "camera": {
+      "position": [0, 0.55, 9.4],
+      "target": [0, -0.45, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "lotus-macro-focus",
+    "species": "Lotus",
+    "seed": 8128,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.25,
+    "focalLength": 85,
+    "effects": {
+      "depthOfField": true,
+      "aperture": 5.6,
+      "focusDistance": 5.1
+    },
+    "camera": {
+      "position": [2.7, 1.85, 4.15],
+      "target": [0, 0.7, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "rose-studio-underside",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.3,
+    "focalLength": 65,
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [3.9, -0.65, 5.7],
+      "target": [0, 0.55, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  }
+]
