@@ -14,5 +14,4 @@ image-tests/references/*
 *.log
 *.tsbuildinfo
 .DS_Store
-references/*
 PLAN.md
