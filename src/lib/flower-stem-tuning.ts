@@ -15,6 +15,8 @@ export type StemTuning = {
   stemNodeSpacingBias: number;
   stemNodeBulgeScale: number;
   stemLenticelScale: number;
+  prickleDensity: number;
+  prickleSizeScale: number;
   calyxForm?: CalyxForm;
   sepalSizeScale: number;
   sepalSpreadScale: number;
@@ -43,6 +45,8 @@ export function getHeroStemTuning(
     stemNodeSpacingBias: 0,
     stemNodeBulgeScale: 1,
     stemLenticelScale: 1,
+    prickleDensity: 0,
+    prickleSizeScale: 1,
     sepalSizeScale: 1,
     sepalSpreadScale: 1,
     sepalLengthScale: 1,
@@ -68,6 +72,8 @@ export function getHeroStemTuning(
         stemNodeSpacingBias: -0.01,
         stemNodeBulgeScale: 1.16,
         stemLenticelScale: 1.1,
+        prickleDensity: 1,
+        prickleSizeScale: 1.08,
         sepalSizeScale: 0.96,
         sepalSpreadScale: 0.88,
         sepalLengthScale: 0.92,

@@ -30,6 +30,7 @@ import { getHeroStemTuning } from "@/lib/flower-stem-tuning";
 import { useFlowerStore } from "@/lib/flower-store";
 import { useRenderQuality } from "./render-quality-context";
 import { getTextureResolution } from "@/lib/flower-quality";
+import { getBloomLoadResponse } from "@/lib/flower-physics";
 
 export function FlowerModel() {
   const settings = useFlowerStore();
@@ -41,6 +42,7 @@ export function FlowerModel() {
   const stemTuning = getHeroStemTuning(settings.preset, structure);
   const growth = getFlowerGrowthState(settings.bloom, settings.petalAge);
   const phaseTuning = getFlowerPhaseTuning(growth.phase);
+  const bloomLoad = getBloomLoadResponse(structure, settings);
   const stemRelax = THREE.MathUtils.lerp(
     1,
     0.9,
@@ -55,13 +57,21 @@ export function FlowerModel() {
           stemTuning.topBendZ * 0.4,
         ),
         new THREE.Vector3(
-          -settings.stemCurve * 0.42 * stemTuning.curveScale +
+          -settings.stemCurve *
+            0.42 *
+            stemTuning.curveScale *
+            bloomLoad.stemFlex +
+            bloomLoad.individualLean +
             stemTuning.midBendX * 0.45,
           -2.9 * settings.stemHeight * stemTuning.stemHeightScale * stemRelax,
           0.03 + stemTuning.midBendZ * 0.45,
         ),
         new THREE.Vector3(
-          settings.stemCurve * 0.38 * stemTuning.curveScale +
+          settings.stemCurve *
+            0.38 *
+            stemTuning.curveScale *
+            bloomLoad.stemFlex -
+            bloomLoad.individualLean * 0.35 +
             stemTuning.topBendX * 0.22,
           -1.35 * settings.stemHeight * stemTuning.stemHeightScale * stemRelax,
           -0.03 + stemTuning.topBendZ * 0.22,
@@ -72,7 +82,7 @@ export function FlowerModel() {
           stemTuning.topBendZ * 0.08,
         ),
       ]),
-    [settings.stemCurve, settings.stemHeight, stemTuning],
+    [bloomLoad, settings.stemCurve, settings.stemHeight, stemTuning],
   );
   const stemGeometry = useMemo(
     () =>
@@ -215,6 +225,7 @@ export function FlowerModel() {
               THREE.MathUtils.lerp(1, 0.9, growth.wilt * phaseTuning.wiltScale),
           ),
         )}
+        seed={settings.seed}
         tuning={stemTuning}
       />
 
@@ -232,7 +243,11 @@ export function FlowerModel() {
         <FlowerInflorescence structure={structure} />
       ) : (
         <group
-          rotation={[0.72 + settings.bloomTilt, settings.bloomTurn, -0.42]}
+          rotation={[
+            0.72 + settings.bloomTilt + bloomLoad.bloomDroop,
+            settings.bloomTurn,
+            -0.42 + bloomLoad.individualLean * 0.4,
+          ]}
         >
           <FlowerBloom structure={structure} />
         </group>

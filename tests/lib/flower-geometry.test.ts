@@ -8,6 +8,7 @@ import {
   createInflorescencePlacements,
   createPetalGeometry,
   createPetalPlacement,
+  createStemPricklePlacements,
   createTaperedStem,
   getPetalOutlineWidth,
   getLeafOutlineWidth,
@@ -215,6 +216,28 @@ describe("flower geometry", () => {
     geometry.dispose();
   });
 
+  it("creates smooth deterministic edge variation for individual petals", () => {
+    const options = {
+      length: 1.6,
+      width: 0.8,
+      curl: 0,
+      lift: 0,
+      baseColor: "#ffffff",
+      tipColor: "#ffffff",
+      notch: 0,
+      profile: 0.5,
+      edgeIrregularity: 1,
+    };
+    const first = createPetalGeometry({ ...options, markingSeed: 101 });
+    const repeated = createPetalGeometry({ ...options, markingSeed: 101 });
+    const individual = createPetalGeometry({ ...options, markingSeed: 102 });
+
+    expect(repeated).toBe(first);
+    expect(Array.from(individual.getAttribute("position").array)).not.toEqual(
+      Array.from(first.getAttribute("position").array),
+    );
+  });
+
   it("creates deterministic petal placements", () => {
     const options = {
       index: 4,
@@ -335,6 +358,28 @@ describe("flower geometry", () => {
     expect(new Set(placements.map(({ position }) => position[0])).size).toBe(6);
     expect(
       placements.every(({ position }) => Math.abs(position[0]) <= 0.7),
+    ).toBe(true);
+  });
+
+  it("places hooked stem prickles deterministically around the stem", () => {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, -4, 0),
+      new THREE.Vector3(0.1, -2, 0),
+      new THREE.Vector3(0, 0, 0),
+    ]);
+    const placements = createStemPricklePlacements(curve, 9, 1847);
+    const repeated = createStemPricklePlacements(curve, 9, 1847);
+
+    expect(placements).toEqual(repeated);
+    expect(placements).toHaveLength(9);
+    expect(placements.every(({ direction }) => direction.length() > 0.99)).toBe(
+      true,
+    );
+    expect(
+      placements.every(({ direction }, index) => {
+        const t = 0.12 + ((index + 0.5) / placements.length) * 0.74;
+        return direction.dot(curve.getTangentAt(t)) < 0;
+      }),
     ).toBe(true);
   });
 

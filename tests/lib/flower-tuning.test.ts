@@ -60,6 +60,7 @@ describe("hero flower tuning", () => {
     expect(getHeroStemTuning("Daisy", species)).toMatchObject({
       curveScale: 1,
       calyxForm: species.calyxForm,
+      prickleDensity: 0,
     });
   });
 
@@ -88,5 +89,15 @@ describe("hero flower tuning", () => {
     expect(getHeroCenterTuning("Orchid", species, "column")).toMatchObject({
       floretCountScale: 0.5,
     });
+  });
+
+  it("adds prickles only to the rose hero stem", () => {
+    expect(getHeroStemTuning("Rose", flowerSpecies.Rose)).toMatchObject({
+      prickleDensity: 1,
+      prickleSizeScale: 1.08,
+    });
+    expect(getHeroStemTuning("Poppy", flowerSpecies.Poppy).prickleDensity).toBe(
+      0,
+    );
   });
 });

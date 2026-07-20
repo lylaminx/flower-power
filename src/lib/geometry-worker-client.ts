@@ -103,6 +103,7 @@ export function warmPetalGeometry(params: {
   markingSeed?: number;
   asymmetry?: number;
   edgeWear?: number;
+  edgeIrregularity?: number;
   outline?: PetalOutline;
   longitudinalCurve?: number;
   lateralCup?: number;

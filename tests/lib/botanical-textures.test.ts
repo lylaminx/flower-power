@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
+import * as THREE from "three";
 import {
   getBotanicalAgeTexture,
   getBotanicalMaterialTexture,
   getBotanicalTexture,
+  getPetalAlbedoTexture,
 } from "@/lib/botanical-textures";
 
 describe("botanical textures", () => {
@@ -24,6 +26,18 @@ describe("botanical textures", () => {
 
     expect(stem.repeat.x).toBeGreaterThan(petal.repeat.x);
     expect(stem.repeat.y).toBeGreaterThan(petal.repeat.y);
+  });
+
+  it("maps one continuous anatomical texture across petals and leaves", () => {
+    const petal = getBotanicalMaterialTexture("petal", "thickness");
+    const leaf = getBotanicalTexture("leaf");
+    const center = getBotanicalTexture("center");
+
+    expect(petal.repeat.toArray()).toEqual([1, 1]);
+    expect(leaf.repeat.toArray()).toEqual([1, 1]);
+    expect(petal.wrapT).toBe(THREE.ClampToEdgeWrapping);
+    expect(leaf.wrapT).toBe(THREE.ClampToEdgeWrapping);
+    expect(center.repeat.toArray()).toEqual([2, 2]);
   });
 
   it("creates and caches tier-specific texture resolutions", () => {
@@ -86,5 +100,20 @@ describe("botanical textures", () => {
     expect(new Set(data.filter((_, index) => index % 4 !== 3))).toEqual(
       new Set([255]),
     );
+  });
+
+  it("creates deterministic UV-space petal spots and nectar guides", () => {
+    const plain = getPetalAlbedoTexture(0, 42, 0, 0);
+    const marked = getPetalAlbedoTexture(0, 42, 0.8, 0.9);
+    const repeated = getPetalAlbedoTexture(0, 42, 0.8, 0.9);
+    const plainData = plain.image.data as Uint8Array;
+    const markedData = marked.image.data as Uint8Array;
+    const centerBase = plainData[(8 * 128 + 64) * 4 + 1];
+    const centerGuide = markedData[(8 * 128 + 64) * 4 + 1];
+
+    expect(marked).toBe(repeated);
+    expect(marked).not.toBe(plain);
+    expect(centerGuide).toBeLessThan(centerBase);
+    expect(markedData).not.toEqual(plainData);
   });
 });
