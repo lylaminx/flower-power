@@ -1,1 +1,105 @@
-{"batchcomplete":"","query":{"pages":{"61662953":{"pageid":61662953,"ns":6,"title":"File:Feuillage du tournesol et bract\u00e9es du bouton floral.jpg","imagerepository":"local","imageinfo":[{"size":4236338,"width":3000,"height":4000,"thumburl":"https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg/1920px-Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg","thumbwidth":1600,"thumbheight":2133,"responsiveUrls":{"2":"https://upload.wikimedia.org/wikipedia/commons/9/91/Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg"},"url":"https://upload.wikimedia.org/wikipedia/commons/9/91/Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg","descriptionshorturl":"https://commons.wikimedia.org/w/index.php?curid=61662953","extmetadata":{"DateTime":{"value":"2017-08-13 21:51:26","source":"mediawiki-metadata","hidden":""},"ObjectName":{"value":"Feuillage du tournesol et bract\u00e9es du bouton floral","source":"mediawiki-metadata"},"CommonsMetadataExtension":{"value":1.2,"source":"extension","hidden":""},"Categories":{"value":"Self-published work|France photographs taken on 2017-06-28|Helianthus annuus in France","source":"commons-categories","hidden":""},"Assessments":{"value":"","source":"commons-categories","hidden":""},"ImageDescription":{"value":"Feuillage du tournesol et bract\u00e9es du bouton floral situ\u00e9 \u00e0 l'extr\u00e9mit\u00e9 de la plante (Aveyron)","source":"commons-desc-page"},"DateTimeOriginal":{"value":"2017-06-28 15:49:12","source":"commons-desc-page"},"Credit":{"value":"<span class=\"int-own-work\" lang=\"en\">Own work</span>","source":"commons-desc-page"},"Artist":{"value":"<a href=\"//commons.wikimedia.org/wiki/User:Th%C3%A9r%C3%A8se_Gaig%C3%A9\" title=\"User:Th\u00e9r\u00e8se Gaig\u00e9\">Th\u00e9r\u00e8se Gaig\u00e9</a>","source":"commons-desc-page"},"LicenseShortName":{"value":"CC BY-SA 4.0","source":"commons-desc-page","hidden":""},"UsageTerms":{"value":"Creative Commons Attribution-Share Alike 4.0","source":"commons-desc-page"},"AttributionRequired":{"value":"true","source":"commons-desc-page","hidden":""},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by-sa/4.0","source":"commons-desc-page"},"Copyrighted":{"value":"True","source":"commons-desc-page","hidden":""},"Restrictions":{"value":"","source":"commons-desc-page","hidden":""},"License":{"value":"cc-by-sa-4.0","source":"commons-templates","hidden":""}},"mime":"image/jpeg"}]}}}}
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "61662953": {
+        "pageid": 61662953,
+        "ns": 6,
+        "title": "File:Feuillage du tournesol et bract\u00e9es du bouton floral.jpg",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 4236338,
+            "width": 3000,
+            "height": 4000,
+            "thumburl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg/1920px-Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg",
+            "thumbwidth": 1600,
+            "thumbheight": 2133,
+            "responsiveUrls": {
+              "2": "https://upload.wikimedia.org/wikipedia/commons/9/91/Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg"
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Feuillage_du_tournesol_et_bract%C3%A9es_du_bouton_floral.jpg",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=61662953",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2017-08-13 21:51:26",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Feuillage du tournesol et bract\u00e9es du bouton floral",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Self-published work|France photographs taken on 2017-06-28|Helianthus annuus in France",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Feuillage du tournesol et bract\u00e9es du bouton floral situ\u00e9 \u00e0 l'extr\u00e9mit\u00e9 de la plante (Aveyron)",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2017-06-28 15:49:12",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a href=\"//commons.wikimedia.org/wiki/User:Th%C3%A9r%C3%A8se_Gaig%C3%A9\" title=\"User:Th\u00e9r\u00e8se Gaig\u00e9\">Th\u00e9r\u00e8se Gaig\u00e9</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 4.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 4.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by-sa/4.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-4.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "image/jpeg"
+          }
+        ]
+      }
+    }
+  }
+}

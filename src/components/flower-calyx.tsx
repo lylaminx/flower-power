@@ -92,10 +92,10 @@ export function FlowerCalyx({
   }, [form, quality, sepalLength, sepalWidth, stemTuning]);
   const baseTilt =
     form === "reflexed"
-      ? -1.02
+      ? 1.12
       : form === "bracted"
-        ? -0.62
-        : THREE.MathUtils.lerp(-0.42, -0.22, opening);
+        ? 0.8
+        : THREE.MathUtils.lerp(0.78, 0.58, opening);
   const growthTilt = THREE.MathUtils.lerp(
     0.34,
     0,
@@ -103,7 +103,7 @@ export function FlowerCalyx({
   );
 
   return (
-    <group position={[0, fusedCorolla ? -0.16 : -0.07, 0]}>
+    <group position={[0, fusedCorolla ? -0.19 : -0.11, 0]}>
       {!fusedCorolla && (
         <mesh
           dispose={null}
@@ -138,42 +138,43 @@ export function FlowerCalyx({
         const angle = (index / structure.sepals) * Math.PI * 2;
         const alternating = form === "bracted" && index % 2 ? 0.82 : 1;
         return (
-          <mesh
-            dispose={null}
-            key={`sepal-${index}`}
-            geometry={geometry}
-            rotation={[
-              baseTilt + growthTilt - settings.sepalSpread * 0.38,
-              angle,
-              form === "bracted" && index % 2 ? 0.08 : -0.03,
-            ]}
-            scale={[alternating, alternating, alternating]}
-          >
-            {lineDrawing ? (
-              <meshBasicMaterial color="#ffffff" />
-            ) : (
-              <meshPhysicalMaterial
-                vertexColors
-                color={settings.stemColor}
-                side={THREE.DoubleSide}
-                roughness={0.84}
-                bumpMap={getBotanicalTexture("leaf", textureResolution)}
-                bumpScale={0.018}
-                normalMap={getBotanicalMaterialTexture(
-                  "leaf",
-                  "microNormal",
-                  textureResolution,
-                )}
-                normalScale={new THREE.Vector2(0.09, 0.09)}
-                roughnessMap={getBotanicalMaterialTexture(
-                  "leaf",
-                  "roughness",
-                  textureResolution,
-                )}
-              />
-            )}
-            {lineDrawing && <Edges color="#111111" threshold={22} />}
-          </mesh>
+          <group key={`sepal-${index}`} rotation={[0, angle, 0]}>
+            <mesh
+              dispose={null}
+              geometry={geometry}
+              rotation={[
+                baseTilt + growthTilt - settings.sepalSpread * 0.22,
+                0,
+                form === "bracted" && index % 2 ? 0.08 : -0.03,
+              ]}
+              scale={[alternating, alternating, alternating]}
+            >
+              {lineDrawing ? (
+                <meshBasicMaterial color="#ffffff" />
+              ) : (
+                <meshPhysicalMaterial
+                  vertexColors
+                  color={settings.stemColor}
+                  side={THREE.DoubleSide}
+                  roughness={0.84}
+                  bumpMap={getBotanicalTexture("leaf", textureResolution)}
+                  bumpScale={0.018}
+                  normalMap={getBotanicalMaterialTexture(
+                    "leaf",
+                    "microNormal",
+                    textureResolution,
+                  )}
+                  normalScale={new THREE.Vector2(0.09, 0.09)}
+                  roughnessMap={getBotanicalMaterialTexture(
+                    "leaf",
+                    "roughness",
+                    textureResolution,
+                  )}
+                />
+              )}
+              {lineDrawing && <Edges color="#111111" threshold={22} />}
+            </mesh>
+          </group>
         );
       })}
     </group>

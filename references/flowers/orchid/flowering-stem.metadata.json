@@ -1,1 +1,21 @@
-{"query":{"pages":{"1":{"title":"File:Little orchid D1302 with keiki and second floral stem.jpg","imageinfo":[{"url":"https://upload.wikimedia.org/wikipedia/commons/c/c7/Little_orchid_D1302_with_keiki_and_second_floral_stem.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Little_orchid_D1302_with_keiki_and_second_floral_stem.jpg","extmetadata":{"Artist":{"value":"Tangopaso"},"Credit":{"value":"Own work"},"LicenseShortName":{"value":"Public domain"},"LicenseUrl":{"value":""}}}]}}}}
+{
+  "query": {
+    "pages": {
+      "1": {
+        "title": "File:Little orchid D1302 with keiki and second floral stem.jpg",
+        "imageinfo": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Little_orchid_D1302_with_keiki_and_second_floral_stem.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Little_orchid_D1302_with_keiki_and_second_floral_stem.jpg",
+            "extmetadata": {
+              "Artist": { "value": "Tangopaso" },
+              "Credit": { "value": "Own work" },
+              "LicenseShortName": { "value": "Public domain" },
+              "LicenseUrl": { "value": "" }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,1 +1,105 @@
-{"batchcomplete":"","query":{"pages":{"150105360":{"pageid":150105360,"ns":6,"title":"File:Lilium Golden Splendor Capel Manor College Gardens Enfield London England 01.jpg","imagerepository":"local","imageinfo":[{"size":9524212,"width":3456,"height":3456,"thumburl":"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg/1920px-Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg","thumbwidth":1600,"thumbheight":1600,"responsiveUrls":{"2":"https://upload.wikimedia.org/wikipedia/commons/d/d9/Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg"},"url":"https://upload.wikimedia.org/wikipedia/commons/d/d9/Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg","descriptionshorturl":"https://commons.wikimedia.org/w/index.php?curid=150105360","extmetadata":{"DateTime":{"value":"2024-07-07 17:13:12","source":"mediawiki-metadata","hidden":""},"ObjectName":{"value":"Lilium Golden Splendor Capel Manor College Gardens Enfield London England 01","source":"mediawiki-metadata"},"CommonsMetadataExtension":{"value":1.2,"source":"extension","hidden":""},"Categories":{"value":"Capel Manor College and Gardens|Lilium 'Golden Splendour'|Self-published work|Summer flowers|Yellow lilies|Flora of London in July|Liliaceae in the United Kingdom|Plants in summer|Flowers in the London Borough of Enfield|Yellow flowers in the United Kingdom|Lilium (flowers)|Garden flowers|2024 in the London Borough of Enfield|Acabashi photos: flowers in London|July 2024 in London|London photographs taken on 2024-07-05|Summer 2024 in London|Lilium cultivars in the Northern Hemisphere in July|Acabashi photos:Capel Manor Gardens|London green spaces and flora photos taken with Canon PowerShot SX60 HS|Gardens photographed in 2024|Summer in the London Borough of Enfield","source":"commons-categories","hidden":""},"Assessments":{"value":"","source":"commons-categories","hidden":""},"ImageDescription":{"value":"Lilium Golden Splendor at <a href=\"https://en.wikipedia.org/wiki/Capel_Manor_College\" class=\"extiw\" title=\"en:Capel Manor College\">Capel Manor College and Gardens</a>, <a href=\"https://en.wikipedia.org/wiki/Bulls_Cross\" class=\"extiw\" title=\"en:Bulls Cross\">Bulls Cross</a>, <a href=\"https://en.wikipedia.org/wiki/London_Borough_of_Enfield\" class=\"extiw\" title=\"en:London Borough of Enfield\">Enfield</a>, <a href=\"https://en.wikipedia.org/wiki/London\" class=\"extiw\" title=\"en:London\">London</a>, England.<br><b><a rel=\"nofollow\" class=\"external text\" href=\"https://www.capelmanorgardens.co.uk\">Capel Manor College and Gardens</a></b> in Enfield is the only <a href=\"https://en.wikipedia.org/wiki/Greater_London\" class=\"extiw\" title=\"en:Greater London\">Greater London</a> college for 'land based' studies. The gardens, which are open to the public, are tended by students as part of course work.<br>To see the most relevant allied photos, click on <a href=\"//commons.wikimedia.org/wiki/Category:Capel_Manor_College_and_Gardens\" title=\"Category:Capel Manor College and Gardens\">Capel Manor College and Gardens</a>, and this uploader's <a href=\"//commons.wikimedia.org/wiki/Category:Acabashi_photos:_parks_and_gardens\" title=\"Category:Acabashi photos: parks and gardens\">Parks and Gardens</a> photos. You can find image links related to this one in a variety of ways at the very bottom of the page. This image is one of a series of date and/or subject allied consecutive photographs kept in progression or location by file name number and/or time marking.<br><b>Camera</b>: <a href=\"https://en.wikipedia.org/wiki/Canon_PowerShot_SX60_HS\" class=\"extiw\" title=\"w:Canon PowerShot SX60 HS\">Canon PowerShot SX60 HS</a>.<br><b>Software</b>: file lens-corrected and optimized with <a href=\"https://en.wikipedia.org/wiki/DxO_PhotoLab\" class=\"extiw\" title=\"en:DxO PhotoLab\">DxO PhotoLab 7 Elite</a>.","source":"commons-desc-page"},"DateTimeOriginal":{"value":"2024-07-05 10:25:01","source":"commons-desc-page"},"Credit":{"value":"<span class=\"int-own-work\" lang=\"en\">Own work</span>","source":"commons-desc-page"},"Artist":{"value":"<a href=\"//commons.wikimedia.org/wiki/User:Acabashi\" title=\"User:Acabashi\">Acabashi</a>","source":"commons-desc-page"},"LicenseShortName":{"value":"CC BY-SA 4.0","source":"commons-desc-page","hidden":""},"UsageTerms":{"value":"Creative Commons Attribution-Share Alike 4.0","source":"commons-desc-page"},"AttributionRequired":{"value":"true","source":"commons-desc-page","hidden":""},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by-sa/4.0","source":"commons-desc-page"},"Copyrighted":{"value":"True","source":"commons-desc-page","hidden":""},"Restrictions":{"value":"","source":"commons-desc-page","hidden":""},"License":{"value":"cc-by-sa-4.0","source":"commons-templates","hidden":""}},"mime":"image/jpeg"}]}}}}
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "150105360": {
+        "pageid": 150105360,
+        "ns": 6,
+        "title": "File:Lilium Golden Splendor Capel Manor College Gardens Enfield London England 01.jpg",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 9524212,
+            "width": 3456,
+            "height": 3456,
+            "thumburl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg/1920px-Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg",
+            "thumbwidth": 1600,
+            "thumbheight": 1600,
+            "responsiveUrls": {
+              "2": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg"
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Lilium_Golden_Splendor_Capel_Manor_College_Gardens_Enfield_London_England_01.jpg",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=150105360",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2024-07-07 17:13:12",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Lilium Golden Splendor Capel Manor College Gardens Enfield London England 01",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Capel Manor College and Gardens|Lilium 'Golden Splendour'|Self-published work|Summer flowers|Yellow lilies|Flora of London in July|Liliaceae in the United Kingdom|Plants in summer|Flowers in the London Borough of Enfield|Yellow flowers in the United Kingdom|Lilium (flowers)|Garden flowers|2024 in the London Borough of Enfield|Acabashi photos: flowers in London|July 2024 in London|London photographs taken on 2024-07-05|Summer 2024 in London|Lilium cultivars in the Northern Hemisphere in July|Acabashi photos:Capel Manor Gardens|London green spaces and flora photos taken with Canon PowerShot SX60 HS|Gardens photographed in 2024|Summer in the London Borough of Enfield",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Lilium Golden Splendor at <a href=\"https://en.wikipedia.org/wiki/Capel_Manor_College\" class=\"extiw\" title=\"en:Capel Manor College\">Capel Manor College and Gardens</a>, <a href=\"https://en.wikipedia.org/wiki/Bulls_Cross\" class=\"extiw\" title=\"en:Bulls Cross\">Bulls Cross</a>, <a href=\"https://en.wikipedia.org/wiki/London_Borough_of_Enfield\" class=\"extiw\" title=\"en:London Borough of Enfield\">Enfield</a>, <a href=\"https://en.wikipedia.org/wiki/London\" class=\"extiw\" title=\"en:London\">London</a>, England.<br><b><a rel=\"nofollow\" class=\"external text\" href=\"https://www.capelmanorgardens.co.uk\">Capel Manor College and Gardens</a></b> in Enfield is the only <a href=\"https://en.wikipedia.org/wiki/Greater_London\" class=\"extiw\" title=\"en:Greater London\">Greater London</a> college for 'land based' studies. The gardens, which are open to the public, are tended by students as part of course work.<br>To see the most relevant allied photos, click on <a href=\"//commons.wikimedia.org/wiki/Category:Capel_Manor_College_and_Gardens\" title=\"Category:Capel Manor College and Gardens\">Capel Manor College and Gardens</a>, and this uploader's <a href=\"//commons.wikimedia.org/wiki/Category:Acabashi_photos:_parks_and_gardens\" title=\"Category:Acabashi photos: parks and gardens\">Parks and Gardens</a> photos. You can find image links related to this one in a variety of ways at the very bottom of the page. This image is one of a series of date and/or subject allied consecutive photographs kept in progression or location by file name number and/or time marking.<br><b>Camera</b>: <a href=\"https://en.wikipedia.org/wiki/Canon_PowerShot_SX60_HS\" class=\"extiw\" title=\"w:Canon PowerShot SX60 HS\">Canon PowerShot SX60 HS</a>.<br><b>Software</b>: file lens-corrected and optimized with <a href=\"https://en.wikipedia.org/wiki/DxO_PhotoLab\" class=\"extiw\" title=\"en:DxO PhotoLab\">DxO PhotoLab 7 Elite</a>.",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2024-07-05 10:25:01",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a href=\"//commons.wikimedia.org/wiki/User:Acabashi\" title=\"User:Acabashi\">Acabashi</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 4.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 4.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by-sa/4.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-4.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "image/jpeg"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,1 +1,110 @@
-{"batchcomplete":"","query":{"pages":{"47674315":{"pageid":47674315,"ns":6,"title":"File:Beach Rose Rosa rugosa Two Flowers.jpg","imagerepository":"local","imageinfo":[{"size":5740259,"width":3264,"height":4715,"thumburl":"https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Beach_Rose_Rosa_rugosa_Two_Flowers.jpg/1920px-Beach_Rose_Rosa_rugosa_Two_Flowers.jpg","thumbwidth":1600,"thumbheight":2311,"responsiveUrls":{"2":"https://upload.wikimedia.org/wikipedia/commons/2/25/Beach_Rose_Rosa_rugosa_Two_Flowers.jpg"},"url":"https://upload.wikimedia.org/wikipedia/commons/2/25/Beach_Rose_Rosa_rugosa_Two_Flowers.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Beach_Rose_Rosa_rugosa_Two_Flowers.jpg","descriptionshorturl":"https://commons.wikimedia.org/w/index.php?curid=47674315","extmetadata":{"DateTime":{"value":"2016-03-22 03:36:36","source":"mediawiki-metadata","hidden":""},"ObjectName":{"value":"Beach Rose Rosa rugosa Two Flowers","source":"mediawiki-metadata"},"CommonsMetadataExtension":{"value":1.2,"source":"extension","hidden":""},"Categories":{"value":"GFDL-1.2|Self-published work|Photographs by Derek Ramsey|2 flowers|Rosa rugosa (non-native, flowers)","source":"commons-categories","hidden":""},"Assessments":{"value":"quality","source":"commons-categories","hidden":""},"ImageDescription":{"value":"Two beach rose (<span style=\"white-space:nowrap\"><i><a href=\"//commons.wikimedia.org/wiki/Rosa_rugosa\" title=\"Rosa rugosa\">Rosa rugosa</a></i> <small><sup><i><a href=\"https://en.wikipedia.org/wiki/Rosa_rugosa\" class=\"extiw\" title=\"en:Rosa rugosa\">en</a>   </i></sup></small></span>) flowers.","source":"commons-desc-page"},"DateTimeOriginal":{"value":"2014-06-16","source":"commons-desc-page"},"Credit":{"value":"<span class=\"int-own-work\">Self-photographed</span>","source":"commons-desc-page"},"Artist":{"value":"Photo by and (c)2014 Derek Ramsey (<a href=\"https://en.wikipedia.org/wiki/User:Ram-Man\" class=\"extiw\" title=\"en:User:Ram-Man\">Ram-Man</a>)","source":"commons-desc-page"},"Permission":{"value":"You may select the license of your choice.","source":"commons-desc-page","hidden":""},"LicenseShortName":{"value":"CC BY-SA 4.0","source":"commons-desc-page","hidden":""},"UsageTerms":{"value":"Creative Commons Attribution-Share Alike 4.0","source":"commons-desc-page"},"AttributionRequired":{"value":"true","source":"commons-desc-page","hidden":""},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by-sa/4.0","source":"commons-desc-page"},"Copyrighted":{"value":"True","source":"commons-desc-page","hidden":""},"Restrictions":{"value":"","source":"commons-desc-page","hidden":""},"License":{"value":"cc-by-sa-4.0","source":"commons-templates","hidden":""}},"mime":"image/jpeg"}]}}}}
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "47674315": {
+        "pageid": 47674315,
+        "ns": 6,
+        "title": "File:Beach Rose Rosa rugosa Two Flowers.jpg",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 5740259,
+            "width": 3264,
+            "height": 4715,
+            "thumburl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Beach_Rose_Rosa_rugosa_Two_Flowers.jpg/1920px-Beach_Rose_Rosa_rugosa_Two_Flowers.jpg",
+            "thumbwidth": 1600,
+            "thumbheight": 2311,
+            "responsiveUrls": {
+              "2": "https://upload.wikimedia.org/wikipedia/commons/2/25/Beach_Rose_Rosa_rugosa_Two_Flowers.jpg"
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/2/25/Beach_Rose_Rosa_rugosa_Two_Flowers.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Beach_Rose_Rosa_rugosa_Two_Flowers.jpg",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=47674315",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2016-03-22 03:36:36",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Beach Rose Rosa rugosa Two Flowers",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "GFDL-1.2|Self-published work|Photographs by Derek Ramsey|2 flowers|Rosa rugosa (non-native, flowers)",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "quality",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Two beach rose (<span style=\"white-space:nowrap\"><i><a href=\"//commons.wikimedia.org/wiki/Rosa_rugosa\" title=\"Rosa rugosa\">Rosa rugosa</a></i> <small><sup><i><a href=\"https://en.wikipedia.org/wiki/Rosa_rugosa\" class=\"extiw\" title=\"en:Rosa rugosa\">en</a>   </i></sup></small></span>) flowers.",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2014-06-16",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\">Self-photographed</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "Photo by and (c)2014 Derek Ramsey (<a href=\"https://en.wikipedia.org/wiki/User:Ram-Man\" class=\"extiw\" title=\"en:User:Ram-Man\">Ram-Man</a>)",
+                "source": "commons-desc-page"
+              },
+              "Permission": {
+                "value": "You may select the license of your choice.",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 4.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 4.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by-sa/4.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-4.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "image/jpeg"
+          }
+        ]
+      }
+    }
+  }
+}

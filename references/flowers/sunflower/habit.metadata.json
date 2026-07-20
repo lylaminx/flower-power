@@ -1,1 +1,118 @@
-{"batchcomplete":"","query":{"pages":{"25132804":{"pageid":25132804,"ns":6,"title":"File:Helianthus annuus (4032132202).jpg","imagerepository":"local","imageinfo":[{"size":1328448,"width":2272,"height":1704,"thumburl":"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Helianthus_annuus_%284032132202%29.jpg/1920px-Helianthus_annuus_%284032132202%29.jpg","thumbwidth":1600,"thumbheight":1200,"responsiveUrls":{"2":"https://upload.wikimedia.org/wikipedia/commons/e/ec/Helianthus_annuus_%284032132202%29.jpg"},"url":"https://upload.wikimedia.org/wikipedia/commons/e/ec/Helianthus_annuus_%284032132202%29.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Helianthus_annuus_(4032132202).jpg","descriptionshorturl":"https://commons.wikimedia.org/w/index.php?curid=25132804","extmetadata":{"DateTime":{"value":"2013-03-15 17:22:26","source":"mediawiki-metadata","hidden":""},"ObjectName":{"value":"Helianthus annuus (4032132202)","source":"mediawiki-metadata"},"CommonsMetadataExtension":{"value":1.2,"source":"extension","hidden":""},"Categories":{"value":"Taken with Nikon Coolpix 4500|Yellow flowers|Flora of Idaho|Flickr images reviewed by File Upload Bot (Magnus Manske)|Files with coordinates missing SDC location of creation|Photographs by Matt Lavin|Wild flowers in Idaho|Helianthus annuus (flowers)|Files uploaded from Flickr by Jacopo Werther via Bot|Sunflowers details","source":"commons-categories","hidden":""},"Assessments":{"value":"","source":"commons-categories","hidden":""},"GPSLatitude":{"value":"43.660297","source":"commons-desc-page"},"GPSLongitude":{"value":"-112.849845","source":"commons-desc-page"},"GPSMapDatum":{"value":"WGS-84","source":"commons-desc-page","hidden":""},"ImageDescription":{"value":"The common sunflower is common along roads and gravelly sandy water courses and similarly moderate disturbed settings. The involucral bracts are typically very broad.","source":"commons-desc-page"},"DateTimeOriginal":{"value":"2009-08-18 10:55","source":"commons-desc-page"},"Credit":{"value":"<p><a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/photos/plant_diversity/4032132202/\">Helianthus annuus</a>\n</p>\n<ul><li>Uploaded by <a href=\"//commons.wikimedia.org/wiki/User:Jacopo_Werther\" title=\"User:Jacopo Werther\">Jacopo Werther</a></li></ul>","source":"commons-desc-page"},"Artist":{"value":"<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/people/35478170@N08\">Matt Lavin</a> from Bozeman, Montana, USA","source":"commons-desc-page"},"LicenseShortName":{"value":"CC BY-SA 2.0","source":"commons-desc-page","hidden":""},"UsageTerms":{"value":"Creative Commons Attribution-Share Alike 2.0","source":"commons-desc-page"},"AttributionRequired":{"value":"true","source":"commons-desc-page","hidden":""},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by-sa/2.0","source":"commons-desc-page"},"Copyrighted":{"value":"True","source":"commons-desc-page","hidden":""},"Restrictions":{"value":"","source":"commons-desc-page","hidden":""},"License":{"value":"cc-by-sa-2.0","source":"commons-templates","hidden":""}},"mime":"image/jpeg"}]}}}}
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "25132804": {
+        "pageid": 25132804,
+        "ns": 6,
+        "title": "File:Helianthus annuus (4032132202).jpg",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 1328448,
+            "width": 2272,
+            "height": 1704,
+            "thumburl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Helianthus_annuus_%284032132202%29.jpg/1920px-Helianthus_annuus_%284032132202%29.jpg",
+            "thumbwidth": 1600,
+            "thumbheight": 1200,
+            "responsiveUrls": {
+              "2": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Helianthus_annuus_%284032132202%29.jpg"
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Helianthus_annuus_%284032132202%29.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Helianthus_annuus_(4032132202).jpg",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=25132804",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2013-03-15 17:22:26",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Helianthus annuus (4032132202)",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Taken with Nikon Coolpix 4500|Yellow flowers|Flora of Idaho|Flickr images reviewed by File Upload Bot (Magnus Manske)|Files with coordinates missing SDC location of creation|Photographs by Matt Lavin|Wild flowers in Idaho|Helianthus annuus (flowers)|Files uploaded from Flickr by Jacopo Werther via Bot|Sunflowers details",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "GPSLatitude": {
+                "value": "43.660297",
+                "source": "commons-desc-page"
+              },
+              "GPSLongitude": {
+                "value": "-112.849845",
+                "source": "commons-desc-page"
+              },
+              "GPSMapDatum": {
+                "value": "WGS-84",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "The common sunflower is common along roads and gravelly sandy water courses and similarly moderate disturbed settings. The involucral bracts are typically very broad.",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2009-08-18 10:55",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<p><a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/photos/plant_diversity/4032132202/\">Helianthus annuus</a>\n</p>\n<ul><li>Uploaded by <a href=\"//commons.wikimedia.org/wiki/User:Jacopo_Werther\" title=\"User:Jacopo Werther\">Jacopo Werther</a></li></ul>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/people/35478170@N08\">Matt Lavin</a> from Bozeman, Montana, USA",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 2.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 2.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by-sa/2.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-2.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "image/jpeg"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,1 +1,110 @@
-{"batchcomplete":"","query":{"pages":{"9460078":{"pageid":9460078,"ns":6,"title":"File:Leaf of Lotus.jpg","imagerepository":"local","imageinfo":[{"size":1496529,"width":2176,"height":3264,"thumburl":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Leaf_of_Lotus.jpg/1920px-Leaf_of_Lotus.jpg","thumbwidth":1600,"thumbheight":2400,"responsiveUrls":{"2":"https://upload.wikimedia.org/wikipedia/commons/5/50/Leaf_of_Lotus.jpg"},"url":"https://upload.wikimedia.org/wikipedia/commons/5/50/Leaf_of_Lotus.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Leaf_of_Lotus.jpg","descriptionshorturl":"https://commons.wikimedia.org/w/index.php?curid=9460078","extmetadata":{"DateTime":{"value":"2010-02-12 13:29:14","source":"mediawiki-metadata","hidden":""},"ObjectName":{"value":"Leaf of Lotus","source":"mediawiki-metadata"},"CommonsMetadataExtension":{"value":1.2,"source":"extension","hidden":""},"Categories":{"value":"China photographs taken on 2009-07-21|Nelumbo nucifera in China|GFDL|Taken with Panasonic Lumix DMC-FZ18|License migration redundant|Self-published work|Nelumbo nucifera leaves","source":"commons-categories","hidden":""},"Assessments":{"value":"","source":"commons-categories","hidden":""},"ImageDescription":{"value":"Leaf of Lotus in Suzhou, China","source":"commons-desc-page"},"DateTimeOriginal":{"value":"2009-07-21","source":"commons-desc-page"},"Credit":{"value":"<span class=\"int-own-work\" lang=\"en\">Own work</span>","source":"commons-desc-page"},"Artist":{"value":"Hans Bernhard (<a href=\"//commons.wikimedia.org/wiki/User:Schnobby\" title=\"User:Schnobby\">Schnobby</a>)","source":"commons-desc-page"},"Permission":{"value":"Dual licensed by its author under GFDL-CC-BY-SA-all, see description page","source":"commons-desc-page","hidden":""},"LicenseShortName":{"value":"CC BY-SA 3.0","source":"commons-desc-page","hidden":""},"UsageTerms":{"value":"Creative Commons Attribution-Share Alike 3.0","source":"commons-desc-page"},"AttributionRequired":{"value":"true","source":"commons-desc-page","hidden":""},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by-sa/3.0","source":"commons-desc-page"},"Copyrighted":{"value":"True","source":"commons-desc-page","hidden":""},"Restrictions":{"value":"","source":"commons-desc-page","hidden":""},"License":{"value":"cc-by-sa-3.0","source":"commons-templates","hidden":""}},"mime":"image/jpeg"}]}}}}
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "9460078": {
+        "pageid": 9460078,
+        "ns": 6,
+        "title": "File:Leaf of Lotus.jpg",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 1496529,
+            "width": 2176,
+            "height": 3264,
+            "thumburl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Leaf_of_Lotus.jpg/1920px-Leaf_of_Lotus.jpg",
+            "thumbwidth": 1600,
+            "thumbheight": 2400,
+            "responsiveUrls": {
+              "2": "https://upload.wikimedia.org/wikipedia/commons/5/50/Leaf_of_Lotus.jpg"
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/5/50/Leaf_of_Lotus.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Leaf_of_Lotus.jpg",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=9460078",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2010-02-12 13:29:14",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Leaf of Lotus",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "China photographs taken on 2009-07-21|Nelumbo nucifera in China|GFDL|Taken with Panasonic Lumix DMC-FZ18|License migration redundant|Self-published work|Nelumbo nucifera leaves",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Leaf of Lotus in Suzhou, China",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2009-07-21",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "Hans Bernhard (<a href=\"//commons.wikimedia.org/wiki/User:Schnobby\" title=\"User:Schnobby\">Schnobby</a>)",
+                "source": "commons-desc-page"
+              },
+              "Permission": {
+                "value": "Dual licensed by its author under GFDL-CC-BY-SA-all, see description page",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 3.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 3.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by-sa/3.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-3.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "image/jpeg"
+          }
+        ]
+      }
+    }
+  }
+}
