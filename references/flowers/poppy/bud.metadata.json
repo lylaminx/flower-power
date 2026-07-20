@@ -1,1 +1,23 @@
-{"query":{"pages":{"1":{"title":"File:Poppy Bud (4714799156).jpg","imageinfo":[{"url":"https://upload.wikimedia.org/wikipedia/commons/2/2d/Poppy_Bud_%284714799156%29.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Poppy_Bud_(4714799156).jpg","extmetadata":{"Artist":{"value":"Tony Hisgett"},"Credit":{"value":"Flickr photo page"},"LicenseShortName":{"value":"CC BY 2.0"},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by/2.0/"}}}]}}}}
+{
+  "query": {
+    "pages": {
+      "1": {
+        "title": "File:Poppy Bud (4714799156).jpg",
+        "imageinfo": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Poppy_Bud_%284714799156%29.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Poppy_Bud_(4714799156).jpg",
+            "extmetadata": {
+              "Artist": { "value": "Tony Hisgett" },
+              "Credit": { "value": "Flickr photo page" },
+              "LicenseShortName": { "value": "CC BY 2.0" },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by/2.0/"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

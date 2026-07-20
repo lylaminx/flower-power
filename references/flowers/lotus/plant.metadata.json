@@ -1,1 +1,21 @@
-{"query":{"pages":{"1":{"title":"File:Bogarub-nelumbo-nucifera-4.jpg","imageinfo":[{"url":"https://upload.wikimedia.org/wikipedia/commons/2/24/Bogarub-nelumbo-nucifera-4.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Bogarub-nelumbo-nucifera-4.jpg","extmetadata":{"Artist":{"value":"LordToran"},"Credit":{"value":"Own work"},"LicenseShortName":{"value":"Public domain"},"LicenseUrl":{"value":""}}}]}}}}
+{
+  "query": {
+    "pages": {
+      "1": {
+        "title": "File:Bogarub-nelumbo-nucifera-4.jpg",
+        "imageinfo": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Bogarub-nelumbo-nucifera-4.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Bogarub-nelumbo-nucifera-4.jpg",
+            "extmetadata": {
+              "Artist": { "value": "LordToran" },
+              "Credit": { "value": "Own work" },
+              "LicenseShortName": { "value": "Public domain" },
+              "LicenseUrl": { "value": "" }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -346,8 +346,12 @@ describe("FlowerStudio", () => {
     render(<FlowerStudio />);
 
     await user.click(screen.getByRole("button", { name: "Save study" }));
+    const dialog = screen.getByRole("dialog", { name: "Name your study" });
+    await user.click(
+      within(dialog).getByRole("button", { name: "Save study" }),
+    );
 
-    expect(screen.getByRole("button", { name: "Saved" })).toBeVisible();
+    expect(await screen.findByRole("button", { name: "Saved" })).toBeVisible();
     expect(fetch).toHaveBeenCalledWith("/api/flowers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -377,8 +381,10 @@ describe("FlowerStudio", () => {
       screen.queryByRole("button", { name: "Saved flowers" }),
     ).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Save JSON" }));
+    const dialog = screen.getByRole("dialog", { name: "Name your study" });
+    await user.click(within(dialog).getByRole("button", { name: "Save JSON" }));
 
-    expect(screen.getByRole("button", { name: "Saved" })).toBeVisible();
+    expect(await screen.findByRole("button", { name: "Saved" })).toBeVisible();
     expect(fetch).not.toHaveBeenCalled();
     expect(createObjectURL).toHaveBeenCalledWith(
       expect.objectContaining({ type: "application/json" }),
@@ -392,7 +398,13 @@ describe("FlowerStudio", () => {
     render(<FlowerStudio />);
 
     await user.click(screen.getByRole("button", { name: "Save study" }));
+    const dialog = screen.getByRole("dialog", { name: "Name your study" });
+    await user.click(
+      within(dialog).getByRole("button", { name: "Save study" }),
+    );
 
-    expect(screen.getByRole("button", { name: "Save failed" })).toBeVisible();
+    expect(
+      await screen.findByRole("button", { name: "Save failed" }),
+    ).toBeVisible();
   });
 });

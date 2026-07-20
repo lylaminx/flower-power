@@ -1,1 +1,105 @@
-{"batchcomplete":"","query":{"pages":{"29524794":{"pageid":29524794,"ns":6,"title":"File:'Rose leaf.JPG","imagerepository":"local","imageinfo":[{"size":2225696,"width":2622,"height":2008,"thumburl":"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/%27Rose_leaf.JPG/1920px-%27Rose_leaf.JPG","thumbwidth":1600,"thumbheight":1225,"responsiveUrls":{"2":"https://upload.wikimedia.org/wikipedia/commons/3/3a/%27Rose_leaf.JPG"},"url":"https://upload.wikimedia.org/wikipedia/commons/3/3a/%27Rose_leaf.JPG","descriptionurl":"https://commons.wikimedia.org/wiki/File:%27Rose_leaf.JPG","descriptionshorturl":"https://commons.wikimedia.org/w/index.php?curid=29524794","extmetadata":{"DateTime":{"value":"2013-11-10 07:12:34","source":"mediawiki-metadata","hidden":""},"ObjectName":{"value":"'Rose leaf","source":"mediawiki-metadata"},"CommonsMetadataExtension":{"value":1.2,"source":"extension","hidden":""},"Categories":{"value":"Taken with Sony DSC-W120|Self-published work|Rosa leaves","source":"commons-categories","hidden":""},"Assessments":{"value":"","source":"commons-categories","hidden":""},"ImageDescription":{"value":"Rose leaf","source":"commons-desc-page"},"DateTimeOriginal":{"value":"2013-11-03 14:19:25","source":"commons-desc-page"},"Credit":{"value":"<span class=\"int-own-work\" lang=\"en\">Own work</span>","source":"commons-desc-page"},"Artist":{"value":"<a href=\"//commons.wikimedia.org/wiki/User:Arivumathi\" title=\"User:Arivumathi\">Arivumathi</a>","source":"commons-desc-page"},"LicenseShortName":{"value":"CC BY-SA 3.0","source":"commons-desc-page","hidden":""},"UsageTerms":{"value":"Creative Commons Attribution-Share Alike 3.0","source":"commons-desc-page"},"AttributionRequired":{"value":"true","source":"commons-desc-page","hidden":""},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by-sa/3.0","source":"commons-desc-page"},"Copyrighted":{"value":"True","source":"commons-desc-page","hidden":""},"Restrictions":{"value":"","source":"commons-desc-page","hidden":""},"License":{"value":"cc-by-sa-3.0","source":"commons-templates","hidden":""}},"mime":"image/jpeg"}]}}}}
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "29524794": {
+        "pageid": 29524794,
+        "ns": 6,
+        "title": "File:'Rose leaf.JPG",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 2225696,
+            "width": 2622,
+            "height": 2008,
+            "thumburl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/%27Rose_leaf.JPG/1920px-%27Rose_leaf.JPG",
+            "thumbwidth": 1600,
+            "thumbheight": 1225,
+            "responsiveUrls": {
+              "2": "https://upload.wikimedia.org/wikipedia/commons/3/3a/%27Rose_leaf.JPG"
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/%27Rose_leaf.JPG",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:%27Rose_leaf.JPG",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=29524794",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2013-11-10 07:12:34",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "'Rose leaf",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Taken with Sony DSC-W120|Self-published work|Rosa leaves",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Rose leaf",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2013-11-03 14:19:25",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a href=\"//commons.wikimedia.org/wiki/User:Arivumathi\" title=\"User:Arivumathi\">Arivumathi</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 3.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 3.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by-sa/3.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-3.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "image/jpeg"
+          }
+        ]
+      }
+    }
+  }
+}

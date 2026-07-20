@@ -1,1 +1,23 @@
-{"query":{"pages":{"1":{"title":"File:Starr 080914-9913 Helianthus annuus.jpg","imageinfo":[{"url":"https://upload.wikimedia.org/wikipedia/commons/f/fd/Starr_080914-9913_Helianthus_annuus.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Starr_080914-9913_Helianthus_annuus.jpg","extmetadata":{"Artist":{"value":"Forest & Kim Starr"},"Credit":{"value":"Plants of Hawaii"},"LicenseShortName":{"value":"CC BY 3.0"},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by/3.0/"}}}]}}}}
+{
+  "query": {
+    "pages": {
+      "1": {
+        "title": "File:Starr 080914-9913 Helianthus annuus.jpg",
+        "imageinfo": [
+          {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Starr_080914-9913_Helianthus_annuus.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Starr_080914-9913_Helianthus_annuus.jpg",
+            "extmetadata": {
+              "Artist": { "value": "Forest & Kim Starr" },
+              "Credit": { "value": "Plants of Hawaii" },
+              "LicenseShortName": { "value": "CC BY 3.0" },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by/3.0/"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,1 +1,102 @@
-{"batchcomplete":"","query":{"pages":{"21916366":{"pageid":21916366,"ns":6,"title":"File:Braunschweig Botanischer Garten Klatschmohn-Detail.JPG","imagerepository":"local","imageinfo":[{"size":288568,"width":1600,"height":1200,"thumburl":"https://upload.wikimedia.org/wikipedia/commons/f/f4/Braunschweig_Botanischer_Garten_Klatschmohn-Detail.JPG","thumbwidth":1600,"thumbheight":1200,"url":"https://upload.wikimedia.org/wikipedia/commons/f/f4/Braunschweig_Botanischer_Garten_Klatschmohn-Detail.JPG","descriptionurl":"https://commons.wikimedia.org/wiki/File:Braunschweig_Botanischer_Garten_Klatschmohn-Detail.JPG","descriptionshorturl":"https://commons.wikimedia.org/w/index.php?curid=21916366","extmetadata":{"DateTime":{"value":"2012-10-05 13:41:41","source":"mediawiki-metadata","hidden":""},"ObjectName":{"value":"Braunschweig Botanischer Garten Klatschmohn-Detail","source":"mediawiki-metadata"},"CommonsMetadataExtension":{"value":1.2,"source":"extension","hidden":""},"Categories":{"value":"GFDL|Taken with Nikon Coolpix 5700|License migration completed|Details of Papaver rhoeas flowers|Specimens in the Botanischer Garten Braunschweig","source":"commons-categories","hidden":""},"Assessments":{"value":"","source":"commons-categories","hidden":""},"ImageDescription":{"value":"<a href=\"https://de.wikipedia.org/wiki/Braunschweig\" class=\"extiw\" title=\"de:Braunschweig\">Braunschweig</a>: <a href=\"https://de.wikipedia.org/wiki/Botanischer_Garten_Braunschweig\" class=\"extiw\" title=\"de:Botanischer Garten Braunschweig\">Botanischer Garten Braunschweig</a> \u2013 <a href=\"https://de.wikipedia.org/wiki/Klatschmohn\" class=\"extiw\" title=\"de:Klatschmohn\">Klatschmohn</a>-Detailaufnahme","source":"commons-desc-page"},"DateTimeOriginal":{"value":"2005-06","source":"commons-desc-page"},"Credit":{"value":"<span class=\"int-own-work\" lang=\"en\">Own work</span>","source":"commons-desc-page"},"Artist":{"value":"<a href=\"https://de.wikipedia.org/wiki/Benutzer:Brunswyk\" class=\"extiw\" title=\"de:Benutzer:Brunswyk\">Benutzer:Brunswyk</a>","source":"commons-desc-page"},"LicenseShortName":{"value":"CC BY-SA 3.0","source":"commons-desc-page","hidden":""},"UsageTerms":{"value":"Creative Commons Attribution-Share Alike 3.0","source":"commons-desc-page"},"AttributionRequired":{"value":"true","source":"commons-desc-page","hidden":""},"LicenseUrl":{"value":"http://creativecommons.org/licenses/by-sa/3.0/","source":"commons-desc-page"},"Copyrighted":{"value":"True","source":"commons-desc-page","hidden":""},"Restrictions":{"value":"","source":"commons-desc-page","hidden":""},"License":{"value":"cc-by-sa-3.0","source":"commons-templates","hidden":""}},"mime":"image/jpeg"}]}}}}
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "21916366": {
+        "pageid": 21916366,
+        "ns": 6,
+        "title": "File:Braunschweig Botanischer Garten Klatschmohn-Detail.JPG",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 288568,
+            "width": 1600,
+            "height": 1200,
+            "thumburl": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Braunschweig_Botanischer_Garten_Klatschmohn-Detail.JPG",
+            "thumbwidth": 1600,
+            "thumbheight": 1200,
+            "url": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Braunschweig_Botanischer_Garten_Klatschmohn-Detail.JPG",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Braunschweig_Botanischer_Garten_Klatschmohn-Detail.JPG",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=21916366",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2012-10-05 13:41:41",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Braunschweig Botanischer Garten Klatschmohn-Detail",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "GFDL|Taken with Nikon Coolpix 5700|License migration completed|Details of Papaver rhoeas flowers|Specimens in the Botanischer Garten Braunschweig",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "<a href=\"https://de.wikipedia.org/wiki/Braunschweig\" class=\"extiw\" title=\"de:Braunschweig\">Braunschweig</a>: <a href=\"https://de.wikipedia.org/wiki/Botanischer_Garten_Braunschweig\" class=\"extiw\" title=\"de:Botanischer Garten Braunschweig\">Botanischer Garten Braunschweig</a> \u2013 <a href=\"https://de.wikipedia.org/wiki/Klatschmohn\" class=\"extiw\" title=\"de:Klatschmohn\">Klatschmohn</a>-Detailaufnahme",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2005-06",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a href=\"https://de.wikipedia.org/wiki/Benutzer:Brunswyk\" class=\"extiw\" title=\"de:Benutzer:Brunswyk\">Benutzer:Brunswyk</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 3.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 3.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "http://creativecommons.org/licenses/by-sa/3.0/",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-3.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "image/jpeg"
+          }
+        ]
+      }
+    }
+  }
+}

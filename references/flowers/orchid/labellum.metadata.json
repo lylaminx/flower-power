@@ -1,1 +1,102 @@
-{"batchcomplete":"","query":{"pages":{"132145741":{"pageid":132145741,"ns":6,"title":"File:Inside of a Butterfly Orchid (Phalaenopsis).jpg","imagerepository":"local","imageinfo":[{"size":3596591,"width":1851,"height":1388,"thumburl":"https://upload.wikimedia.org/wikipedia/commons/d/da/Inside_of_a_Butterfly_Orchid_%28Phalaenopsis%29.jpg","thumbwidth":1851,"thumbheight":1388,"url":"https://upload.wikimedia.org/wikipedia/commons/d/da/Inside_of_a_Butterfly_Orchid_%28Phalaenopsis%29.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Inside_of_a_Butterfly_Orchid_(Phalaenopsis).jpg","descriptionshorturl":"https://commons.wikimedia.org/w/index.php?curid=132145741","extmetadata":{"DateTime":{"value":"2023-05-20 16:56:30","source":"mediawiki-metadata","hidden":""},"ObjectName":{"value":"Inside of a Butterfly Orchid (Phalaenopsis)","source":"mediawiki-metadata"},"CommonsMetadataExtension":{"value":1.2,"source":"extension","hidden":""},"Categories":{"value":"Self-published work|Phalaenopsis details|Close-up photographs|White orchids","source":"commons-categories","hidden":""},"Assessments":{"value":"","source":"commons-categories","hidden":""},"ImageDescription":{"value":"Inside of a Butterfly Orchid (Phalaenopsis)","source":"commons-desc-page"},"DateTimeOriginal":{"value":"2011-02-25 12:42:49","source":"commons-desc-page"},"Credit":{"value":"<span class=\"int-own-work\" lang=\"en\">Own work</span>","source":"commons-desc-page"},"Artist":{"value":"<a href=\"//commons.wikimedia.org/wiki/User:Foeniz\" title=\"User:Foeniz\">Hartmut Schmidt Heidelberg</a>","source":"commons-desc-page"},"LicenseShortName":{"value":"CC BY-SA 4.0","source":"commons-desc-page","hidden":""},"UsageTerms":{"value":"Creative Commons Attribution-Share Alike 4.0","source":"commons-desc-page"},"AttributionRequired":{"value":"true","source":"commons-desc-page","hidden":""},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by-sa/4.0","source":"commons-desc-page"},"Copyrighted":{"value":"True","source":"commons-desc-page","hidden":""},"Restrictions":{"value":"","source":"commons-desc-page","hidden":""},"License":{"value":"cc-by-sa-4.0","source":"commons-templates","hidden":""}},"mime":"image/jpeg"}]}}}}
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "132145741": {
+        "pageid": 132145741,
+        "ns": 6,
+        "title": "File:Inside of a Butterfly Orchid (Phalaenopsis).jpg",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 3596591,
+            "width": 1851,
+            "height": 1388,
+            "thumburl": "https://upload.wikimedia.org/wikipedia/commons/d/da/Inside_of_a_Butterfly_Orchid_%28Phalaenopsis%29.jpg",
+            "thumbwidth": 1851,
+            "thumbheight": 1388,
+            "url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Inside_of_a_Butterfly_Orchid_%28Phalaenopsis%29.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Inside_of_a_Butterfly_Orchid_(Phalaenopsis).jpg",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=132145741",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2023-05-20 16:56:30",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Inside of a Butterfly Orchid (Phalaenopsis)",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Self-published work|Phalaenopsis details|Close-up photographs|White orchids",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Inside of a Butterfly Orchid (Phalaenopsis)",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2011-02-25 12:42:49",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a href=\"//commons.wikimedia.org/wiki/User:Foeniz\" title=\"User:Foeniz\">Hartmut Schmidt Heidelberg</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY-SA 4.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution-Share Alike 4.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by-sa/4.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-sa-4.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "image/jpeg"
+          }
+        ]
+      }
+    }
+  }
+}

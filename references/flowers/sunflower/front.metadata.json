@@ -1,1 +1,105 @@
-{"batchcomplete":"","query":{"pages":{"16204694":{"pageid":16204694,"ns":6,"title":"File:Common sunflower Helianthus annuus.jpg","imagerepository":"local","imageinfo":[{"size":1884333,"width":2490,"height":3480,"thumburl":"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Common_sunflower_Helianthus_annuus.jpg/1920px-Common_sunflower_Helianthus_annuus.jpg","thumbwidth":1600,"thumbheight":2236,"responsiveUrls":{"2":"https://upload.wikimedia.org/wikipedia/commons/c/cc/Common_sunflower_Helianthus_annuus.jpg"},"url":"https://upload.wikimedia.org/wikipedia/commons/c/cc/Common_sunflower_Helianthus_annuus.jpg","descriptionurl":"https://commons.wikimedia.org/wiki/File:Common_sunflower_Helianthus_annuus.jpg","descriptionshorturl":"https://commons.wikimedia.org/w/index.php?curid=16204694","extmetadata":{"DateTime":{"value":"2011-08-24 02:21:34","source":"mediawiki-metadata","hidden":""},"ObjectName":{"value":"Common sunflower Helianthus annuus","source":"mediawiki-metadata"},"CommonsMetadataExtension":{"value":1.2,"source":"extension","hidden":""},"Categories":{"value":"Helianthus annuus|Taken with Canon EOS 40D|Self-published work|Photographs by Jane S. Richardson|Flora of Swall Meadows, California","source":"commons-categories","hidden":""},"Assessments":{"value":"","source":"commons-categories","hidden":""},"ImageDescription":{"value":"Common sunflower (Helianthus annuus), flower sunlit from behind, shadowing bracts and a large ant that peek through between the petals.  At 6800ft in Swall Meadows, Mono County, California.","source":"commons-desc-page"},"DateTimeOriginal":{"value":"2011-08-23","source":"commons-desc-page"},"Credit":{"value":"<span class=\"int-own-work\" lang=\"en\">Own work</span>","source":"commons-desc-page"},"Artist":{"value":"<a href=\"//commons.wikimedia.org/wiki/User:Dcrjsr\" title=\"User:Dcrjsr\">Dcrjsr</a>","source":"commons-desc-page"},"LicenseShortName":{"value":"CC BY 3.0","source":"commons-desc-page","hidden":""},"UsageTerms":{"value":"Creative Commons Attribution 3.0","source":"commons-desc-page"},"AttributionRequired":{"value":"true","source":"commons-desc-page","hidden":""},"LicenseUrl":{"value":"https://creativecommons.org/licenses/by/3.0","source":"commons-desc-page"},"Copyrighted":{"value":"True","source":"commons-desc-page","hidden":""},"Restrictions":{"value":"","source":"commons-desc-page","hidden":""},"License":{"value":"cc-by-3.0","source":"commons-templates","hidden":""}},"mime":"image/jpeg"}]}}}}
+{
+  "batchcomplete": "",
+  "query": {
+    "pages": {
+      "16204694": {
+        "pageid": 16204694,
+        "ns": 6,
+        "title": "File:Common sunflower Helianthus annuus.jpg",
+        "imagerepository": "local",
+        "imageinfo": [
+          {
+            "size": 1884333,
+            "width": 2490,
+            "height": 3480,
+            "thumburl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Common_sunflower_Helianthus_annuus.jpg/1920px-Common_sunflower_Helianthus_annuus.jpg",
+            "thumbwidth": 1600,
+            "thumbheight": 2236,
+            "responsiveUrls": {
+              "2": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Common_sunflower_Helianthus_annuus.jpg"
+            },
+            "url": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Common_sunflower_Helianthus_annuus.jpg",
+            "descriptionurl": "https://commons.wikimedia.org/wiki/File:Common_sunflower_Helianthus_annuus.jpg",
+            "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=16204694",
+            "extmetadata": {
+              "DateTime": {
+                "value": "2011-08-24 02:21:34",
+                "source": "mediawiki-metadata",
+                "hidden": ""
+              },
+              "ObjectName": {
+                "value": "Common sunflower Helianthus annuus",
+                "source": "mediawiki-metadata"
+              },
+              "CommonsMetadataExtension": {
+                "value": 1.2,
+                "source": "extension",
+                "hidden": ""
+              },
+              "Categories": {
+                "value": "Helianthus annuus|Taken with Canon EOS 40D|Self-published work|Photographs by Jane S. Richardson|Flora of Swall Meadows, California",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "Assessments": {
+                "value": "",
+                "source": "commons-categories",
+                "hidden": ""
+              },
+              "ImageDescription": {
+                "value": "Common sunflower (Helianthus annuus), flower sunlit from behind, shadowing bracts and a large ant that peek through between the petals.  At 6800ft in Swall Meadows, Mono County, California.",
+                "source": "commons-desc-page"
+              },
+              "DateTimeOriginal": {
+                "value": "2011-08-23",
+                "source": "commons-desc-page"
+              },
+              "Credit": {
+                "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+                "source": "commons-desc-page"
+              },
+              "Artist": {
+                "value": "<a href=\"//commons.wikimedia.org/wiki/User:Dcrjsr\" title=\"User:Dcrjsr\">Dcrjsr</a>",
+                "source": "commons-desc-page"
+              },
+              "LicenseShortName": {
+                "value": "CC BY 3.0",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "UsageTerms": {
+                "value": "Creative Commons Attribution 3.0",
+                "source": "commons-desc-page"
+              },
+              "AttributionRequired": {
+                "value": "true",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "LicenseUrl": {
+                "value": "https://creativecommons.org/licenses/by/3.0",
+                "source": "commons-desc-page"
+              },
+              "Copyrighted": {
+                "value": "True",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "Restrictions": {
+                "value": "",
+                "source": "commons-desc-page",
+                "hidden": ""
+              },
+              "License": {
+                "value": "cc-by-3.0",
+                "source": "commons-templates",
+                "hidden": ""
+              }
+            },
+            "mime": "image/jpeg"
+          }
+        ]
+      }
+    }
+  }
+}
