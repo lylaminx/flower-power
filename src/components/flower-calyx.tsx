@@ -76,6 +76,7 @@ export function FlowerCalyx({
       fold: 0.45,
       twist: 0.08,
       baseWidth: 1.35,
+      edgeIrregularity: 0.22,
       edgeRuffle:
         (form === "bracted" ? 0.035 : 0.012) *
         stemTuning.sepalSpreadScale *

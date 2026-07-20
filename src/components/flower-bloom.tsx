@@ -112,9 +112,9 @@ export function FlowerBloom({
           fold: settings.petalFold + tuning.foldBias + growth.wilt * 0.05,
           twist: settings.petalTwist + tuning.twistBias + growth.wilt * 0.03,
           baseWidth: settings.petalBaseWidth * tuning.baseWidthScale,
-          spots: settings.petalSpots * tuning.spotScale,
+          spots: settings.petalSpots * tuning.spotScale * 0.15,
           guideStrength:
-            settings.petalGuideStrength * tuning.guideStrengthScale,
+            settings.petalGuideStrength * tuning.guideStrengthScale * 0.15,
           markingSeed: seed + index * 101,
           asymmetry:
             settings.petalAsymmetry *
@@ -123,6 +123,8 @@ export function FlowerBloom({
               2 +
             tuning.asymmetryBias,
           edgeWear: settings.petalEdgeWear,
+          edgeIrregularity:
+            0.28 + settings.variation * 0.45 + settings.petalEdgeWear * 0.2,
           outline: layer.outline ?? structure.petalOutline,
           longitudinalCurve:
             (layer.longitudinalCurve ?? structure.longitudinalCurve ?? 0) +

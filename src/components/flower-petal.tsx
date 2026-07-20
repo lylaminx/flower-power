@@ -14,9 +14,9 @@ import {
   getFlowerPhaseTuning,
 } from "@/lib/flower-growth";
 import {
-  getBotanicalAgeTexture,
   getBotanicalMaterialTexture,
   getBotanicalTexture,
+  getPetalAlbedoTexture,
 } from "@/lib/botanical-textures";
 import { flowerSpecies, type PetalLayer } from "@/lib/flower-species";
 import { useFlowerStore } from "@/lib/flower-store";
@@ -200,8 +200,9 @@ export function FlowerPetal({
           (1 - opening) * 0.04 +
           growth.wilt * 0.03,
         baseWidth: settings.petalBaseWidth * tuning.baseWidthScale,
-        spots: settings.petalSpots * tuning.spotScale,
-        guideStrength: settings.petalGuideStrength * tuning.guideStrengthScale,
+        spots: settings.petalSpots * tuning.spotScale * 0.15,
+        guideStrength:
+          settings.petalGuideStrength * tuning.guideStrengthScale * 0.15,
         markingSeed: seed + index * 101,
         asymmetry:
           settings.petalAsymmetry *
@@ -210,6 +211,8 @@ export function FlowerPetal({
             2 +
           tuning.asymmetryBias,
         edgeWear: settings.petalEdgeWear,
+        edgeIrregularity:
+          0.28 + settings.variation * 0.45 + settings.petalEdgeWear * 0.2,
         outline: layer.outline ?? structure.petalOutline,
         longitudinalCurve:
           (layer.longitudinalCurve ?? structure.longitudinalCurve ?? 0) +
@@ -263,10 +266,11 @@ export function FlowerPetal({
               key={surfaceColor}
               attach={`material-${face}`}
               color={surfaceColor}
-              map={getBotanicalAgeTexture(
-                "petal",
+              map={getPetalAlbedoTexture(
                 settings.petalAge,
-                seed,
+                seed + index * 101,
+                settings.petalSpots * tuning.spotScale,
+                settings.petalGuideStrength * tuning.guideStrengthScale,
                 textureResolution,
               )}
               vertexColors

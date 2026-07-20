@@ -8,6 +8,25 @@ const textures = new Map<string, THREE.DataTexture>();
 const materialTextures = new Map<string, THREE.DataTexture>();
 const ageTextures = new Map<string, THREE.DataTexture>();
 
+function configureBotanicalUvSampling(
+  texture: THREE.DataTexture,
+  surface: BotanicalSurface,
+) {
+  if (surface === "stem") {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(3, 6);
+  } else if (surface === "center") {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(2, 2);
+  } else {
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.repeat.set(1, 1);
+  }
+}
+
 function proceduralNoise(x: number, y: number, frequency = 1) {
   const value =
     Math.sin(x * 12.9898 * frequency + y * 78.233 * frequency) * 43758.5453;
@@ -21,12 +40,53 @@ export function getBotanicalAgeTexture(
   seed: number,
   resolution = 128,
 ) {
+  return getBotanicalAlbedoTexture(surface, age, seed, 0, 0, resolution);
+}
+
+/** Adds seed-specific UV-space spots and nectar guides to petal aging detail. */
+export function getPetalAlbedoTexture(
+  age: number,
+  seed: number,
+  spots: number,
+  guideStrength: number,
+  resolution = 128,
+) {
+  return getBotanicalAlbedoTexture(
+    "petal",
+    age,
+    seed,
+    THREE.MathUtils.clamp(spots, 0, 1),
+    THREE.MathUtils.clamp(guideStrength, 0, 1),
+    resolution,
+  );
+}
+
+function getBotanicalAlbedoTexture(
+  surface: Extract<BotanicalSurface, "petal" | "leaf">,
+  age: number,
+  seed: number,
+  spots: number,
+  guideStrength: number,
+  resolution: number,
+) {
   const normalizedAge = THREE.MathUtils.clamp(age, 0, 1);
   const ageStep = Math.round(normalizedAge * 32) / 32;
+  const spotStep = Math.round(spots * 24) / 24;
+  const guideStep = Math.round(guideStrength * 24) / 24;
   const size = THREE.MathUtils.clamp(Math.round(resolution), 32, 512);
-  const key = `${surface}:${ageStep}:${Math.round(seed)}:${size}`;
+  const key = `${surface}:${ageStep}:${Math.round(seed)}:${spotStep}:${guideStep}:${size}`;
   const cached = ageTextures.get(key);
   if (cached) return cached;
+
+  const spotCenters = Array.from(
+    { length: Math.round(spotStep * 14) },
+    (_, index) => ({
+      u: 0.16 + proceduralNoise(seed + index * 17, index + 3, 0.71) * 0.68,
+      v: 0.16 + proceduralNoise(seed - index * 29, index + 11, 0.43) * 0.62,
+      radius:
+        0.012 + proceduralNoise(seed + index * 7, index + 19, 0.83) * 0.022,
+    }),
+  );
 
   const data = new Uint8Array(size * size * 4);
   for (let y = 0; y < size; y += 1) {
@@ -48,12 +108,29 @@ export function getBotanicalAgeTexture(
         0,
         1,
       );
+      const guide =
+        guideStep *
+        Math.exp(-Math.pow((u - 0.5) / (0.055 + v * 0.11), 2)) *
+        (1 - THREE.MathUtils.smoothstep(v, 0.3, 0.92));
+      const spotMask = spotCenters.reduce((strongest, spot) => {
+        const distance = Math.hypot(u - spot.u, v - spot.v);
+        return Math.max(
+          strongest,
+          1 -
+            THREE.MathUtils.smoothstep(
+              distance,
+              spot.radius * 0.55,
+              spot.radius,
+            ),
+        );
+      }, 0);
+      const marking = THREE.MathUtils.clamp(guide * 0.72 + spotMask, 0, 1);
       const offset = (y * size + x) * 4;
 
       if (surface === "petal") {
-        data[offset] = Math.round(255 - damage * 42);
-        data[offset + 1] = Math.round(255 - damage * 82);
-        data[offset + 2] = Math.round(255 - damage * 105);
+        data[offset] = Math.round(255 - damage * 42 - marking * 24);
+        data[offset + 1] = Math.round(255 - damage * 82 - marking * 68);
+        data[offset + 2] = Math.round(255 - damage * 105 - marking * 46);
       } else {
         data[offset] = Math.round(255 - damage * 38);
         data[offset + 1] = Math.round(255 - damage * 74);
@@ -156,9 +233,7 @@ export function getBotanicalMaterialTexture(
   }
 
   const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(surface === "stem" ? 3 : 1, surface === "stem" ? 6 : 2);
+  configureBotanicalUvSampling(texture, surface);
   texture.magFilter = THREE.LinearFilter;
   texture.minFilter = THREE.LinearMipmapLinearFilter;
   texture.generateMipmaps = true;
@@ -231,9 +306,7 @@ export function getBotanicalTexture(
   }
 
   const texture = new THREE.DataTexture(data, size, size, THREE.RedFormat);
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(surface === "stem" ? 3 : 1, surface === "stem" ? 6 : 2);
+  configureBotanicalUvSampling(texture, surface);
   texture.magFilter = THREE.LinearFilter;
   texture.minFilter = THREE.LinearMipmapLinearFilter;
   texture.generateMipmaps = true;

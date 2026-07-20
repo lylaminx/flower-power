@@ -224,6 +224,7 @@ export function getPetalGeometryCacheKey({
   markingSeed = 0,
   asymmetry = 0,
   edgeWear = 0,
+  edgeIrregularity = 0,
   outline = "elliptic",
   longitudinalCurve = 0,
   lateralCup = 1,
@@ -251,6 +252,7 @@ export function getPetalGeometryCacheKey({
   markingSeed?: number;
   asymmetry?: number;
   edgeWear?: number;
+  edgeIrregularity?: number;
   outline?: PetalOutline;
   longitudinalCurve?: number;
   lateralCup?: number;
@@ -280,6 +282,7 @@ export function getPetalGeometryCacheKey({
     markingSeed,
     asymmetry,
     edgeWear,
+    edgeIrregularity,
     outline,
     longitudinalCurve,
     lateralCup,
@@ -310,6 +313,7 @@ export function createPetalGeometry({
   markingSeed = 0,
   asymmetry = 0,
   edgeWear = 0,
+  edgeIrregularity = 0,
   outline = "elliptic",
   longitudinalCurve = 0,
   lateralCup = 1,
@@ -337,6 +341,7 @@ export function createPetalGeometry({
   markingSeed?: number;
   asymmetry?: number;
   edgeWear?: number;
+  edgeIrregularity?: number;
   outline?: PetalOutline;
   longitudinalCurve?: number;
   lateralCup?: number;
@@ -365,6 +370,7 @@ export function createPetalGeometry({
     markingSeed,
     asymmetry,
     edgeWear,
+    edgeIrregularity,
     outline,
     longitudinalCurve,
     lateralCup,
@@ -384,6 +390,8 @@ export function createPetalGeometry({
     const edgeIndices: number[] = [];
     const from = new THREE.Color(baseColor).multiplyScalar(0.9);
     const to = new THREE.Color(tipColor);
+    const leftEdgePhase = seededRandom(markingSeed + 4_091) * Math.PI * 2;
+    const rightEdgePhase = seededRandom(markingSeed + 8_191) * Math.PI * 2;
 
     for (let face = 0; face < 2; face += 1) {
       for (let row = 0; row <= lengthSegments; row += 1) {
@@ -415,6 +423,14 @@ export function createPetalGeometry({
             THREE.MathUtils.smoothstep(t, 0.05, 0.46),
           );
           const edgeWeight = Math.pow(Math.abs(across), 5);
+          const edgePhase = across < 0 ? leftEdgePhase : rightEdgePhase;
+          const naturalEdgeVariation =
+            1 +
+            edgeIrregularity *
+              edgeWeight *
+              Math.sin(Math.PI * t) *
+              (Math.sin(t * Math.PI * 5.3 + edgePhase) * 0.026 +
+                Math.sin(t * Math.PI * 11.7 + edgePhase * 0.63) * 0.011);
           const edgeRipple =
             edgeRuffle *
             edgeWeight *
@@ -472,6 +488,7 @@ export function createPetalGeometry({
           positions.push(
             across *
               halfWidth *
+              naturalEdgeVariation *
               (1 + Math.sign(across) * asymmetry * Math.sin(Math.PI * t)),
             t * lift +
               t * t * curl * 0.3 +
@@ -1035,4 +1052,46 @@ export function createLeafAttachments(
       return { side, t, point: curve.getPointAt(t) };
     });
   }).flat();
+}
+
+export function createStemPricklePlacements(
+  curve: THREE.CatmullRomCurve3,
+  count: number,
+  seed: number,
+) {
+  const safeCount = Math.max(0, Math.round(count));
+  const up = new THREE.Vector3(0, 1, 0);
+  const fallback = new THREE.Vector3(1, 0, 0);
+
+  return Array.from({ length: safeCount }, (_, index) => {
+    const t = 0.12 + ((index + 0.5) / safeCount) * 0.74;
+    const point = curve.getPointAt(t);
+    const tangent = curve.getTangentAt(t).normalize();
+    const normal = new THREE.Vector3().crossVectors(tangent, up);
+    if (normal.lengthSq() < 0.001) normal.crossVectors(tangent, fallback);
+    normal.normalize();
+    const binormal = new THREE.Vector3()
+      .crossVectors(tangent, normal)
+      .normalize();
+    const angle =
+      index * 2.399963 + seededRandom(seed + index * 173) * Math.PI * 0.72;
+    const radial = normal
+      .multiplyScalar(Math.cos(angle))
+      .addScaledVector(binormal, Math.sin(angle))
+      .normalize();
+    const direction = radial
+      .clone()
+      .addScaledVector(tangent, -0.32)
+      .normalize();
+
+    return {
+      position: point.clone().addScaledVector(radial, 0.058),
+      direction,
+      scale: THREE.MathUtils.lerp(
+        0.82,
+        1.18,
+        seededRandom(seed + index * 271 + 59),
+      ),
+    };
+  });
 }
