@@ -22,6 +22,20 @@ npm run test:visual
 The comparison passes when no more than 1% of pixels differ. Failures, candidate
 captures, and visual diffs are written to `image-tests/results/`.
 
+Reference-review scenarios are deliberately excluded from pixel baselines.
+Capture them with:
+
+```sh
+npm run test:visual:review
+```
+
+These images are written to `image-tests/results/` for botanical review against
+the corresponding photography. They should be judged for silhouette,
+architecture, anatomy, material/light response, and presentation rather than
+for pixel similarity to a photograph. Review runs use a separate local port
+from regression runs so an interrupted development server cannot contaminate
+the other workflow.
+
 To inspect a scenario manually, run `npm run dev`, set the browser viewport to
 the scenario dimensions, and open `/visual-test/<scenario-id>`, such as
 `/visual-test/poppy-studio-front`. Wait until `data-visual-test-ready` is `true`.

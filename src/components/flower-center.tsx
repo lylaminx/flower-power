@@ -60,6 +60,11 @@ export function FlowerCenter({
   const density = settings.centerDensity;
   const architecture = structure.centerArchitecture ?? "simple";
   const seedpodArchitecture = architecture === "seedpod";
+  // Poppies expose a capsule/stigmatic disk surrounded by true stamens. The
+  // shared simple-center body and decorative florets formed an incorrect black
+  // mound underneath that anatomy.
+  const reproductiveOnly =
+    settings.preset === "Poppy" || settings.preset === "Lily";
   const tuning = getHeroCenterTuning(settings.preset, structure, architecture);
   const growth = getFlowerGrowthState(settings.bloom, settings.petalAge);
   const phaseTuning = getFlowerPhaseTuning(growth.phase);
@@ -454,7 +459,7 @@ export function FlowerCenter({
 
   return (
     <group>
-      {!minimal && (
+      {!minimal && !reproductiveOnly && (
         <>
           <mesh
             dispose={null}

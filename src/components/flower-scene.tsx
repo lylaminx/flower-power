@@ -339,17 +339,33 @@ function SceneReady({ onReady }: { onReady: () => void }) {
   const { gl, scene, camera } = useThree();
 
   useEffect(() => {
-    let secondFrame = 0;
-    const firstFrame = requestAnimationFrame(() => {
-      secondFrame = requestAnimationFrame(() => {
-        gl.render(scene, camera);
-        onReady();
+    let cancelled = false;
+    const frameIds: number[] = [];
+
+    const nextFrame = () =>
+      new Promise<void>((resolve) => {
+        frameIds.push(requestAnimationFrame(() => resolve()));
       });
-    });
+
+    const settleScene = async () => {
+      // A fixed number of frames alone is not sufficient for deterministic
+      // captures: the first frame can still be compiling physical-material
+      // shaders. Explicitly compile the complete scene, then allow layout
+      // effects and shadow/contact-shadow passes to settle.
+      await gl.compileAsync(scene, camera);
+      await nextFrame();
+      await nextFrame();
+      await nextFrame();
+      if (cancelled) return;
+      gl.render(scene, camera);
+      onReady();
+    };
+
+    void settleScene();
 
     return () => {
-      cancelAnimationFrame(firstFrame);
-      cancelAnimationFrame(secondFrame);
+      cancelled = true;
+      frameIds.forEach(cancelAnimationFrame);
     };
   }, [camera, gl, onReady, scene]);
 

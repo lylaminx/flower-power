@@ -455,10 +455,20 @@ export function FlowerLeaf({
                 )}
                 vertexColors
                 side={THREE.FrontSide}
-                roughness={photorealistic ? 0.8 : 0.88}
-                specularIntensity={photorealistic ? 0.14 : 0.06}
+                roughness={
+                  photorealistic
+                    ? 0.8 - (tuning.leafGlossScale - 1) * 0.08
+                    : 0.88
+                }
+                specularIntensity={
+                  photorealistic ? 0.14 * tuning.leafGlossScale : 0.06
+                }
                 sheen={0}
-                clearcoat={photorealistic ? 0.12 * leafMoisture : 0}
+                clearcoat={
+                  photorealistic
+                    ? 0.12 * tuning.leafGlossScale * leafMoisture
+                    : 0
+                }
                 clearcoatRoughness={0.38}
                 clearcoatMap={getBotanicalMaterialTexture(
                   "leaf",
@@ -744,8 +754,14 @@ export function FlowerLeaf({
                       )}
                       vertexColors
                       side={THREE.DoubleSide}
-                      roughness={photorealistic ? 0.82 : 0.9}
-                      specularIntensity={photorealistic ? 0.12 : 0.05}
+                      roughness={
+                        photorealistic
+                          ? 0.82 - (tuning.leafGlossScale - 1) * 0.07
+                          : 0.9
+                      }
+                      specularIntensity={
+                        photorealistic ? 0.12 * tuning.leafGlossScale : 0.05
+                      }
                       bumpMap={getBotanicalTexture("leaf", textureResolution)}
                       bumpScale={0.018}
                       transmission={photorealistic ? 0.04 * leafMoisture : 0}

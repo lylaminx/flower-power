@@ -30,7 +30,10 @@ describe("visual test scenarios", () => {
   it("uses fixed square capture dimensions and valid scenarios", () => {
     for (const scenario of visualTestScenarios) {
       expect(isVisualTestScenario(scenario)).toBe(true);
-      expect(scenario.dimensions).toEqual({ width: 1440, height: 1440 });
+      expect(scenario.dimensions.width).toBe(scenario.dimensions.height);
+      if (!scenario.reviewOnly) {
+        expect(scenario.dimensions).toEqual({ width: 1440, height: 1440 });
+      }
     }
   });
 
@@ -61,6 +64,32 @@ describe("visual test scenarios", () => {
 
   it("looks up scenarios by route id", () => {
     expect(getVisualTestScenario("poppy-studio-front")?.seed).toBe(2718);
+    expect(
+      getVisualTestScenario("poppy-morning-backlight-review"),
+    ).toMatchObject({
+      species: "Poppy",
+      lighting: "morningBacklight",
+      reviewOnly: true,
+    });
+    expect(getVisualTestScenario("lily-reference-front-review")).toMatchObject({
+      species: "Lily",
+      reviewOnly: true,
+    });
+    expect(getVisualTestScenario("lily-reference-side-review")).toMatchObject({
+      species: "Lily",
+      reviewOnly: true,
+    });
+    expect(getVisualTestScenario("rose-rugosa-front-review")).toMatchObject({
+      species: "Rose",
+      reviewOnly: true,
+    });
+    expect(getVisualTestScenario("rose-rugosa-underside-review")).toMatchObject(
+      {
+        species: "Rose",
+        reviewOnly: true,
+        effects: { ambientOcclusion: true },
+      },
+    );
     expect(getVisualTestScenario("missing")).toBeUndefined();
   });
 });

@@ -234,6 +234,7 @@ export function getPetalGeometryCacheKey({
   edgeIrregularity = 0,
   outline = "elliptic",
   longitudinalCurve = 0,
+  tipReflex = 0,
   lateralCup = 1,
   lengthSegments = 18,
   widthSegments = 8,
@@ -263,6 +264,7 @@ export function getPetalGeometryCacheKey({
   edgeIrregularity?: number;
   outline?: PetalOutline;
   longitudinalCurve?: number;
+  tipReflex?: number;
   lateralCup?: number;
   lengthSegments?: number;
   widthSegments?: number;
@@ -294,6 +296,7 @@ export function getPetalGeometryCacheKey({
     edgeIrregularity,
     outline,
     longitudinalCurve,
+    tipReflex,
     lateralCup,
     lengthSegments,
     widthSegments,
@@ -326,6 +329,7 @@ export function createPetalGeometry({
   edgeIrregularity = 0,
   outline = "elliptic",
   longitudinalCurve = 0,
+  tipReflex = 0,
   lateralCup = 1,
   lengthSegments = 18,
   widthSegments = 8,
@@ -355,6 +359,7 @@ export function createPetalGeometry({
   edgeIrregularity?: number;
   outline?: PetalOutline;
   longitudinalCurve?: number;
+  tipReflex?: number;
   lateralCup?: number;
   lengthSegments?: number;
   widthSegments?: number;
@@ -385,6 +390,7 @@ export function createPetalGeometry({
     edgeIrregularity,
     outline,
     longitudinalCurve,
+    tipReflex,
     lateralCup,
     lengthSegments,
     widthSegments,
@@ -409,13 +415,19 @@ export function createPetalGeometry({
       for (let row = 0; row <= lengthSegments; row += 1) {
         const t = row / lengthSegments;
         const roundedWidth = getPetalOutlineWidth(t, profile, outline);
-        const ruffle =
+        // Margin ruffles should read as broad organic undulation. Applying the
+        // old 17/31-cycle signal directly to blade width produced a saw-tooth
+        // silhouette even with dense tessellation. Fine crinkling belongs in
+        // the out-of-plane edge displacement below.
+        const marginUndulation =
           1 +
           edgeRuffle *
-            (Math.sin(t * Math.PI * 17) + Math.sin(t * Math.PI * 31)) *
-            0.5;
+            (Math.sin(t * Math.PI * 3.7 + leftEdgePhase * 0.18) +
+              Math.sin(t * Math.PI * 7.3 + rightEdgePhase * 0.14)) *
+            0.06;
         const basalWidth = 0.045 * baseWidth * (1 - t) * (1 - t);
-        const halfWidth = width * (basalWidth + roundedWidth * 0.5) * ruffle;
+        const halfWidth =
+          width * (basalWidth + roundedWidth * 0.5) * marginUndulation;
 
         for (let column = 0; column <= widthSegments; column += 1) {
           const across = (column / widthSegments) * 2 - 1;
@@ -423,12 +435,20 @@ export function createPetalGeometry({
             across * across * 0.085 * lateralCup * Math.sin(Math.PI * t);
           const centerFold =
             (1 - across * across) * 0.07 * fold * Math.sin(Math.PI * t);
+          const pleatWave = Math.sin(across * Math.PI * 4.5 + wavePhase * 0.24);
           const longitudinalPleats =
             pleatStrength *
-            Math.sin(across * Math.PI * 4.5 + wavePhase * 0.24) *
+            Math.sign(pleatWave) *
+            Math.pow(Math.abs(pleatWave), 1.65) *
             Math.pow(Math.sin(Math.PI * t), 0.72) *
             THREE.MathUtils.lerp(0.45, 1, t) *
-            0.024;
+            0.04;
+          const paperCreases =
+            pleatStrength *
+            Math.sin(across * Math.PI * 8.5 - wavePhase * 0.17) *
+            Math.sin(t * Math.PI * 7.2 + across * 1.8) *
+            Math.pow(Math.sin(Math.PI * t), 0.58) *
+            0.009;
           const bladeTwist = across * t * t * twist * 0.11;
           const tipNotch =
             notch *
@@ -470,6 +490,10 @@ export function createPetalGeometry({
             Math.pow(t, 1.25) *
             Math.sin(across * Math.PI * 1.5 + t * 7 + wavePhase) *
             0.035;
+          const reflex =
+            tipReflex *
+            Math.pow(THREE.MathUtils.smoothstep(t, 0.34, 1), 1.35) *
+            (0.84 + (1 - across * across) * 0.16);
           const localThickness =
             thickness *
             (0.18 + Math.pow(Math.sin(Math.PI * t), 0.45) * 0.82) *
@@ -513,14 +537,17 @@ export function createPetalGeometry({
               edgeCup +
               centerFold +
               longitudinalPleats +
+              paperCreases +
               surfaceOffset +
               edgeRipple * 0.025 +
               surfaceWave +
-              Math.sin(Math.PI * t) * t * longitudinalCurve * 0.18,
+              Math.sin(Math.PI * t) * t * longitudinalCurve * 0.18 -
+              reflex,
             t * length -
               tipNotch -
               wornEdge * 0.16 +
               bladeTwist +
+              paperCreases * 0.34 +
               edgeRipple * 0.018 +
               lateralWave,
           );

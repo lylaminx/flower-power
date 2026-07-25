@@ -145,6 +145,7 @@ export function FlowerBloom({
           longitudinalCurve:
             (layer.longitudinalCurve ?? structure.longitudinalCurve ?? 0) +
             tuning.longitudinalCurveBias,
+          tipReflex: tuning.tipReflex * opening,
           lateralCup:
             (layer.lateralCup ?? structure.lateralCup ?? 1) +
             tuning.lateralCupBias,

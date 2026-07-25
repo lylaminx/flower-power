@@ -9,6 +9,8 @@ export type VisualTestScenario = {
   renderMode: "photo";
   lighting: LightingPreset;
   lightIntensity: number;
+  reviewOnly?: boolean;
+  backgroundColor?: string;
   focalLength?: number;
   effects?: {
     depthOfField?: boolean;
@@ -53,6 +55,11 @@ export function isVisualTestScenario(
       candidate.lighting as string,
     ) &&
     typeof candidate.lightIntensity === "number" &&
+    (candidate.reviewOnly === undefined ||
+      typeof candidate.reviewOnly === "boolean") &&
+    (candidate.backgroundColor === undefined ||
+      (typeof candidate.backgroundColor === "string" &&
+        /^#[0-9a-f]{6}$/i.test(candidate.backgroundColor))) &&
     (candidate.focalLength === undefined ||
       (typeof candidate.focalLength === "number" &&
         candidate.focalLength >= 28 &&

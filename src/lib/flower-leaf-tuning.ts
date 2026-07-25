@@ -19,6 +19,7 @@ export type LeafTuning = {
   bladeRoll: number;
   bladeYaw: number;
   leafColorMix: number;
+  leafGlossScale: number;
   leafHairiness: number;
   leafletPairs: number;
   leafArrangement: "opposite" | "alternate";
@@ -48,6 +49,7 @@ export function getHeroLeafTuning(
     bladeRoll: 0,
     bladeYaw: 0,
     leafColorMix: 0.2,
+    leafGlossScale: 1,
     leafHairiness: 0,
     leafletPairs: 0,
     leafArrangement: "opposite",
@@ -74,6 +76,7 @@ export function getHeroLeafTuning(
         bladeRoll: 0.04,
         bladeYaw: 0.04,
         leafColorMix: 0.18,
+        leafGlossScale: 1.7,
         leafletPairs: 2,
         leafArrangement: "alternate",
       };

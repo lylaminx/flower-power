@@ -239,12 +239,17 @@ export function FlowerPetal({
         longitudinalCurve:
           (layer.longitudinalCurve ?? structure.longitudinalCurve ?? 0) +
           tuning.longitudinalCurveBias,
+        tipReflex: tuning.tipReflex * opening,
         lateralCup:
           (layer.lateralCup ?? structure.lateralCup ?? 1) +
           tuning.lateralCupBias,
         lengthSegments:
-          quality === "draft" ? 12 : quality === "ultra" ? 28 : 18,
-        widthSegments: quality === "draft" ? 6 : quality === "ultra" ? 12 : 8,
+          quality === "draft" ? 12 : quality === "ultra" ? 40 : 28,
+        // The lateral grid defines the projected petal margin. Eight to twelve
+        // segments left unmistakable polygonal steps on broad hero petals,
+        // especially Poppy, Rose, and Lotus. Spend tessellation on this visible
+        // outline before adding more micro-detail.
+        widthSegments: quality === "draft" ? 6 : quality === "ultra" ? 24 : 16,
       }),
     [
       length,
@@ -329,7 +334,7 @@ export function FlowerPetal({
               sheen={0}
               transmission={
                 photorealistic
-                  ? settings.petalTranslucency * 0.16 * tuning.translucencyScale
+                  ? settings.petalTranslucency * 0.22 * tuning.translucencyScale
                   : 0
               }
               thickness={THREE.MathUtils.lerp(
@@ -341,13 +346,17 @@ export function FlowerPetal({
               attenuationColor={layer.accentColor ?? settings.petalTipColor}
               attenuationDistance={1.25}
               bumpMap={getBotanicalTexture("petal", textureResolution)}
-              bumpScale={0.014 * settings.petalVeinStrength}
+              bumpScale={
+                0.014 * settings.petalVeinStrength * tuning.surfaceReliefScale
+              }
               normalMap={getBotanicalMaterialTexture(
                 "petal",
                 "microNormal",
                 textureResolution,
               )}
-              normalScale={new THREE.Vector2(0.12, 0.12)}
+              normalScale={new THREE.Vector2(0.12, 0.12).multiplyScalar(
+                tuning.surfaceReliefScale,
+              )}
               roughnessMap={getBotanicalMaterialTexture(
                 "petal",
                 "roughness",

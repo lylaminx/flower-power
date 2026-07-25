@@ -4,6 +4,9 @@ import { defineConfig } from "@playwright/test";
 // its pixels. Some headless Chrome builds never resolve document.fonts.ready.
 process.env.PW_TEST_SCREENSHOT_NO_FONTS_READY = "1";
 
+const visualPort = process.env.PW_VISUAL_PORT ?? "3100";
+const visualBaseUrl = `http://127.0.0.1:${visualPort}`;
+
 export default defineConfig({
   testDir: "./tests/visual",
   fullyParallel: false,
@@ -14,7 +17,7 @@ export default defineConfig({
   outputDir: "image-tests/results",
   snapshotPathTemplate: "image-tests/baselines/{arg}{ext}",
   use: {
-    baseURL: "http://127.0.0.1:3100",
+    baseURL: visualBaseUrl,
     browserName: "chromium",
     channel: "chrome",
     colorScheme: "light",
@@ -23,8 +26,11 @@ export default defineConfig({
     serviceWorkers: "block",
   },
   webServer: {
-    command: "npm run dev -- --hostname 127.0.0.1 --port 3100",
-    url: "http://127.0.0.1:3100",
+    // Next forks an internal `next-server` process. The wrapper owns that
+    // process group and forwards Playwright shutdown signals to every child so
+    // interrupted WebGL captures cannot poison the port.
+    command: `node scripts/visual-test-server.mjs ${visualPort}`,
+    url: visualBaseUrl,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

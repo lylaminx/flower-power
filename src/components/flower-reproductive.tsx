@@ -67,6 +67,7 @@ export function FlowerReproductiveDetails({
   const architecture = structure.centerArchitecture ?? "simple";
   const isColumn = architecture === "column";
   const isPoppy = preset === "Poppy";
+  const isLily = preset === "Lily";
   const growth = getFlowerGrowthState(bloom, petalAge);
   const phaseTuning = getFlowerPhaseTuning(growth.phase);
   const maturityScale = THREE.MathUtils.clamp(
@@ -231,9 +232,13 @@ export function FlowerReproductiveDetails({
             ),
           );
         transform.rotation.set(
-          isColumn ? 0.38 : 0.25 + lobeSide * 0.035,
+          isColumn
+            ? 0.38
+            : isLily
+              ? 0.08 + lobeSide * 0.025
+              : 0.25 + lobeSide * 0.035,
           isColumn ? (index % 2 === 0 ? 0.34 : -0.34) : -angle,
-          Math.PI / 2,
+          isLily ? 0.16 : Math.PI / 2,
         );
         transform.scale.set(
           (isColumn ? 0.012 : 0.0075) * antherSize * tuning.antherSizeScale,
@@ -336,6 +341,7 @@ export function FlowerReproductiveDetails({
     centerRadius,
     filamentSegments,
     isColumn,
+    isLily,
     maturityScale,
     pollenPlacements,
     spread,

@@ -79,7 +79,7 @@ function getBotanicalAlbedoTexture(
   if (cached) return cached;
 
   const spotCenters = Array.from(
-    { length: Math.round(spotStep * 14) },
+    { length: Math.round(spotStep * 42) },
     (_, index) => ({
       u: 0.16 + proceduralNoise(seed + index * 17, index + 3, 0.71) * 0.68,
       v: 0.16 + proceduralNoise(seed - index * 29, index + 11, 0.43) * 0.62,
