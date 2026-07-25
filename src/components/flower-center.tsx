@@ -25,7 +25,6 @@ const centerSphereGeometry = new THREE.SphereGeometry(1, 40, 18);
 const seedpodBodyGeometry = new THREE.CylinderGeometry(1, 0.62, 1, 36, 8);
 const seedpodPitGeometry = new THREE.CylinderGeometry(1, 1, 1, 7);
 const seedpodSeedGeometry = new THREE.SphereGeometry(1, 10, 7);
-const floretSphereGeometry = new THREE.SphereGeometry(1, 8, 6);
 const floretCylinderGeometry = new THREE.CylinderGeometry(0.68, 1, 1, 7);
 const floretCrownGeometry = new THREE.TorusGeometry(0.62, 0.2, 4, 5);
 const floretStigmaGeometry = new THREE.CapsuleGeometry(1, 1, 3, 5);
@@ -558,26 +557,26 @@ export function FlowerCenter({
               </instancedMesh>
             </>
           )}
-          <instancedMesh
-            ref={mesh}
-            key={floretCount}
-            dispose={null}
-            args={[undefined, undefined, floretCount]}
-          >
-            <primitive
-              object={
-                architecture === "column"
-                  ? floretSphereGeometry
-                  : floretCylinderGeometry
-              }
-              attach="geometry"
-            />
-            {lineDrawing ? (
-              <meshBasicMaterial color="#111111" wireframe />
-            ) : (
-              <meshStandardMaterial vertexColors roughness={1} metalness={0} />
-            )}
-          </instancedMesh>
+          {architecture !== "column" && (
+            <instancedMesh
+              ref={mesh}
+              key={floretCount}
+              visible={!seedpodArchitecture}
+              dispose={null}
+              args={[undefined, undefined, floretCount]}
+            >
+              <primitive object={floretCylinderGeometry} attach="geometry" />
+              {lineDrawing ? (
+                <meshBasicMaterial color="#111111" wireframe />
+              ) : (
+                <meshStandardMaterial
+                  vertexColors
+                  roughness={1}
+                  metalness={0}
+                />
+              )}
+            </instancedMesh>
+          )}
           {architecture === "composite" && (
             <>
               <instancedMesh

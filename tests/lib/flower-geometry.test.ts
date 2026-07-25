@@ -15,6 +15,7 @@ import {
   createPetioleGeometry,
   createTaperedStem,
   getPetalOutlineWidth,
+  getRayLongitudinalVeinStrength,
   getLeafOutlineWidth,
   seededRandom,
 } from "@/lib/flower-geometry";
@@ -191,6 +192,22 @@ describe("flower geometry", () => {
     expect(fanTip).toBeGreaterThan(lanceTip);
     expect(getPetalOutlineWidth(0, 0.5, "obovate")).toBeCloseTo(0);
     expect(getPetalOutlineWidth(1, 0.5, "spatulate")).toBeCloseTo(0);
+    expect(getPetalOutlineWidth(0, 0.5, "ray")).toBeCloseTo(0);
+    expect(getPetalOutlineWidth(1, 0.5, "ray")).toBeGreaterThan(0.7);
+    expect(getPetalOutlineWidth(0.92, 0.5, "ray")).toBeGreaterThan(
+      getPetalOutlineWidth(0.92, 0.5, "spatulate"),
+    );
+  });
+
+  it("keeps sunflower ray venation longitudinal and tissue-subtle", () => {
+    const centerVein = getRayLongitudinalVeinStrength(0, 0.55);
+    const lateralVein = getRayLongitudinalVeinStrength(0.42, 0.55);
+    const interveinalTissue = getRayLongitudinalVeinStrength(0.22, 0.55);
+
+    expect(centerVein).toBeGreaterThan(lateralVein);
+    expect(lateralVein).toBeGreaterThan(interveinalTissue);
+    expect(getRayLongitudinalVeinStrength(0, 0)).toBeCloseTo(0);
+    expect(getRayLongitudinalVeinStrength(0, 1)).toBeLessThan(centerVein);
   });
 
   it("tapers petal thickness toward the edge", () => {
@@ -432,11 +449,11 @@ describe("flower geometry", () => {
   it("creates a curved indexed leaf", () => {
     const geometry = createLeafGeometry(0.3, 42);
 
-    expect(geometry.getAttribute("position").count).toBe(119);
-    expect(geometry.getAttribute("normal").count).toBe(119);
-    expect(geometry.getAttribute("uv").count).toBe(119);
-    expect(geometry.getAttribute("color").count).toBe(119);
-    expect(geometry.index?.count).toBe(576);
+    expect(geometry.getAttribute("position").count).toBe(377);
+    expect(geometry.getAttribute("normal").count).toBe(377);
+    expect(geometry.getAttribute("uv").count).toBe(377);
+    expect(geometry.getAttribute("color").count).toBe(377);
+    expect(geometry.index?.count).toBe(2016);
     geometry.computeBoundingBox();
     expect(geometry.boundingBox?.max.y).toBeCloseTo(1.35);
     expect(geometry.boundingBox?.max.z).toBeGreaterThan(0.1);
@@ -476,6 +493,7 @@ describe("flower geometry", () => {
   });
 
   it("creates a broad cordate leaf base", () => {
+    expect(getLeafOutlineWidth(0, "cordate")).toBeGreaterThan(0.3);
     expect(getLeafOutlineWidth(0.2, "cordate")).toBeGreaterThan(
       getLeafOutlineWidth(0.2, "lance"),
     );

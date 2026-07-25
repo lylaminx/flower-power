@@ -487,6 +487,7 @@ export function FlowerReproductiveDetails({
       <instancedMesh
         ref={filaments}
         key={`filaments-${filamentCount}`}
+        visible={!isColumn}
         dispose={null}
         args={[undefined, undefined, filamentCount]}
       >
@@ -499,6 +500,7 @@ export function FlowerReproductiveDetails({
       <instancedMesh
         ref={anthers}
         key={`anthers-${antherCount}`}
+        visible={!isColumn}
         dispose={null}
         args={[undefined, undefined, antherCount]}
       >
@@ -512,7 +514,7 @@ export function FlowerReproductiveDetails({
       <instancedMesh
         ref={antherGrooves}
         key={`anther-grooves-${antherCount}`}
-        visible={!lineDrawing}
+        visible={!lineDrawing && !isColumn}
         dispose={null}
         args={[undefined, undefined, antherCount]}
       >

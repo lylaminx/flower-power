@@ -2,7 +2,7 @@ import type { FlowerPreset } from "./flower-store";
 import { heroFlowerProfiles } from "./hero-flower-profiles";
 
 export type PetalOutline =
-  "elliptic" | "obovate" | "fan" | "lanceolate" | "spatulate";
+  "elliptic" | "obovate" | "fan" | "lanceolate" | "spatulate" | "ray";
 
 export type PetalArrangement = "radial" | "phyllotactic" | "bilateral";
 export type PetalRole = "petal" | "sepal" | "lip" | "ray";

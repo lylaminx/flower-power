@@ -190,7 +190,7 @@ export function getHeroStemTuning(
         stemNodeBulgeScale: 0.7,
         stemLenticelScale: 0.68,
         axillaryBudScale: 0.18,
-        aerialRootCount: 3,
+        aerialRootCount: 5,
         sepalSizeScale: 0.94,
         sepalSpreadScale: 0.82,
         sepalLengthScale: 0.92,

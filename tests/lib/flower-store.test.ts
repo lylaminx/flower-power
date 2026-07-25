@@ -30,7 +30,7 @@ describe("useFlowerStore", () => {
     ["Rose", 5, "#c83f9a"],
     ["Sunflower", 18, "#e4a318"],
     ["Peony", 20, "#dc829a"],
-    ["Lotus", 18, "#f2e1da"],
+    ["Lotus", 12, "#fffdf5"],
     ["Anemone", 9, "#6f55a4"],
     ["Zinnia", 22, "#df5b4f"],
     ["Tulip", 6, "#c93f58"],

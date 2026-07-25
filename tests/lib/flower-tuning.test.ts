@@ -132,7 +132,7 @@ describe("hero flower tuning", () => {
   it("adds aerial roots only to the orchid hero base", () => {
     expect(
       getHeroStemTuning("Orchid", flowerSpecies.Orchid).aerialRootCount,
-    ).toBe(3);
+    ).toBe(5);
     expect(getHeroStemTuning("Rose", flowerSpecies.Rose).aerialRootCount).toBe(
       0,
     );
@@ -198,8 +198,8 @@ describe("hero flower tuning", () => {
 
   it("places orchid and lotus foliage near the stem base", () => {
     expect(getHeroLeafTuning("Orchid", flowerSpecies.Orchid)).toMatchObject({
-      attachmentStart: 0.04,
-      attachmentEnd: 0.16,
+      attachmentStart: 0.035,
+      attachmentEnd: 0.085,
       leafShape: "lance",
     });
     expect(getHeroLeafTuning("Lotus", flowerSpecies.Lotus).attachmentEnd).toBe(

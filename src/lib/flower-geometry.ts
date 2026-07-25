@@ -203,9 +203,31 @@ export function getPetalOutlineWidth(
       );
     case "spatulate":
       return ellipse * THREE.MathUtils.lerp(0.34, 1.22, towardTip * towardTip);
+    case "ray": {
+      const basalExpansion = THREE.MathUtils.smoothstep(clampedT, 0.015, 0.2);
+      const distalTaper = THREE.MathUtils.lerp(
+        1,
+        0.74,
+        THREE.MathUtils.smoothstep(clampedT, 0.72, 1),
+      );
+      return basalExpansion * distalTaper;
+    }
     default:
       return ellipse;
   }
+}
+
+export function getRayLongitudinalVeinStrength(across: number, t: number) {
+  const clampedAcross = THREE.MathUtils.clamp(across, -1, 1);
+  const clampedT = THREE.MathUtils.clamp(t, 0, 1);
+  const vein = (center: number, width: number, strength: number) =>
+    Math.exp(-Math.pow((clampedAcross - center) / width, 2)) * strength;
+  const longitudinalField =
+    vein(0, 0.055, 1) + vein(-0.42, 0.07, 0.62) + vein(0.42, 0.07, 0.62);
+  const basalFade = THREE.MathUtils.smoothstep(clampedT, 0.04, 0.2);
+  const distalFade =
+    1 - THREE.MathUtils.smoothstep(clampedT, 0.82, 0.995) * 0.45;
+  return longitudinalField * basalFade * distalFade;
 }
 
 export function getPetalGeometryCacheKey({
@@ -455,6 +477,8 @@ export function createPetalGeometry({
             Math.exp(-Math.pow(across / 0.27, 2)) *
             Math.pow(Math.max(0, (t - 0.76) / 0.24), 2);
           const vein = Math.exp(-Math.pow(across / 0.12, 2));
+          const rayVeins =
+            outline === "ray" ? getRayLongitudinalVeinStrength(across, t) : 0;
           const basalTone = THREE.MathUtils.lerp(
             baseDarkening,
             1,
@@ -520,6 +544,7 @@ export function createPetalGeometry({
                   basalTone *
                   (0.95 +
                     vein * 0.05 +
+                    rayVeins * 0.035 +
                     seededRandom(row * 31 + column) * 0.025) *
                   guide *
                   spot
@@ -539,6 +564,11 @@ export function createPetalGeometry({
               longitudinalPleats +
               paperCreases +
               surfaceOffset +
+              rayVeins *
+                width *
+                0.006 *
+                thicknessScale *
+                (face === 0 ? 1 : -0.42) +
               edgeRipple * 0.025 +
               surfaceWave +
               Math.sin(Math.PI * t) * t * longitudinalCurve * 0.18 -
@@ -775,10 +805,11 @@ export function getLeafOutlineWidth(t: number, shape: LeafShape = "ovate") {
     case "lance":
       return Math.pow(baseTaper, 0.48) * (0.76 + clampedT * 0.22);
     case "cordate":
-      return (
+      return Math.max(
         Math.pow(baseTaper, 0.42) *
-        (1.08 - clampedT * 0.28) *
-        (0.9 + Math.exp(-Math.pow((clampedT - 0.18) / 0.16, 2)) * 0.16)
+          (1.08 - clampedT * 0.28) *
+          (0.9 + Math.exp(-Math.pow((clampedT - 0.18) / 0.16, 2)) * 0.16),
+        0.34 * Math.exp(-Math.pow(clampedT / 0.13, 2)),
       );
     case "peltate":
       return Math.sqrt(Math.max(0, 1 - Math.pow(clampedT * 2 - 1, 2)));
@@ -896,8 +927,8 @@ export function createLeafGeometry(
 
   return getCachedGeometry(cacheKey, () => {
     const geometry = new THREE.BufferGeometry();
-    const rows = 16;
-    const columns = 6;
+    const rows = 28;
+    const columns = 12;
     const positions: number[] = [];
     const colors: number[] = [];
     const uvs: number[] = [];
@@ -929,7 +960,12 @@ export function createLeafGeometry(
             sideCharacter *
             edgeIrregularity *
             (1 + Math.sign(across) * asymmetry * Math.sin(Math.PI * t)),
-          t * 1.35,
+          t * 1.35 +
+            (shape === "cordate"
+              ? 0.13 *
+                Math.exp(-Math.pow(t / 0.12, 2)) *
+                (1 - Math.pow(Math.abs(across), 1.35))
+              : 0),
           Math.sin(Math.PI * t) * (0.055 + curl * 0.13) +
             across * across * (0.018 + curl * 0.055) +
             (seededRandom(seed + row) - 0.5) * 0.012 -
@@ -978,8 +1014,8 @@ export function createLeafMarginGeometry(
     ["leafMargin", leafGeometry.uuid, thickness].join("|"),
     () => {
       const positions = leafGeometry.getAttribute("position");
-      const rows = 16;
-      const columns = 6;
+      const rows = 28;
+      const columns = 12;
       const rowWidth = columns + 1;
       const perimeter: THREE.Vector3[] = [];
 
@@ -994,6 +1030,11 @@ export function createLeafMarginGeometry(
             positions,
             row * rowWidth + columns,
           ),
+        );
+      }
+      for (let column = columns - 1; column > 0; column -= 1) {
+        perimeter.push(
+          new THREE.Vector3().fromBufferAttribute(positions, column),
         );
       }
 

@@ -26,6 +26,25 @@ import { useShallow } from "zustand/react/shallow";
 
 const orchidCallusGeometry = new THREE.SphereGeometry(1, 14, 9);
 const orchidKeelGeometry = new THREE.CapsuleGeometry(1, 1.5, 4, 7);
+const orchidLipLobeGeometry = createPetalGeometry({
+  length: 0.68,
+  width: 0.56,
+  curl: 0.22,
+  lift: 0.04,
+  baseColor: "#f2eadf",
+  tipColor: "#fffdf8",
+  notch: 0,
+  profile: 0.62,
+  thicknessScale: 0.72,
+  fold: 0.28,
+  baseWidth: 1.08,
+  outline: "obovate",
+  longitudinalCurve: -0.2,
+  lateralCup: 1.32,
+  lengthSegments: 24,
+  widthSegments: 16,
+}).clone();
+orchidLipLobeGeometry.clearGroups();
 
 export function FlowerPetal({
   index,
@@ -302,9 +321,14 @@ export function FlowerPetal({
               map={getPetalAlbedoTexture(
                 settings.petalAge,
                 seed + index * 101,
-                settings.petalSpots * tuning.spotScale,
-                settings.petalGuideStrength * tuning.guideStrengthScale,
+                settings.petalSpots *
+                  tuning.spotScale *
+                  (layer.role === "lip" ? 2.4 : 1),
+                settings.petalGuideStrength *
+                  tuning.guideStrengthScale *
+                  (layer.role === "lip" ? 2.2 : 1),
                 textureResolution,
+                layer.role === "lip" ? "#a44082" : undefined,
               )}
               vertexColors
               roughness={
@@ -374,17 +398,40 @@ export function FlowerPetal({
       {lineDrawing && <Edges color="#111111" threshold={24} />}
       {settings.preset === "Orchid" && layer.role === "lip" && (
         <group>
+          {([-1, 1] as const).map((lobeSide) => (
+            <mesh
+              key={`lip-lobe-${lobeSide}`}
+              dispose={null}
+              geometry={orchidLipLobeGeometry}
+              position={[lobeSide * width * 0.055, 0.006, length * 0.015]}
+              rotation={[-0.16, lobeSide * 0.28, lobeSide * -0.08]}
+              scale={[width * 0.86, length * 0.7, width * 0.82]}
+            >
+              {lineDrawing ? (
+                <meshBasicMaterial color="#ffffff" />
+              ) : (
+                <meshPhysicalMaterial
+                  color="#f5f0e8"
+                  roughness={0.7}
+                  specularIntensity={0.16}
+                  transmission={0.035}
+                  thickness={0.025}
+                  side={THREE.DoubleSide}
+                />
+              )}
+            </mesh>
+          ))}
           {([-1, 1] as const).map((callusSide) => (
             <mesh
               key={`callus-${callusSide}`}
               dispose={null}
               position={[
                 callusSide * width * 0.11,
+                0.026,
                 length * (0.22 + secondary * 0.025),
-                0.082,
               ]}
               rotation={[0.18, 0, callusSide * -0.16]}
-              scale={[width * 0.09, length * 0.075, width * 0.07]}
+              scale={[width * 0.055, length * 0.05, width * 0.045]}
             >
               <primitive object={orchidCallusGeometry} attach="geometry" />
               {lineDrawing ? (
@@ -403,8 +450,8 @@ export function FlowerPetal({
           ))}
           <mesh
             dispose={null}
-            position={[0, length * 0.37, 0.072]}
-            rotation={[0.1, 0, 0]}
+            position={[0, 0.022, length * 0.37]}
+            rotation={[Math.PI / 2, 0, 0]}
             scale={[width * 0.045, length * 0.16, width * 0.055]}
           >
             <primitive object={orchidKeelGeometry} attach="geometry" />

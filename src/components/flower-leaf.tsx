@@ -123,18 +123,33 @@ export function FlowerLeaf({
     () => createLeafMarginGeometry(geometry, 0.0035 * tuning.leafWidthScale),
     [geometry, tuning.leafWidthScale],
   );
-  const leafColor = useMemo(
-    () =>
-      `#${new THREE.Color(settings.stemColor)
-        .lerp(
-          new THREE.Color("#77733c"),
-          senescence.age * 0.55 +
-            tuning.leafColorMix * 0.06 +
-            senescence.wilt * 0.12,
-        )
-        .getHexString()}`,
-    [senescence.age, senescence.wilt, settings.stemColor, tuning.leafColorMix],
-  );
+  const leafColor = useMemo(() => {
+    const baseColor =
+      settings.preset === "Lotus"
+        ? new THREE.Color(settings.stemColor).lerp(
+            new THREE.Color("#79a66d"),
+            0.34,
+          )
+        : new THREE.Color(settings.stemColor);
+    return `#${baseColor
+      .lerp(
+        new THREE.Color("#77733c"),
+        senescence.age * 0.55 +
+          tuning.leafColorMix * 0.06 +
+          senescence.wilt * 0.12,
+      )
+      .getHexString()}`;
+  }, [
+    senescence.age,
+    senescence.wilt,
+    settings.preset,
+    settings.stemColor,
+    tuning.leafColorMix,
+  ]);
+  const frontVeinColors =
+    settings.preset === "Sunflower"
+      ? ["#819174", "#78896c", "#708164"]
+      : ["#294b31", "#36583a", "#3d6041"];
   const midrib = useMemo(
     () =>
       new THREE.CatmullRomCurve3([
@@ -393,11 +408,19 @@ export function FlowerLeaf({
       quaternion={stemFrame}
     >
       <group
-        rotation={[
-          0.18 + leafDroop * 0.28 + tuning.droopBias + tuning.bladePitch,
-          side * (0.5 + tuning.bladeYaw),
-          side * (-0.88 - leafDroop * 0.48 + tuning.bladeRoll),
-        ]}
+        rotation={
+          peltateLeaf
+            ? [
+                1.5 + leafDroop * 0.08,
+                side * tuning.bladeYaw,
+                side * (0.08 + tuning.bladeRoll),
+              ]
+            : [
+                0.18 + leafDroop * 0.28 + tuning.droopBias + tuning.bladePitch,
+                side * (0.5 + tuning.bladeYaw),
+                side * (-0.88 - leafDroop * 0.48 + tuning.bladeRoll),
+              ]
+        }
         scale={[
           side *
             settings.leafWidth *
@@ -556,7 +579,7 @@ export function FlowerLeaf({
             <mesh>
               <tubeGeometry args={[midrib, 24, 0.009, 6, false]} />
               <meshStandardMaterial
-                color={lineDrawing ? "#111111" : "#294b31"}
+                color={lineDrawing ? "#111111" : frontVeinColors[0]}
                 roughness={0.86}
               />
             </mesh>
@@ -564,7 +587,7 @@ export function FlowerLeaf({
               <mesh key={`lateral-${index}`}>
                 <tubeGeometry args={[vein, 10, 0.0035, 5, false]} />
                 <meshStandardMaterial
-                  color={lineDrawing ? "#111111" : "#36583a"}
+                  color={lineDrawing ? "#111111" : frontVeinColors[1]}
                   roughness={0.9}
                 />
               </mesh>
@@ -573,7 +596,7 @@ export function FlowerLeaf({
               <mesh key={`branch-${index}`}>
                 <tubeGeometry args={[vein, 7, 0.0022, 5, false]} />
                 <meshStandardMaterial
-                  color={lineDrawing ? "#111111" : "#3d6041"}
+                  color={lineDrawing ? "#111111" : frontVeinColors[2]}
                   roughness={0.92}
                 />
               </mesh>
