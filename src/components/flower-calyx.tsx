@@ -90,7 +90,16 @@ export function FlowerCalyx({
     // Sepals use one leaf-like material on their closed geometry.
     result.clearGroups();
     return result;
-  }, [form, quality, sepalLength, sepalWidth, stemTuning]);
+  }, [
+    form,
+    opening,
+    phaseTuning.petalLiftScale,
+    phaseTuning.petalSpreadScale,
+    quality,
+    sepalLength,
+    sepalWidth,
+    stemTuning,
+  ]);
   const baseTilt =
     form === "reflexed"
       ? 1.12
@@ -102,6 +111,13 @@ export function FlowerCalyx({
     0,
     growth.calyxRelease * phaseTuning.calyxOpenScale,
   );
+  const sepalRetention = THREE.MathUtils.lerp(
+    1,
+    stemTuning.sepalPersistence,
+    THREE.MathUtils.smoothstep(opening, 0.3, 0.9),
+  );
+  const sepalCount =
+    form === "bracted" ? structure.sepals * 2 : structure.sepals;
 
   return (
     <group position={[0, fusedCorolla ? -0.19 : -0.11, 0]}>
@@ -135,20 +151,48 @@ export function FlowerCalyx({
         </mesh>
       )}
 
-      {Array.from({ length: structure.sepals }, (_, index) => {
-        const angle = (index / structure.sepals) * Math.PI * 2;
-        const alternating = form === "bracted" && index % 2 ? 0.82 : 1;
+      {Array.from({ length: sepalCount }, (_, index) => {
+        const bractWhorl =
+          form === "bracted" ? Math.floor(index / structure.sepals) : 0;
+        const whorlIndex =
+          form === "bracted" ? index % structure.sepals : index;
+        const angle =
+          (whorlIndex / structure.sepals) * Math.PI * 2 +
+          (bractWhorl === 1 ? Math.PI / structure.sepals : 0);
+        const lengthScale =
+          form === "bracted" ? (bractWhorl === 0 ? 1.08 : 0.82) : 1;
+        const widthScale =
+          form === "bracted" ? (bractWhorl === 0 ? 0.94 : 1.08) : 1;
+        const whorlTilt =
+          form === "bracted" ? (bractWhorl === 0 ? 0.12 : -0.1) : 0;
         return (
-          <group key={`sepal-${index}`} rotation={[0, angle, 0]}>
+          <group
+            key={`sepal-${index}`}
+            position={[
+              0,
+              -(1 - sepalRetention) * 0.12 -
+                (form === "bracted" ? bractWhorl * 0.022 : 0),
+              0,
+            ]}
+            rotation={[0, angle, 0]}
+          >
             <mesh
               dispose={null}
               geometry={geometry}
               rotation={[
-                baseTilt + growthTilt - settings.sepalSpread * 0.22,
+                baseTilt +
+                  whorlTilt +
+                  growthTilt -
+                  settings.sepalSpread * 0.22 +
+                  (1 - sepalRetention) * 0.72,
                 0,
-                form === "bracted" && index % 2 ? 0.08 : -0.03,
+                form === "bracted" ? (whorlIndex % 3) * 0.025 - 0.025 : -0.03,
               ]}
-              scale={[alternating, alternating, alternating]}
+              scale={[
+                widthScale * sepalRetention,
+                lengthScale * sepalRetention,
+                widthScale * sepalRetention,
+              ]}
             >
               {lineDrawing ? (
                 <meshBasicMaterial color="#ffffff" />

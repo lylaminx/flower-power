@@ -12,6 +12,8 @@ export type PetalTuning = {
   translucencyScale: number;
   sheenScale: number;
   foldBias: number;
+  pleatStrength: number;
+  petalPersistence: number;
   twistBias: number;
   baseWidthScale: number;
   guideStrengthScale: number;
@@ -60,6 +62,8 @@ export function getHeroPetalTuning(
     translucencyScale: 1,
     sheenScale: 1,
     foldBias: 0,
+    pleatStrength: 0,
+    petalPersistence: 1,
     twistBias: 0,
     baseWidthScale: 1,
     guideStrengthScale: 1,
@@ -113,6 +117,8 @@ export function getHeroPetalTuning(
         translucencyScale: 1.5,
         sheenScale: 0.72,
         foldBias: -0.02,
+        pleatStrength: 0.92,
+        petalPersistence: 0.08,
         twistBias: -0.01,
         baseWidthScale: 0.96,
         guideStrengthScale: 0.88,

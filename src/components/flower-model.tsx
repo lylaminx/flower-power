@@ -34,7 +34,8 @@ import { getBloomLoadResponse } from "@/lib/flower-physics";
 
 export function FlowerModel() {
   const settings = useFlowerStore();
-  const textureResolution = getTextureResolution(useRenderQuality());
+  const quality = useRenderQuality();
+  const textureResolution = getTextureResolution(quality);
   const lineDrawing = settings.renderMode === "line";
   const photorealistic = settings.renderMode === "photo";
   const structure = flowerSpecies[settings.preset];
@@ -82,7 +83,14 @@ export function FlowerModel() {
           stemTuning.topBendZ * 0.08,
         ),
       ]),
-    [bloomLoad, settings.stemCurve, settings.stemHeight, stemTuning],
+    [
+      bloomLoad,
+      growth.wilt,
+      settings.stemCurve,
+      settings.stemHeight,
+      stemRelax,
+      stemTuning,
+    ],
   );
   const stemGeometry = useMemo(
     () =>
@@ -100,6 +108,7 @@ export function FlowerModel() {
       settings.seed,
       settings.stemTaper,
       settings.stemThickness,
+      phaseTuning.moistureScale,
       stemPath,
       stemTuning,
       structure.stemEccentricity,
@@ -118,9 +127,51 @@ export function FlowerModel() {
     ),
   );
   const leafAttachments = useMemo(
-    () => createLeafAttachments(stemPath, leafPairCount),
-    [leafPairCount, stemPath],
+    () =>
+      createLeafAttachments(
+        stemPath,
+        leafPairCount,
+        leafTuning.attachmentStart,
+        leafTuning.attachmentEnd,
+        leafTuning.leafArrangement,
+      ),
+    [
+      leafPairCount,
+      leafTuning.attachmentEnd,
+      leafTuning.attachmentStart,
+      leafTuning.leafArrangement,
+      stemPath,
+    ],
   );
+  const aerialRoots = useMemo(() => {
+    const base = stemPath.getPointAt(0.045);
+    return Array.from({ length: stemTuning.aerialRootCount }, (_, index) => {
+      const angle =
+        (index / Math.max(1, stemTuning.aerialRootCount)) * Math.PI * 2 +
+        seededRandom(settings.seed + index * 509) * 0.7;
+      const reach = THREE.MathUtils.lerp(
+        0.42,
+        0.7,
+        seededRandom(settings.seed + index * 887 + 31),
+      );
+      const radial = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
+      return new THREE.CatmullRomCurve3([
+        base.clone(),
+        base
+          .clone()
+          .addScaledVector(radial, reach * 0.2)
+          .add(new THREE.Vector3(0, -0.025, 0)),
+        base
+          .clone()
+          .addScaledVector(radial, reach * 0.62)
+          .add(new THREE.Vector3(0, -0.1, 0)),
+        base
+          .clone()
+          .addScaledVector(radial, reach)
+          .add(new THREE.Vector3(0, -0.24 - index * 0.035, 0)),
+      ]);
+    });
+  }, [settings.seed, stemPath, stemTuning.aerialRootCount]);
 
   useEffect(() => {
     warmStemGeometry({
@@ -157,6 +208,8 @@ export function FlowerModel() {
     settings.seed,
     settings.stemThickness,
     settings.stemTaper,
+    stemTuning.stemTaperScale,
+    stemTuning.stemThicknessScale,
     settings.leafCurl,
     settings.leafAsymmetry,
     settings.leafSerration,
@@ -225,15 +278,62 @@ export function FlowerModel() {
               THREE.MathUtils.lerp(1, 0.9, growth.wilt * phaseTuning.wiltScale),
           ),
         )}
+        leafAttachments={leafAttachments}
         seed={settings.seed}
         tuning={stemTuning}
       />
+
+      {aerialRoots.map((root, index) => {
+        const tip = root.getPointAt(1);
+        return (
+          <group key={`aerial-root-${index}`}>
+            <mesh>
+              <tubeGeometry
+                args={[
+                  root,
+                  quality === "draft" ? 14 : quality === "ultra" ? 32 : 22,
+                  0.035,
+                  quality === "draft" ? 6 : 9,
+                  false,
+                ]}
+              />
+              {lineDrawing ? (
+                <meshBasicMaterial color="#ffffff" />
+              ) : (
+                <meshPhysicalMaterial
+                  color="#aeb9a1"
+                  roughness={0.92}
+                  bumpMap={getBotanicalTexture("stem", textureResolution)}
+                  bumpScale={0.022}
+                  normalMap={getBotanicalMaterialTexture(
+                    "stem",
+                    "microNormal",
+                    textureResolution,
+                  )}
+                  normalScale={new THREE.Vector2(0.1, 0.1)}
+                />
+              )}
+              {lineDrawing && <Edges color="#111111" threshold={18} />}
+            </mesh>
+            <mesh position={tip} scale={[0.04, 0.055, 0.04]}>
+              <sphereGeometry args={[1, 10, 7]} />
+              {lineDrawing ? (
+                <meshBasicMaterial color="#ffffff" />
+              ) : (
+                <meshStandardMaterial color="#78956a" roughness={0.86} />
+              )}
+              {lineDrawing && <Edges color="#111111" threshold={18} />}
+            </mesh>
+          </group>
+        );
+      })}
 
       {leafAttachments.map((attachment) => (
         <FlowerLeaf
           key={`${attachment.side}-${attachment.t}`}
           side={attachment.side}
           attachment={attachment.point}
+          stemTangent={attachment.tangent}
           attachmentT={attachment.t}
         />
       ))}
@@ -244,7 +344,12 @@ export function FlowerModel() {
       ) : (
         <group
           rotation={[
-            0.72 + settings.bloomTilt + bloomLoad.bloomDroop,
+            0.72 +
+              settings.bloomTilt +
+              bloomLoad.bloomDroop +
+              stemTuning.budNod *
+                (1 - growth.openness) *
+                THREE.MathUtils.lerp(1, 0.72, growth.wilt),
             settings.bloomTurn,
             -0.42 + bloomLoad.individualLean * 0.4,
           ]}

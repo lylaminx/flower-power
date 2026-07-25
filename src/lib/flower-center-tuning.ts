@@ -13,6 +13,7 @@ export type CenterTuning = {
   seedpodPitDepthScale: number;
   stamenCountScale: number;
   stamenLengthScale: number;
+  filamentSpreadScale: number;
   antherSizeScale: number;
   stigmaSizeScale: number;
   styleLengthScale: number;
@@ -37,6 +38,7 @@ export function getHeroCenterTuning(
     seedpodPitDepthScale: 1,
     stamenCountScale: 1,
     stamenLengthScale: 1,
+    filamentSpreadScale: 1,
     antherSizeScale: 1,
     stigmaSizeScale: 1,
     styleLengthScale: 1,
@@ -75,9 +77,10 @@ export function getHeroCenterTuning(
         floretSizeScale: 0.92,
         stamenCountScale: 1.16,
         stamenLengthScale: 1.22,
+        filamentSpreadScale: 0.82,
         antherSizeScale: 1.06,
         stigmaSizeScale: 1.1,
-        styleLengthScale: 1.12,
+        styleLengthScale: 0.32,
         ovaryScale: 0.8,
         displayColorMix: 0.18,
       };
@@ -93,6 +96,7 @@ export function getHeroCenterTuning(
         floretSizeScale: 0.88,
         stamenCountScale: 0.96,
         stamenLengthScale: 1.12,
+        filamentSpreadScale: 3.2,
         antherSizeScale: 1.08,
         stigmaSizeScale: 0.98,
         styleLengthScale: 1.16,
@@ -131,6 +135,7 @@ export function getHeroCenterTuning(
         floretSizeScale: 0.84,
         stamenCountScale: 0.7,
         stamenLengthScale: 0.82,
+        filamentSpreadScale: 0.48,
         antherSizeScale: 0.88,
         stigmaSizeScale: 0.96,
         styleLengthScale: 1.08,
@@ -151,6 +156,7 @@ export function getHeroCenterTuning(
         seedpodPitDepthScale: 1.16,
         stamenCountScale: 1,
         stamenLengthScale: 0.86,
+        filamentSpreadScale: 1.18,
         antherSizeScale: 0.9,
         stigmaSizeScale: 0.88,
         styleLengthScale: 0.82,

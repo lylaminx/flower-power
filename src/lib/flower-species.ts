@@ -9,7 +9,8 @@ export type PetalRole = "petal" | "sepal" | "lip" | "ray";
 export type CenterArchitecture = "simple" | "composite" | "column" | "seedpod";
 export type BloomArchitecture = "radial" | "bell" | "trumpet";
 export type InflorescenceArchitecture = "solitary" | "spike" | "cluster";
-export type LeafShape = "ovate" | "lance" | "linear" | "lobed" | "cordate";
+export type LeafShape =
+  "ovate" | "lance" | "linear" | "lobed" | "cordate" | "peltate";
 export type OvaryPosition = "superior" | "inferior";
 export type CalyxForm = "cupped" | "reflexed" | "bracted";
 

@@ -37,6 +37,10 @@ update instead.
 
 ## Reference boards
 
-See [`references/README.md`](./references/README.md) for the required views and
-license/provenance record. Only add a source photograph to Git when its license
-explicitly permits redistribution in this repository.
+See the licensed botanical source material and provenance records in
+[`references/flowers/README.md`](../references/flowers/README.md). Keep source
+photographs under `references/flowers/`; `image-tests/` is reserved for render
+scenarios, generated baselines, and comparison results.
+
+Only add a source photograph to Git when its license explicitly permits
+redistribution in this repository.
