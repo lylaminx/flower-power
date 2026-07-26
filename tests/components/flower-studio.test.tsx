@@ -195,6 +195,75 @@ describe("FlowerStudio", () => {
     ).toBeVisible();
   });
 
+  it("uses exclusive mobile tool sheets without changing desktop panel state", async () => {
+    const user = userEvent.setup();
+    render(<FlowerStudio />);
+
+    const varietyButton = screen.getByRole("button", {
+      name: "Choose flower variety",
+    });
+    const adjustButton = screen.getByRole("button", {
+      name: "Adjust flower details",
+    });
+    const renderButton = screen.getByRole("button", {
+      name: "Open render controls",
+    });
+    const paletteButton = screen.getByRole("button", {
+      name: "Choose flower colors",
+    });
+
+    await user.click(varietyButton);
+    expect(varietyButton).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("complementary", { name: "Flower varieties" }),
+    ).toHaveClass("mobile-active");
+
+    await user.click(adjustButton);
+    expect(varietyButton).toHaveAttribute("aria-expanded", "false");
+    expect(adjustButton).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("complementary", { name: "Flower adjustments" }),
+    ).toHaveClass("mobile-active");
+
+    await user.click(renderButton);
+    expect(adjustButton).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.getByRole("complementary", { name: "Render controls" }),
+    ).toHaveClass("mobile-active");
+
+    await user.click(paletteButton);
+    expect(renderButton).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.getByRole("complementary", { name: "Flower color palette" }),
+    ).toHaveClass("mobile-active");
+
+    await user.click(
+      screen.getByRole("button", { name: "Close flower colors" }),
+    );
+    expect(paletteButton).toHaveAttribute("aria-expanded", "false");
+
+    const moreButton = screen.getByRole("button", {
+      name: "Open study actions",
+    });
+    await user.click(moreButton);
+    expect(moreButton).toHaveAttribute("aria-expanded", "true");
+    expect(document.querySelector(".studio-shell")).toHaveClass(
+      "mobile-actions-open",
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Close study actions" }),
+    );
+    expect(moreButton).toHaveAttribute("aria-expanded", "false");
+    expect(document.querySelector(".studio-shell")).not.toHaveClass(
+      "mobile-actions-open",
+    );
+
+    expect(useFlowerStore.getState()).toMatchObject({
+      panelOpen: true,
+      rightPanelOpen: true,
+    });
+  });
+
   it("updates numeric and color controls", () => {
     render(<FlowerStudio />);
 
