@@ -24,6 +24,28 @@ import { useRenderQuality } from "./render-quality-context";
 import { getTextureResolution } from "@/lib/flower-quality";
 import { useShallow } from "zustand/react/shallow";
 
+const orchidCallusGeometry = new THREE.SphereGeometry(1, 14, 9);
+const orchidKeelGeometry = new THREE.CapsuleGeometry(1, 1.5, 4, 7);
+const orchidLipLobeGeometry = createPetalGeometry({
+  length: 0.68,
+  width: 0.56,
+  curl: 0.22,
+  lift: 0.04,
+  baseColor: "#f2eadf",
+  tipColor: "#fffdf8",
+  notch: 0,
+  profile: 0.62,
+  thicknessScale: 0.72,
+  fold: 0.28,
+  baseWidth: 1.08,
+  outline: "obovate",
+  longitudinalCurve: -0.2,
+  lateralCup: 1.32,
+  lengthSegments: 24,
+  widthSegments: 16,
+}).clone();
+orchidLipLobeGeometry.clearGroups();
+
 export function FlowerPetal({
   index,
   count,
@@ -109,6 +131,21 @@ export function FlowerPetal({
   const placementAngle = placement.angle + tuning.placementAngleBias;
   const placementRadialOffset =
     placement.radialOffset * tuning.placementRadialScale;
+  const layerProgress = layerCount <= 1 ? 0 : layerIndex / (layerCount - 1);
+  const individualWilt =
+    growth.wilt *
+    phaseTuning.wiltScale *
+    THREE.MathUtils.lerp(
+      0.72,
+      1.28,
+      seededRandom(seed + index * 347 + layerIndex * 89),
+    ) *
+    THREE.MathUtils.lerp(1.18, 0.68, layerProgress);
+  const petalRetention = THREE.MathUtils.lerp(
+    1,
+    tuning.petalPersistence,
+    THREE.MathUtils.smoothstep(individualWilt, 0.48, 0.96),
+  );
   const length =
     settings.petalLength *
     layer.length *
@@ -130,7 +167,7 @@ export function FlowerPetal({
     tuning.liftBias * phaseTuning.petalLiftScale +
     (1 - opening) * 0.24 +
     (secondary - 0.5) * settings.variation * 0.3 -
-    growth.wilt * phaseTuning.wiltScale * (0.18 + layerIndex * 0.025);
+    individualWilt * (0.18 + layerIndex * 0.025);
   const petalColors = useMemo(() => {
     const tint = (value: string, amount: number) =>
       `#${new THREE.Color(value)
@@ -176,7 +213,7 @@ export function FlowerPetal({
         width,
         curl:
           settings.petalCurl * (0.92 + tuning.curlBias * 0.45) +
-          growth.wilt * 0.42 * phaseTuning.petalCurlScale +
+          individualWilt * 0.42 * phaseTuning.petalCurlScale +
           (1 - opening) * 0.08,
         lift,
         baseColor: petalColors.base,
@@ -193,12 +230,16 @@ export function FlowerPetal({
           settings.petalFold +
           tuning.foldBias +
           (1 - opening) * 0.08 +
-          growth.wilt * 0.05,
+          individualWilt * 0.05,
+        pleatStrength:
+          tuning.pleatStrength *
+          THREE.MathUtils.lerp(0.72, 1, opening) *
+          THREE.MathUtils.lerp(1, 1.12, individualWilt),
         twist:
           settings.petalTwist +
           tuning.twistBias +
           (1 - opening) * 0.04 +
-          growth.wilt * 0.03,
+          (secondary - 0.5) * individualWilt * 0.12,
         baseWidth: settings.petalBaseWidth * tuning.baseWidthScale,
         spots: settings.petalSpots * tuning.spotScale * 0.15,
         guideStrength:
@@ -217,12 +258,17 @@ export function FlowerPetal({
         longitudinalCurve:
           (layer.longitudinalCurve ?? structure.longitudinalCurve ?? 0) +
           tuning.longitudinalCurveBias,
+        tipReflex: tuning.tipReflex * opening,
         lateralCup:
           (layer.lateralCup ?? structure.lateralCup ?? 1) +
           tuning.lateralCupBias,
         lengthSegments:
-          quality === "draft" ? 12 : quality === "ultra" ? 28 : 18,
-        widthSegments: quality === "draft" ? 6 : quality === "ultra" ? 12 : 8,
+          quality === "draft" ? 12 : quality === "ultra" ? 40 : 28,
+        // The lateral grid defines the projected petal margin. Eight to twelve
+        // segments left unmistakable polygonal steps on broad hero petals,
+        // especially Poppy, Rose, and Lotus. Spend tessellation on this visible
+        // outline before adding more micro-detail.
+        widthSegments: quality === "draft" ? 6 : quality === "ultra" ? 24 : 16,
       }),
     [
       length,
@@ -233,12 +279,15 @@ export function FlowerPetal({
       tuning,
       petalColors,
       random,
+      secondary,
       index,
       layer.lateralCup,
       layer.longitudinalCurve,
       layer.outline,
+      opening,
+      phaseTuning.petalCurlScale,
       seed,
-      growth.wilt,
+      individualWilt,
       quality,
     ],
   );
@@ -248,12 +297,15 @@ export function FlowerPetal({
       dispose={null}
       geometry={geometry}
       rotation={[0, placementAngle, placement.roll + tuning.placementRollBias]}
+      scale={[petalRetention, petalRetention, petalRetention]}
       position={[
         Math.sin(placementAngle) * placementRadialOffset,
         layer.lift * 0.12 +
           tuning.placementLiftBias +
           (1 - opening) * 0.12 +
-          (index % 3) * 0.009,
+          (index % 3) * 0.009 -
+          individualWilt * 0.035 -
+          (1 - petalRetention) * 0.12,
         Math.cos(placementAngle) * placementRadialOffset,
       ]}
     >
@@ -269,9 +321,14 @@ export function FlowerPetal({
               map={getPetalAlbedoTexture(
                 settings.petalAge,
                 seed + index * 101,
-                settings.petalSpots * tuning.spotScale,
-                settings.petalGuideStrength * tuning.guideStrengthScale,
+                settings.petalSpots *
+                  tuning.spotScale *
+                  (layer.role === "lip" ? 2.4 : 1),
+                settings.petalGuideStrength *
+                  tuning.guideStrengthScale *
+                  (layer.role === "lip" ? 2.2 : 1),
                 textureResolution,
+                layer.role === "lip" ? "#a44082" : undefined,
               )}
               vertexColors
               roughness={
@@ -301,7 +358,7 @@ export function FlowerPetal({
               sheen={0}
               transmission={
                 photorealistic
-                  ? settings.petalTranslucency * 0.16 * tuning.translucencyScale
+                  ? settings.petalTranslucency * 0.22 * tuning.translucencyScale
                   : 0
               }
               thickness={THREE.MathUtils.lerp(
@@ -313,13 +370,17 @@ export function FlowerPetal({
               attenuationColor={layer.accentColor ?? settings.petalTipColor}
               attenuationDistance={1.25}
               bumpMap={getBotanicalTexture("petal", textureResolution)}
-              bumpScale={0.014 * settings.petalVeinStrength}
+              bumpScale={
+                0.014 * settings.petalVeinStrength * tuning.surfaceReliefScale
+              }
               normalMap={getBotanicalMaterialTexture(
                 "petal",
                 "microNormal",
                 textureResolution,
               )}
-              normalScale={new THREE.Vector2(0.12, 0.12)}
+              normalScale={new THREE.Vector2(0.12, 0.12).multiplyScalar(
+                tuning.surfaceReliefScale,
+              )}
               roughnessMap={getBotanicalMaterialTexture(
                 "petal",
                 "roughness",
@@ -335,6 +396,78 @@ export function FlowerPetal({
         </>
       )}
       {lineDrawing && <Edges color="#111111" threshold={24} />}
+      {settings.preset === "Orchid" && layer.role === "lip" && (
+        <group>
+          {([-1, 1] as const).map((lobeSide) => (
+            <mesh
+              key={`lip-lobe-${lobeSide}`}
+              dispose={null}
+              geometry={orchidLipLobeGeometry}
+              position={[lobeSide * width * 0.055, 0.006, length * 0.015]}
+              rotation={[-0.16, lobeSide * 0.28, lobeSide * -0.08]}
+              scale={[width * 0.86, length * 0.7, width * 0.82]}
+            >
+              {lineDrawing ? (
+                <meshBasicMaterial color="#ffffff" />
+              ) : (
+                <meshPhysicalMaterial
+                  color="#f5f0e8"
+                  roughness={0.7}
+                  specularIntensity={0.16}
+                  transmission={0.035}
+                  thickness={0.025}
+                  side={THREE.DoubleSide}
+                />
+              )}
+            </mesh>
+          ))}
+          {([-1, 1] as const).map((callusSide) => (
+            <mesh
+              key={`callus-${callusSide}`}
+              dispose={null}
+              position={[
+                callusSide * width * 0.11,
+                0.026,
+                length * (0.22 + secondary * 0.025),
+              ]}
+              rotation={[0.18, 0, callusSide * -0.16]}
+              scale={[width * 0.055, length * 0.05, width * 0.045]}
+            >
+              <primitive object={orchidCallusGeometry} attach="geometry" />
+              {lineDrawing ? (
+                <meshBasicMaterial color="#ffffff" />
+              ) : (
+                <meshPhysicalMaterial
+                  color={layer.accentColor ?? settings.petalTipColor}
+                  roughness={THREE.MathUtils.lerp(0.82, 0.68, growth.moisture)}
+                  specularIntensity={0.12}
+                  clearcoat={0.06 * growth.moisture}
+                  clearcoatRoughness={0.42}
+                />
+              )}
+              {lineDrawing && <Edges color="#111111" threshold={18} />}
+            </mesh>
+          ))}
+          <mesh
+            dispose={null}
+            position={[0, 0.022, length * 0.37]}
+            rotation={[Math.PI / 2, 0, 0]}
+            scale={[width * 0.045, length * 0.16, width * 0.055]}
+          >
+            <primitive object={orchidKeelGeometry} attach="geometry" />
+            {lineDrawing ? (
+              <meshBasicMaterial color="#ffffff" />
+            ) : (
+              <meshPhysicalMaterial
+                color={layer.accentColor ?? settings.petalTipColor}
+                roughness={0.76}
+                specularIntensity={0.1}
+              />
+            )}
+            {lineDrawing && <Edges color="#111111" threshold={18} />}
+          </mesh>
+        </group>
+      )}
     </mesh>
   );
 }

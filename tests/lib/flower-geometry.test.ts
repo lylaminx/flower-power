@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import * as THREE from "three";
 import {
   createLeafGeometry,
+  createLeafMarginGeometry,
   createLeafVeinNetwork,
   createLeafAttachments,
   createFusedCorollaGeometry,
@@ -9,8 +10,12 @@ import {
   createPetalGeometry,
   createPetalPlacement,
   createStemPricklePlacements,
+  createStemSurfacePlacements,
+  createPollenClusterPlacements,
+  createPetioleGeometry,
   createTaperedStem,
   getPetalOutlineWidth,
+  getRayLongitudinalVeinStrength,
   getLeafOutlineWidth,
   seededRandom,
 } from "@/lib/flower-geometry";
@@ -187,6 +192,22 @@ describe("flower geometry", () => {
     expect(fanTip).toBeGreaterThan(lanceTip);
     expect(getPetalOutlineWidth(0, 0.5, "obovate")).toBeCloseTo(0);
     expect(getPetalOutlineWidth(1, 0.5, "spatulate")).toBeCloseTo(0);
+    expect(getPetalOutlineWidth(0, 0.5, "ray")).toBeCloseTo(0);
+    expect(getPetalOutlineWidth(1, 0.5, "ray")).toBeGreaterThan(0.7);
+    expect(getPetalOutlineWidth(0.92, 0.5, "ray")).toBeGreaterThan(
+      getPetalOutlineWidth(0.92, 0.5, "spatulate"),
+    );
+  });
+
+  it("keeps sunflower ray venation longitudinal and tissue-subtle", () => {
+    const centerVein = getRayLongitudinalVeinStrength(0, 0.55);
+    const lateralVein = getRayLongitudinalVeinStrength(0.42, 0.55);
+    const interveinalTissue = getRayLongitudinalVeinStrength(0.22, 0.55);
+
+    expect(centerVein).toBeGreaterThan(lateralVein);
+    expect(lateralVein).toBeGreaterThan(interveinalTissue);
+    expect(getRayLongitudinalVeinStrength(0, 0)).toBeCloseTo(0);
+    expect(getRayLongitudinalVeinStrength(0, 1)).toBeLessThan(centerVein);
   });
 
   it("tapers petal thickness toward the edge", () => {
@@ -342,6 +363,9 @@ describe("flower geometry", () => {
     expect(placements[1].position[0]).toBeLessThan(0);
     expect(placements[4].position[1]).toBeCloseTo(-2);
     expect(placements[4].scale).toBeGreaterThan(placements[0].scale);
+    expect(placements[4].maturity).toBeGreaterThan(placements[0].maturity);
+    expect(placements[0].maturity).toBe(0);
+    expect(placements[4].maturity).toBe(1);
   });
 
   it("distributes deterministic cluster blooms around a shared axis", () => {
@@ -358,6 +382,9 @@ describe("flower geometry", () => {
     expect(new Set(placements.map(({ position }) => position[0])).size).toBe(6);
     expect(
       placements.every(({ position }) => Math.abs(position[0]) <= 0.7),
+    ).toBe(true);
+    expect(
+      placements.every(({ maturity }) => maturity >= 0.74 && maturity <= 1),
     ).toBe(true);
   });
 
@@ -383,18 +410,68 @@ describe("flower geometry", () => {
     ).toBe(true);
   });
 
+  it("keeps stem surface details normal to a curved stem", () => {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.4, -4, 0.2),
+      new THREE.Vector3(0.5, -2.2, -0.3),
+      new THREE.Vector3(-0.2, 0, 0.1),
+    ]);
+    const placements = createStemSurfacePlacements(curve, 18, 1847);
+
+    expect(placements).toEqual(createStemSurfacePlacements(curve, 18, 1847));
+    expect(placements).toHaveLength(18);
+    expect(
+      placements.every(
+        ({ tangent, radial }) =>
+          Math.abs(tangent.dot(radial)) < 0.00001 &&
+          radial.length() > 0.999 &&
+          radial.length() < 1.001,
+      ),
+    ).toBe(true);
+    expect(
+      placements.every(
+        ({ t, position }) => position.distanceTo(curve.getPointAt(t)) < 0.00001,
+      ),
+    ).toBe(true);
+  });
+
+  it("builds deterministic multi-grain pollen clusters per anther", () => {
+    const placements = createPollenClusterPlacements(6, 3, 1847);
+
+    expect(placements).toEqual(createPollenClusterPlacements(6, 3, 1847));
+    expect(placements).toHaveLength(18);
+    expect(new Set(placements.map(({ stamenIndex }) => stamenIndex))).toEqual(
+      new Set([0, 1, 2, 3, 4, 5]),
+    );
+    expect(placements.every(({ offset }) => offset.length() > 0)).toBe(true);
+  });
+
   it("creates a curved indexed leaf", () => {
     const geometry = createLeafGeometry(0.3, 42);
 
-    expect(geometry.getAttribute("position").count).toBe(119);
-    expect(geometry.getAttribute("normal").count).toBe(119);
-    expect(geometry.getAttribute("uv").count).toBe(119);
-    expect(geometry.getAttribute("color").count).toBe(119);
-    expect(geometry.index?.count).toBe(576);
+    expect(geometry.getAttribute("position").count).toBe(377);
+    expect(geometry.getAttribute("normal").count).toBe(377);
+    expect(geometry.getAttribute("uv").count).toBe(377);
+    expect(geometry.getAttribute("color").count).toBe(377);
+    expect(geometry.index?.count).toBe(2016);
     geometry.computeBoundingBox();
     expect(geometry.boundingBox?.max.y).toBeCloseTo(1.35);
     expect(geometry.boundingBox?.max.z).toBeGreaterThan(0.1);
     geometry.dispose();
+  });
+
+  it("closes the leaf silhouette with a cached margin band", () => {
+    const leaf = createLeafGeometry(0.3, 42);
+    const margin = createLeafMarginGeometry(leaf, 0.004);
+
+    expect(margin).toBe(createLeafMarginGeometry(leaf, 0.004));
+    expect(margin.getAttribute("position").count).toBeGreaterThan(300);
+    expect(margin.getAttribute("normal").count).toBe(
+      margin.getAttribute("position").count,
+    );
+    expect(margin.getAttribute("uv").count).toBe(
+      margin.getAttribute("position").count,
+    );
   });
 
   it("creates distinct linear and lobed leaf silhouettes", () => {
@@ -416,6 +493,7 @@ describe("flower geometry", () => {
   });
 
   it("creates a broad cordate leaf base", () => {
+    expect(getLeafOutlineWidth(0, "cordate")).toBeGreaterThan(0.3);
     expect(getLeafOutlineWidth(0.2, "cordate")).toBeGreaterThan(
       getLeafOutlineWidth(0.2, "lance"),
     );
@@ -426,6 +504,18 @@ describe("flower geometry", () => {
     );
     cordate.dispose();
     lance.dispose();
+  });
+
+  it("creates a circular peltate lotus blade with a central depression", () => {
+    expect(getLeafOutlineWidth(0.5, "peltate")).toBeCloseTo(1);
+    expect(getLeafOutlineWidth(0, "peltate")).toBe(0);
+    expect(getLeafOutlineWidth(1, "peltate")).toBe(0);
+
+    const peltate = createLeafGeometry(0.5, 42, "peltate", 0);
+    const ovate = createLeafGeometry(0.5, 42, "ovate", 0);
+    expect(peltate.getAttribute("position").array).not.toEqual(
+      ovate.getAttribute("position").array,
+    );
   });
 
   it("builds deterministic branching veins within the leaf outline", () => {
@@ -511,6 +601,62 @@ describe("flower geometry", () => {
       expect(attachment.point.distanceTo(curve.getPointAt(attachment.t))).toBe(
         0,
       );
+      expect(attachment.tangent.length()).toBeCloseTo(1);
+      expect(
+        attachment.tangent.distanceTo(curve.getTangentAt(attachment.t)),
+      ).toBeLessThan(0.00001);
     }
+  });
+
+  it("supports species-specific basal leaf attachment zones", () => {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, -4, 0),
+      new THREE.Vector3(0.2, -2, 0.1),
+      new THREE.Vector3(0, 0, 0),
+    ]);
+    const basal = createLeafAttachments(curve, 2, 0.04, 0.16);
+
+    expect(basal).toHaveLength(4);
+    expect(basal.every(({ t }) => t >= 0.02 && t <= 0.19)).toBe(true);
+  });
+
+  it("alternates single leaves instead of forcing opposite pairs", () => {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, -4, 0),
+      new THREE.Vector3(0.2, -2, 0.1),
+      new THREE.Vector3(0, 0, 0),
+    ]);
+    const attachments = createLeafAttachments(curve, 4, 0.2, 0.78, "alternate");
+
+    expect(attachments).toHaveLength(4);
+    expect(attachments.map(({ side }) => side)).toEqual([1, -1, 1, -1]);
+    expect(
+      attachments.every(({ point, t }) => point.equals(curve.getPointAt(t))),
+    ).toBe(true);
+  });
+
+  it("tapers petioles through the shaft and flares into the blade", () => {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0.01, 0.15, 0.01),
+      new THREE.Vector3(0, 0.3, 0.03),
+    ]);
+    const geometry = createPetioleGeometry(curve);
+    const positions = geometry.getAttribute("position");
+    const ringRadius = (segment: number) => {
+      const center = curve.getPointAt(segment / 14);
+      let total = 0;
+      for (let ring = 0; ring < 7; ring += 1) {
+        total += new THREE.Vector3()
+          .fromBufferAttribute(positions, segment * 7 + ring)
+          .distanceTo(center);
+      }
+      return total / 7;
+    };
+
+    expect(positions.count).toBe(105);
+    expect(geometry.getAttribute("normal").count).toBe(105);
+    expect(ringRadius(0)).toBeGreaterThan(ringRadius(8));
+    expect(ringRadius(14)).toBeGreaterThan(ringRadius(8));
   });
 });

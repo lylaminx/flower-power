@@ -12,11 +12,18 @@ export type LeafTuning = {
   veinDensityScale: number;
   asymmetryScale: number;
   attachmentScale: number;
+  attachmentStart: number;
+  attachmentEnd: number;
   attachmentShift: number;
   bladePitch: number;
   bladeRoll: number;
   bladeYaw: number;
   leafColorMix: number;
+  leafGlossScale: number;
+  leafHairiness: number;
+  leafletPairs: number;
+  leafArrangement: "opposite" | "alternate";
+  venation: "pinnate" | "parallel" | "radial";
   leafShape?: LeafShape;
 };
 
@@ -35,11 +42,18 @@ export function getHeroLeafTuning(
     veinDensityScale: 1,
     asymmetryScale: 1,
     attachmentScale: 1,
+    attachmentStart: 0.28,
+    attachmentEnd: 0.72,
     attachmentShift: 0,
     bladePitch: 0,
     bladeRoll: 0,
     bladeYaw: 0,
     leafColorMix: 0.2,
+    leafGlossScale: 1,
+    leafHairiness: 0,
+    leafletPairs: 0,
+    leafArrangement: "opposite",
+    venation: "pinnate",
     leafShape: structure.leafShape,
   };
 
@@ -62,6 +76,9 @@ export function getHeroLeafTuning(
         bladeRoll: 0.04,
         bladeYaw: 0.04,
         leafColorMix: 0.18,
+        leafGlossScale: 1.7,
+        leafletPairs: 2,
+        leafArrangement: "alternate",
       };
     case "Poppy":
       return {
@@ -80,6 +97,7 @@ export function getHeroLeafTuning(
         bladeRoll: -0.05,
         bladeYaw: -0.03,
         leafColorMix: 0.1,
+        leafArrangement: "alternate",
       };
     case "Lily":
       return {
@@ -99,6 +117,8 @@ export function getHeroLeafTuning(
         bladeRoll: 0.02,
         bladeYaw: 0,
         leafColorMix: 0.14,
+        leafArrangement: "alternate",
+        venation: "parallel",
       };
     case "Sunflower":
       return {
@@ -118,25 +138,31 @@ export function getHeroLeafTuning(
         bladeRoll: 0.03,
         bladeYaw: 0.02,
         leafColorMix: 0.12,
+        leafHairiness: 1,
+        leafArrangement: "alternate",
       };
     case "Orchid":
       return {
         ...base,
-        leafWidthScale: 0.72,
-        leafLengthScale: 1.08,
-        petioleScale: 0.76,
-        petioleLift: 0.01,
+        leafWidthScale: 0.78,
+        leafLengthScale: 1.28,
+        petioleScale: 0.28,
+        petioleLift: -0.04,
         droopBias: -0.04,
         curlScale: 0.72,
         serrationScale: 0.7,
         veinDensityScale: 0.88,
         asymmetryScale: 0.84,
         attachmentScale: 0.88,
-        attachmentShift: 0.04,
+        attachmentStart: 0.035,
+        attachmentEnd: 0.085,
+        attachmentShift: 0.015,
         bladePitch: 0.02,
         bladeRoll: -0.04,
         bladeYaw: 0.03,
         leafColorMix: 0.08,
+        venation: "parallel",
+        leafShape: "lance",
       };
     case "Lotus":
       return {
@@ -151,11 +177,16 @@ export function getHeroLeafTuning(
         veinDensityScale: 0.92,
         asymmetryScale: 0.9,
         attachmentScale: 1,
+        attachmentStart: 0.05,
+        attachmentEnd: 0.13,
         attachmentShift: 0,
-        bladePitch: 0.04,
+        bladePitch: 1.32,
         bladeRoll: 0.01,
         bladeYaw: -0.02,
         leafColorMix: 0.16,
+        leafArrangement: "alternate",
+        venation: "radial",
+        leafShape: "peltate",
       };
     default:
       return base;

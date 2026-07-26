@@ -11,7 +11,10 @@ export type PetalTuning = {
   baseDarkeningScale: number;
   translucencyScale: number;
   sheenScale: number;
+  surfaceReliefScale: number;
   foldBias: number;
+  pleatStrength: number;
+  petalPersistence: number;
   twistBias: number;
   baseWidthScale: number;
   guideStrengthScale: number;
@@ -20,6 +23,7 @@ export type PetalTuning = {
   asymmetryBias: number;
   lateralCupBias: number;
   longitudinalCurveBias: number;
+  tipReflex: number;
   liftBias: number;
   placementAngleBias: number;
   placementRadialScale: number;
@@ -59,7 +63,10 @@ export function getHeroPetalTuning(
     baseDarkeningScale: 1,
     translucencyScale: 1,
     sheenScale: 1,
+    surfaceReliefScale: 1,
     foldBias: 0,
+    pleatStrength: 0,
+    petalPersistence: 1,
     twistBias: 0,
     baseWidthScale: 1,
     guideStrengthScale: 1,
@@ -68,6 +75,7 @@ export function getHeroPetalTuning(
     asymmetryBias: 0,
     lateralCupBias: 0,
     longitudinalCurveBias: 0,
+    tipReflex: 0,
     liftBias: 0,
     placementAngleBias: 0,
     placementRadialScale: 1,
@@ -88,7 +96,9 @@ export function getHeroPetalTuning(
         baseDarkeningScale: 0.92,
         translucencyScale: 0.82,
         sheenScale: 1.08,
+        surfaceReliefScale: 1.75,
         foldBias: 0.06,
+        pleatStrength: 0.22,
         twistBias: 0.03,
         baseWidthScale: 1.04,
         guideStrengthScale: 1.02,
@@ -112,7 +122,10 @@ export function getHeroPetalTuning(
         baseDarkeningScale: 0.84,
         translucencyScale: 1.5,
         sheenScale: 0.72,
+        surfaceReliefScale: 2.35,
         foldBias: -0.02,
+        pleatStrength: 1.45,
+        petalPersistence: 0.08,
         twistBias: -0.01,
         baseWidthScale: 0.96,
         guideStrengthScale: 0.88,
@@ -128,7 +141,7 @@ export function getHeroPetalTuning(
       return {
         ...tuning,
         lengthScale: 1.08,
-        widthScale: 0.78,
+        widthScale: 0.96,
         curlBias: 0.18,
         thicknessScale: 0.92,
         profileScale: 0.88,
@@ -142,6 +155,7 @@ export function getHeroPetalTuning(
         guideStrengthScale: 0.98,
         spotScale: 1.08,
         asymmetryScale: 1,
+        tipReflex: 0.42,
         liftBias: 0.02,
         placementAngleBias: 0.02,
         placementRadialScale: 0.92,

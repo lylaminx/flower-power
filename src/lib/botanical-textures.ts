@@ -50,6 +50,7 @@ export function getPetalAlbedoTexture(
   spots: number,
   guideStrength: number,
   resolution = 128,
+  markingColor?: string,
 ) {
   return getBotanicalAlbedoTexture(
     "petal",
@@ -58,6 +59,7 @@ export function getPetalAlbedoTexture(
     THREE.MathUtils.clamp(spots, 0, 1),
     THREE.MathUtils.clamp(guideStrength, 0, 1),
     resolution,
+    markingColor,
   );
 }
 
@@ -68,18 +70,19 @@ function getBotanicalAlbedoTexture(
   spots: number,
   guideStrength: number,
   resolution: number,
+  markingColor?: string,
 ) {
   const normalizedAge = THREE.MathUtils.clamp(age, 0, 1);
   const ageStep = Math.round(normalizedAge * 32) / 32;
   const spotStep = Math.round(spots * 24) / 24;
   const guideStep = Math.round(guideStrength * 24) / 24;
   const size = THREE.MathUtils.clamp(Math.round(resolution), 32, 512);
-  const key = `${surface}:${ageStep}:${Math.round(seed)}:${spotStep}:${guideStep}:${size}`;
+  const key = `${surface}:${ageStep}:${Math.round(seed)}:${spotStep}:${guideStep}:${size}:${markingColor ?? "default"}`;
   const cached = ageTextures.get(key);
   if (cached) return cached;
 
   const spotCenters = Array.from(
-    { length: Math.round(spotStep * 14) },
+    { length: Math.round(spotStep * 42) },
     (_, index) => ({
       u: 0.16 + proceduralNoise(seed + index * 17, index + 3, 0.71) * 0.68,
       v: 0.16 + proceduralNoise(seed - index * 29, index + 11, 0.43) * 0.62,
@@ -89,6 +92,7 @@ function getBotanicalAlbedoTexture(
   );
 
   const data = new Uint8Array(size * size * 4);
+  const markingTint = markingColor ? new THREE.Color(markingColor) : undefined;
   for (let y = 0; y < size; y += 1) {
     for (let x = 0; x < size; x += 1) {
       const u = x / (size - 1);
@@ -128,9 +132,34 @@ function getBotanicalAlbedoTexture(
       const offset = (y * size + x) * 4;
 
       if (surface === "petal") {
-        data[offset] = Math.round(255 - damage * 42 - marking * 24);
-        data[offset + 1] = Math.round(255 - damage * 82 - marking * 68);
-        data[offset + 2] = Math.round(255 - damage * 105 - marking * 46);
+        if (markingTint) {
+          const pigment = THREE.MathUtils.smoothstep(marking, 0.06, 0.72);
+          data[offset] = Math.round(
+            THREE.MathUtils.lerp(
+              255 - damage * 42,
+              markingTint.r * 255,
+              pigment,
+            ),
+          );
+          data[offset + 1] = Math.round(
+            THREE.MathUtils.lerp(
+              255 - damage * 82,
+              markingTint.g * 255,
+              pigment,
+            ),
+          );
+          data[offset + 2] = Math.round(
+            THREE.MathUtils.lerp(
+              255 - damage * 105,
+              markingTint.b * 255,
+              pigment,
+            ),
+          );
+        } else {
+          data[offset] = Math.round(255 - damage * 42 - marking * 24);
+          data[offset + 1] = Math.round(255 - damage * 82 - marking * 68);
+          data[offset + 2] = Math.round(255 - damage * 105 - marking * 46);
+        }
       } else {
         data[offset] = Math.round(255 - damage * 38);
         data[offset + 1] = Math.round(255 - damage * 74);

@@ -34,7 +34,8 @@ import { getBloomLoadResponse } from "@/lib/flower-physics";
 
 export function FlowerModel() {
   const settings = useFlowerStore();
-  const textureResolution = getTextureResolution(useRenderQuality());
+  const quality = useRenderQuality();
+  const textureResolution = getTextureResolution(quality);
   const lineDrawing = settings.renderMode === "line";
   const photorealistic = settings.renderMode === "photo";
   const structure = flowerSpecies[settings.preset];
@@ -82,7 +83,14 @@ export function FlowerModel() {
           stemTuning.topBendZ * 0.08,
         ),
       ]),
-    [bloomLoad, settings.stemCurve, settings.stemHeight, stemTuning],
+    [
+      bloomLoad,
+      growth.wilt,
+      settings.stemCurve,
+      settings.stemHeight,
+      stemRelax,
+      stemTuning,
+    ],
   );
   const stemGeometry = useMemo(
     () =>
@@ -100,6 +108,7 @@ export function FlowerModel() {
       settings.seed,
       settings.stemTaper,
       settings.stemThickness,
+      phaseTuning.moistureScale,
       stemPath,
       stemTuning,
       structure.stemEccentricity,
@@ -110,17 +119,108 @@ export function FlowerModel() {
     0,
     Math.min(
       6,
-      Math.round(
-        (structure.leafPairs ?? 1) *
-          settings.leafDensity *
-          leafTuning.attachmentScale,
-      ),
+      settings.preset === "Lotus"
+        ? 0
+        : Math.round(
+            (structure.leafPairs ?? 1) *
+              settings.leafDensity *
+              leafTuning.attachmentScale,
+          ),
     ),
   );
   const leafAttachments = useMemo(
-    () => createLeafAttachments(stemPath, leafPairCount),
-    [leafPairCount, stemPath],
+    () =>
+      createLeafAttachments(
+        stemPath,
+        leafPairCount,
+        leafTuning.attachmentStart,
+        leafTuning.attachmentEnd,
+        leafTuning.leafArrangement,
+      ),
+    [
+      leafPairCount,
+      leafTuning.attachmentEnd,
+      leafTuning.attachmentStart,
+      leafTuning.leafArrangement,
+      stemPath,
+    ],
   );
+  const aerialRoots = useMemo(() => {
+    const base = stemPath.getPointAt(0.045);
+    return Array.from({ length: stemTuning.aerialRootCount }, (_, index) => {
+      const angle =
+        index * 2.399963 + seededRandom(settings.seed + index * 509) * 1.05;
+      const reach = THREE.MathUtils.lerp(
+        0.38,
+        0.82,
+        seededRandom(settings.seed + index * 887 + 31),
+      );
+      const radial = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
+      return new THREE.CatmullRomCurve3([
+        base.clone(),
+        base
+          .clone()
+          .addScaledVector(radial, reach * 0.18)
+          .add(new THREE.Vector3(0, 0.015 - index * 0.012, 0)),
+        base
+          .clone()
+          .addScaledVector(radial, reach * 0.58)
+          .add(
+            new THREE.Vector3(
+              Math.sin(angle * 1.7) * 0.08,
+              -0.07 - index * 0.028,
+              Math.cos(angle * 1.3) * 0.06,
+            ),
+          ),
+        base
+          .clone()
+          .addScaledVector(radial, reach)
+          .add(
+            new THREE.Vector3(
+              Math.sin(angle * 1.7) * 0.14,
+              -0.2 - index * 0.052,
+              Math.cos(angle * 1.3) * 0.1,
+            ),
+          ),
+      ]);
+    });
+  }, [settings.seed, stemPath, stemTuning.aerialRootCount]);
+  const lotusLeafScapes = useMemo(() => {
+    if (settings.preset !== "Lotus") return [];
+    const base = stemPath.getPointAt(0.035);
+    const side = seededRandom(settings.seed + 4_217) > 0.5 ? 1 : -1;
+    return [0, 1].map((index) => {
+      const direction = index === 0 ? side : -side;
+      const endpoint = new THREE.Vector3(
+        direction *
+          THREE.MathUtils.lerp(
+            index === 0 ? 1.15 : 1.7,
+            index === 0 ? 1.48 : 2.05,
+            seededRandom(settings.seed + 7_109 + index * 613),
+          ),
+        index === 0 ? -2.48 : -2.63,
+        THREE.MathUtils.lerp(
+          index === 0 ? -0.32 : -0.85,
+          index === 0 ? 0.38 : -0.38,
+          seededRandom(settings.seed + 9_131 + index * 947),
+        ),
+      );
+      return new THREE.CatmullRomCurve3([
+        base
+          .clone()
+          .add(new THREE.Vector3(direction * (0.04 + index * 0.05), 0, 0)),
+        base
+          .clone()
+          .lerp(endpoint, 0.3)
+          .add(new THREE.Vector3(direction * 0.08, 0.06, index * -0.05)),
+        base
+          .clone()
+          .lerp(endpoint, 0.7)
+          .add(new THREE.Vector3(direction * 0.12, 0.04, index * -0.08)),
+        endpoint,
+      ]);
+    });
+  }, [settings.preset, settings.seed, stemPath]);
 
   useEffect(() => {
     warmStemGeometry({
@@ -157,6 +257,8 @@ export function FlowerModel() {
     settings.seed,
     settings.stemThickness,
     settings.stemTaper,
+    stemTuning.stemTaperScale,
+    stemTuning.stemThicknessScale,
     settings.leafCurl,
     settings.leafAsymmetry,
     settings.leafSerration,
@@ -225,18 +327,120 @@ export function FlowerModel() {
               THREE.MathUtils.lerp(1, 0.9, growth.wilt * phaseTuning.wiltScale),
           ),
         )}
+        leafAttachments={leafAttachments}
         seed={settings.seed}
         tuning={stemTuning}
       />
+
+      {lotusLeafScapes.map((scape, index) => (
+        <mesh key={`lotus-leaf-scape-${index}`}>
+          <tubeGeometry
+            args={[
+              scape,
+              quality === "draft" ? 20 : quality === "ultra" ? 40 : 30,
+              (index === 0 ? 0.045 : 0.039) * settings.stemThickness,
+              quality === "draft" ? 7 : 10,
+              false,
+            ]}
+          />
+          {lineDrawing ? (
+            <meshBasicMaterial color="#ffffff" />
+          ) : (
+            <meshPhysicalMaterial
+              color={settings.stemColor}
+              roughness={0.84}
+              specularIntensity={0.12}
+              bumpMap={getBotanicalTexture("stem", textureResolution)}
+              bumpScale={0.018}
+            />
+          )}
+          {lineDrawing && <Edges color="#111111" threshold={18} />}
+        </mesh>
+      ))}
+
+      {aerialRoots.map((root, index) => {
+        const tip = root.getPointAt(1);
+        return (
+          <group key={`aerial-root-${index}`}>
+            <mesh>
+              <tubeGeometry
+                args={[
+                  root,
+                  quality === "draft" ? 14 : quality === "ultra" ? 32 : 22,
+                  0.035,
+                  quality === "draft" ? 6 : 9,
+                  false,
+                ]}
+              />
+              {lineDrawing ? (
+                <meshBasicMaterial color="#ffffff" />
+              ) : (
+                <meshPhysicalMaterial
+                  color="#aeb9a1"
+                  roughness={0.92}
+                  bumpMap={getBotanicalTexture("stem", textureResolution)}
+                  bumpScale={0.022}
+                  normalMap={getBotanicalMaterialTexture(
+                    "stem",
+                    "microNormal",
+                    textureResolution,
+                  )}
+                  normalScale={new THREE.Vector2(0.1, 0.1)}
+                />
+              )}
+              {lineDrawing && <Edges color="#111111" threshold={18} />}
+            </mesh>
+            <mesh position={tip} scale={[0.04, 0.055, 0.04]}>
+              <sphereGeometry args={[1, 10, 7]} />
+              {lineDrawing ? (
+                <meshBasicMaterial color="#ffffff" />
+              ) : (
+                <meshStandardMaterial color="#78956a" roughness={0.86} />
+              )}
+              {lineDrawing && <Edges color="#111111" threshold={18} />}
+            </mesh>
+          </group>
+        );
+      })}
 
       {leafAttachments.map((attachment) => (
         <FlowerLeaf
           key={`${attachment.side}-${attachment.t}`}
           side={attachment.side}
           attachment={attachment.point}
+          stemTangent={attachment.tangent}
           attachmentT={attachment.t}
         />
       ))}
+
+      {lotusLeafScapes.map((scape, index) => (
+        <FlowerLeaf
+          key={`lotus-leaf-${index}`}
+          side={index === 0 ? 1 : -1}
+          attachment={scape.getPointAt(1)}
+          stemTangent={scape.getTangentAt(1)}
+          attachmentT={0.08 + index * 0.11}
+        />
+      ))}
+
+      {settings.preset === "Lotus" && !lineDrawing && (
+        <group position={[0, -2.68, 0]}>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+            <circleGeometry args={[12, quality === "draft" ? 64 : 128]} />
+            <meshPhysicalMaterial
+              color="#4f8580"
+              roughness={0.14}
+              specularIntensity={0.72}
+              clearcoat={0.58}
+              clearcoatRoughness={0.12}
+              transmission={0.24}
+              transparent
+              opacity={0.42}
+              depthWrite={false}
+            />
+          </mesh>
+        </group>
+      )}
 
       {structure.inflorescenceArchitecture === "spike" ||
       structure.inflorescenceArchitecture === "cluster" ? (
@@ -244,7 +448,12 @@ export function FlowerModel() {
       ) : (
         <group
           rotation={[
-            0.72 + settings.bloomTilt + bloomLoad.bloomDroop,
+            0.72 +
+              settings.bloomTilt +
+              bloomLoad.bloomDroop +
+              stemTuning.budNod *
+                (1 - growth.openness) *
+                THREE.MathUtils.lerp(1, 0.72, growth.wilt),
             settings.bloomTurn,
             -0.42 + bloomLoad.individualLean * 0.4,
           ]}

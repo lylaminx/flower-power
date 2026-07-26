@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import scenarios from "../../image-tests/scenarios.json";
 
-for (const scenario of scenarios) {
+for (const scenario of scenarios.filter((candidate) => !candidate.reviewOnly)) {
   test(`${scenario.species}: ${scenario.id}`, async ({ page }) => {
     await page.setViewportSize(scenario.dimensions);
     await page.goto(`/visual-test/${scenario.id}`);
@@ -9,7 +9,10 @@ for (const scenario of scenarios) {
     const stage = page.locator("[data-visual-test-ready]");
     await expect(stage).toHaveAttribute("data-scenario", scenario.id);
     await expect(stage).toHaveAttribute("data-visual-test-ready", "true", {
-      timeout: 30_000,
+      // The first scenario also pays the Next.js development compilation cost.
+      // Scene readiness itself waits for WebGL shader compilation and settled
+      // frames, so this is a startup budget rather than an arbitrary sleep.
+      timeout: 60_000,
     });
 
     const capture = await page.screenshot({ animations: "disabled" });

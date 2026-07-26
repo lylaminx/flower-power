@@ -8,12 +8,18 @@ import {
   BookOpen,
   ChevronLeft,
   Download,
+  Flower2,
   Menu,
   Grid3X3,
+  Image as ImageIcon,
+  MoreHorizontal,
+  Palette,
   Pencil,
   RefreshCw,
   Save,
+  SlidersHorizontal,
   Sparkles,
+  X,
 } from "lucide-react";
 import {
   useCallback,
@@ -88,6 +94,8 @@ function CanvasControlPanel({
   renderQuality,
   setRenderQuality,
   qualityInteraction,
+  mobileActive = false,
+  onMobileClose,
 }: {
   lightingPreset: LightingPreset;
   setLightingPreset: (value: LightingPreset) => void;
@@ -112,11 +120,24 @@ function CanvasControlPanel({
   renderQuality: RenderQuality;
   setRenderQuality: (value: RenderQuality) => void;
   qualityInteraction: boolean;
+  mobileActive?: boolean;
+  onMobileClose?: () => void;
 }) {
   const store = useFlowerStore();
 
   return (
-    <aside className="canvas-control-panel" aria-label="Render controls">
+    <aside
+      className={`canvas-control-panel ${mobileActive ? "mobile-active" : ""}`}
+      aria-label="Render controls"
+    >
+      <button
+        className="mobile-sheet-close"
+        aria-label="Close render controls"
+        onClick={onMobileClose}
+      >
+        <span>Render & camera</span>
+        <X size={18} />
+      </button>
       <section
         className="canvas-control-section"
         aria-label="Lighting controls"
@@ -321,6 +342,7 @@ function CanvasControlPanel({
 }
 
 type PersistenceMode = "database" | "file";
+type MobilePanel = "variety" | "adjust" | "render" | "palette" | "actions";
 
 const configuredPersistenceMode: PersistenceMode =
   process.env.NEXT_PUBLIC_PERSISTENCE_MODE === "file" ? "file" : "database";
@@ -350,6 +372,7 @@ export function FlowerStudio({
     useState(0.42);
   const [renderQuality, setRenderQuality] = useState<RenderQuality>("high");
   const [qualityInteraction, setQualityInteraction] = useState(false);
+  const [mobilePanel, setMobilePanel] = useState<MobilePanel | null>(null);
   const qualityRestoreTimer = useRef<number | null>(null);
   const qualityInteractionActive = useRef(false);
   const [saveStatus, setSaveStatus] = useState<
@@ -467,9 +490,13 @@ export function FlowerStudio({
     }
   };
 
+  const toggleMobilePanel = (panel: MobilePanel) => {
+    setMobilePanel((current) => (current === panel ? null : panel));
+  };
+
   return (
     <main
-      className="studio-shell"
+      className={`studio-shell ${mobilePanel === "actions" ? "mobile-actions-open" : ""}`}
       onPointerDownCapture={beginQualityInteraction}
       onPointerUpCapture={endQualityInteraction}
       onPointerCancelCapture={endQualityInteraction}
@@ -477,12 +504,25 @@ export function FlowerStudio({
       <header className="topbar">
         <div className="brand">
           <BrandLogo />
+          <span className="mobile-brand-mark">
+            <BrandLogo markOnly />
+          </span>
         </div>
         <div className="study-name">
           <span>UNTITLED STUDY</span>
           <b>{store.preset} study</b>
         </div>
-        <div className="top-actions">
+        <div
+          className={`top-actions ${mobilePanel === "actions" ? "mobile-active" : ""}`}
+        >
+          <button
+            className="mobile-sheet-close mobile-actions-close"
+            aria-label="Close study actions"
+            onClick={() => setMobilePanel(null)}
+          >
+            <span>Study actions</span>
+            <X size={18} />
+          </button>
           <ThemeToggle />
           <a
             className="icon-button"
@@ -593,8 +633,17 @@ export function FlowerStudio({
 
       <section className="workspace">
         <aside
-          className={`control-panel left-panel ${store.panelOpen ? "open" : "closed"}`}
+          className={`control-panel left-panel ${store.panelOpen ? "open" : "closed"} ${mobilePanel === "variety" ? "mobile-active" : ""}`}
+          aria-label="Flower varieties"
         >
+          <button
+            className="mobile-sheet-close"
+            aria-label="Close flower varieties"
+            onClick={() => setMobilePanel(null)}
+          >
+            <span>Choose a variety</span>
+            <X size={18} />
+          </button>
           <button
             className="panel-toggle"
             onClick={store.togglePanel}
@@ -615,7 +664,10 @@ export function FlowerStudio({
                   <button
                     key={preset}
                     className={store.preset === preset ? "active" : ""}
-                    onClick={() => store.applyPreset(preset)}
+                    onClick={() => {
+                      store.applyPreset(preset);
+                      setMobilePanel(null);
+                    }}
                   >
                     <i className={`mini-flower ${preset.toLowerCase()}`} />
                     {preset}
@@ -703,6 +755,8 @@ export function FlowerStudio({
             renderQuality={renderQuality}
             setRenderQuality={setRenderQuality}
             qualityInteraction={qualityInteraction}
+            mobileActive={mobilePanel === "render"}
+            onMobileClose={() => setMobilePanel(null)}
           />
           <div className="canvas-mode-tools" aria-label="Canvas display modes">
             <button
@@ -755,7 +809,18 @@ export function FlowerStudio({
               <RefreshCw size={17} />
             </button>
           </div>
-          <aside className="canvas-palette" aria-label="Flower color palette">
+          <aside
+            className={`canvas-palette ${mobilePanel === "palette" ? "mobile-active" : ""}`}
+            aria-label="Flower color palette"
+          >
+            <button
+              className="mobile-sheet-close"
+              aria-label="Close flower colors"
+              onClick={() => setMobilePanel(null)}
+            >
+              <span>Flower colors</span>
+              <X size={18} />
+            </button>
             <span>COLOR PALETTE</span>
             <div className="colors">
               <ColorControl label="Petal" property="petalColor" />
@@ -778,7 +843,66 @@ export function FlowerStudio({
           </div>
         </div>
 
-        <FlowerAdjustmentPanel />
+        <FlowerAdjustmentPanel
+          mobileActive={mobilePanel === "adjust"}
+          onMobileClose={() => setMobilePanel(null)}
+        />
+
+        {mobilePanel && (
+          <button
+            className="mobile-sheet-backdrop"
+            aria-label="Close mobile tools"
+            onClick={() => setMobilePanel(null)}
+          />
+        )}
+
+        <nav className="mobile-tool-dock" aria-label="Flower design tools">
+          <button
+            className={mobilePanel === "variety" ? "active" : ""}
+            aria-label="Choose flower variety"
+            aria-expanded={mobilePanel === "variety"}
+            onClick={() => toggleMobilePanel("variety")}
+          >
+            <Flower2 size={19} />
+            <span>Variety</span>
+          </button>
+          <button
+            className={mobilePanel === "adjust" ? "active" : ""}
+            aria-label="Adjust flower details"
+            aria-expanded={mobilePanel === "adjust"}
+            onClick={() => toggleMobilePanel("adjust")}
+          >
+            <SlidersHorizontal size={19} />
+            <span>Adjust</span>
+          </button>
+          <button
+            className={mobilePanel === "render" ? "active" : ""}
+            aria-label="Open render controls"
+            aria-expanded={mobilePanel === "render"}
+            onClick={() => toggleMobilePanel("render")}
+          >
+            <ImageIcon size={19} />
+            <span>Render</span>
+          </button>
+          <button
+            className={mobilePanel === "palette" ? "active" : ""}
+            aria-label="Choose flower colors"
+            aria-expanded={mobilePanel === "palette"}
+            onClick={() => toggleMobilePanel("palette")}
+          >
+            <Palette size={19} />
+            <span>Colors</span>
+          </button>
+          <button
+            className={mobilePanel === "actions" ? "active" : ""}
+            aria-label="Open study actions"
+            aria-expanded={mobilePanel === "actions"}
+            onClick={() => toggleMobilePanel("actions")}
+          >
+            <MoreHorizontal size={19} />
+            <span>More</span>
+          </button>
+        </nav>
       </section>
     </main>
   );

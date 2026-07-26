@@ -1,16 +1,31 @@
 "use client";
 
-import { ChevronRight, Menu } from "lucide-react";
+import { ChevronRight, Menu, X } from "lucide-react";
 import { RangeControl } from "./flower-controls";
 import { useFlowerStore } from "@/lib/flower-store";
 
-export function FlowerAdjustmentPanel() {
+export function FlowerAdjustmentPanel({
+  mobileActive = false,
+  onMobileClose,
+}: {
+  mobileActive?: boolean;
+  onMobileClose?: () => void;
+}) {
   const store = useFlowerStore();
 
   return (
     <aside
-      className={`control-panel right-panel ${store.rightPanelOpen ? "open" : "closed"}`}
+      className={`control-panel right-panel ${store.rightPanelOpen ? "open" : "closed"} ${mobileActive ? "mobile-active" : ""}`}
+      aria-label="Flower adjustments"
     >
+      <button
+        className="mobile-sheet-close"
+        aria-label="Close flower adjustments"
+        onClick={onMobileClose}
+      >
+        <span>Adjust flower</span>
+        <X size={18} />
+      </button>
       <button
         className="panel-toggle right-panel-toggle"
         onClick={store.toggleRightPanel}

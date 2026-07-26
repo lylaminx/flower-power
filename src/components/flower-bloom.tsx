@@ -53,6 +53,19 @@ export function FlowerBloom({
           overlapJitter: structure.overlapJitter,
           role: layer.role,
         });
+        const layerProgress =
+          structure.layers.length <= 1
+            ? 0
+            : layerIndex / (structure.layers.length - 1);
+        const individualWilt =
+          growth.wilt *
+          phaseTuning.wiltScale *
+          THREE.MathUtils.lerp(
+            0.72,
+            1.28,
+            seededRandom(seed + index * 347 + layerIndex * 89),
+          ) *
+          THREE.MathUtils.lerp(1.18, 0.68, layerProgress);
         const tuning = getHeroPetalTuning(
           settings.preset,
           structure,
@@ -91,7 +104,7 @@ export function FlowerBloom({
           width,
           curl:
             settings.petalCurl * (0.92 + tuning.curlBias * 0.45) +
-            growth.wilt * 0.42 * phaseTuning.petalCurlScale,
+            individualWilt * 0.42 * phaseTuning.petalCurlScale,
           lift:
             (1 - settings.bloom) * 0.72 +
             layer.lift -
@@ -109,8 +122,11 @@ export function FlowerBloom({
           waviness: settings.petalWaviness,
           wavePhase: random * Math.PI * 2,
           thicknessScale: settings.petalThickness * tuning.thicknessScale,
-          fold: settings.petalFold + tuning.foldBias + growth.wilt * 0.05,
-          twist: settings.petalTwist + tuning.twistBias + growth.wilt * 0.03,
+          fold: settings.petalFold + tuning.foldBias + individualWilt * 0.05,
+          twist:
+            settings.petalTwist +
+            tuning.twistBias +
+            (secondary - 0.5) * individualWilt * 0.12,
           baseWidth: settings.petalBaseWidth * tuning.baseWidthScale,
           spots: settings.petalSpots * tuning.spotScale * 0.15,
           guideStrength:
@@ -129,6 +145,7 @@ export function FlowerBloom({
           longitudinalCurve:
             (layer.longitudinalCurve ?? structure.longitudinalCurve ?? 0) +
             tuning.longitudinalCurveBias,
+          tipReflex: tuning.tipReflex * opening,
           lateralCup:
             (layer.lateralCup ?? structure.lateralCup ?? 1) +
             tuning.lateralCupBias,
@@ -139,6 +156,12 @@ export function FlowerBloom({
     });
   }, [
     fusedCorolla,
+    growth.wilt,
+    phaseTuning.petalCurlScale,
+    phaseTuning.petalLiftScale,
+    phaseTuning.petalOpenScale,
+    phaseTuning.petalSpreadScale,
+    phaseTuning.wiltScale,
     seedOffset,
     settings.bloom,
     settings.petalAsymmetry,
@@ -161,6 +184,7 @@ export function FlowerBloom({
     settings.petalTwist,
     settings.petalWaviness,
     settings.seed,
+    settings.preset,
     settings.variation,
     structure,
     phase,

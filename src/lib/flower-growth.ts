@@ -135,3 +135,55 @@ export function getFlowerGrowthState(
     calyxRelease,
   };
 }
+
+export function getLeafSenescence(
+  age: number,
+  wilt: number,
+  attachmentT: number,
+  individual: number,
+) {
+  const normalizedHeight = THREE.MathUtils.clamp(
+    (attachmentT - 0.25) / 0.55,
+    0,
+    1,
+  );
+  const lowerLeafExposure = THREE.MathUtils.lerp(1.2, 0.82, normalizedHeight);
+  const individualStress = THREE.MathUtils.lerp(
+    0.82,
+    1.18,
+    THREE.MathUtils.clamp(individual, 0, 1),
+  );
+  const stress = lowerLeafExposure * individualStress;
+  const senescenceAge = THREE.MathUtils.clamp(age * stress, 0, 1);
+
+  return {
+    age: senescenceAge,
+    wilt: THREE.MathUtils.clamp(wilt * stress, 0, 1),
+    moistureScale: THREE.MathUtils.lerp(1.04, 0.72, senescenceAge),
+  };
+}
+
+export function getCompositeFloretMaturity(
+  radialProgress: number,
+  reproductiveMaturity: number,
+) {
+  const progress = THREE.MathUtils.clamp(radialProgress, 0, 1);
+  const maturity = THREE.MathUtils.clamp(reproductiveMaturity, 0, 1);
+  const floweringFront = THREE.MathUtils.lerp(1.12, -0.08, maturity);
+  return THREE.MathUtils.smoothstep(
+    progress,
+    floweringFront - 0.08,
+    floweringFront + 0.08,
+  );
+}
+
+export function getCompositeFloretSenescence(
+  radialProgress: number,
+  reproductiveMaturity: number,
+) {
+  const progress = THREE.MathUtils.clamp(radialProgress, 0, 1);
+  const maturity = THREE.MathUtils.clamp(reproductiveMaturity, 0, 1);
+  const floweringFront = THREE.MathUtils.lerp(1.12, -0.08, maturity);
+  const passedDistance = progress - floweringFront;
+  return THREE.MathUtils.smoothstep(passedDistance, 0.3, 0.58);
+}

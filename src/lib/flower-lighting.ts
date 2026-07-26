@@ -61,11 +61,14 @@ export const lightingRigs: Record<LightingPreset, LightingRig> = {
     exposure: 0.94,
     environmentIntensity: 0.1,
     keyColor: "#ffd9a8",
-    keyIntensity: 3.1,
+    // Keep the camera-side key restrained so the rear rim remains the dominant
+    // source and thin petals reveal thickness instead of flattening into
+    // uniformly front-lit color.
+    keyIntensity: 1.15,
     fillColor: "#cddff2",
-    fillIntensity: 0.85,
+    fillIntensity: 0.55,
     rimColor: "#fff0c7",
-    rimIntensity: 2.5,
+    rimIntensity: 3.6,
     groundColor: "#d4d0c4",
     environmentPreset: "dawn",
   },

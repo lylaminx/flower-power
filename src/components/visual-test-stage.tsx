@@ -37,7 +37,7 @@ export function VisualTestStage({
       }}
     >
       <FlowerScene
-        backgroundColor="#ffffff"
+        backgroundColor={scenario.backgroundColor ?? "#ffffff"}
         environment={false}
         interactive={false}
         onExportReady={() => undefined}

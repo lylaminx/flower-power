@@ -37,6 +37,10 @@ export function createInflorescencePlacements({
     const secondary = seededRandom(seed + index * 761);
     if (architecture === "spike") {
       const side = index % 2 === 0 ? 1 : -1;
+      const maturity =
+        safeCount <= 1
+          ? 1
+          : THREE.MathUtils.smoothstep(index, 0, safeCount - 1);
       return {
         position: [
           side * spread * THREE.MathUtils.lerp(0.58, 0.9, random),
@@ -49,6 +53,7 @@ export function createInflorescencePlacements({
           side * -0.42,
         ] as [number, number, number],
         scale: THREE.MathUtils.lerp(0.68, 0.96, index / safeCount),
+        maturity,
         seedOffset: (index + 1) * 10_003,
       };
     }
@@ -68,6 +73,7 @@ export function createInflorescencePlacements({
         (random - 0.5) * 0.32,
       ] as [number, number, number],
       scale: THREE.MathUtils.lerp(0.62, 0.78, random),
+      maturity: THREE.MathUtils.lerp(0.74, 1, secondary),
       seedOffset: (index + 1) * 10_003,
     };
   });
@@ -197,9 +203,31 @@ export function getPetalOutlineWidth(
       );
     case "spatulate":
       return ellipse * THREE.MathUtils.lerp(0.34, 1.22, towardTip * towardTip);
+    case "ray": {
+      const basalExpansion = THREE.MathUtils.smoothstep(clampedT, 0.015, 0.2);
+      const distalTaper = THREE.MathUtils.lerp(
+        1,
+        0.74,
+        THREE.MathUtils.smoothstep(clampedT, 0.72, 1),
+      );
+      return basalExpansion * distalTaper;
+    }
     default:
       return ellipse;
   }
+}
+
+export function getRayLongitudinalVeinStrength(across: number, t: number) {
+  const clampedAcross = THREE.MathUtils.clamp(across, -1, 1);
+  const clampedT = THREE.MathUtils.clamp(t, 0, 1);
+  const vein = (center: number, width: number, strength: number) =>
+    Math.exp(-Math.pow((clampedAcross - center) / width, 2)) * strength;
+  const longitudinalField =
+    vein(0, 0.055, 1) + vein(-0.42, 0.07, 0.62) + vein(0.42, 0.07, 0.62);
+  const basalFade = THREE.MathUtils.smoothstep(clampedT, 0.04, 0.2);
+  const distalFade =
+    1 - THREE.MathUtils.smoothstep(clampedT, 0.82, 0.995) * 0.45;
+  return longitudinalField * basalFade * distalFade;
 }
 
 export function getPetalGeometryCacheKey({
@@ -217,6 +245,7 @@ export function getPetalGeometryCacheKey({
   wavePhase = 0,
   thicknessScale = 1,
   fold = 0.5,
+  pleatStrength = 0,
   twist = 0.5,
   baseWidth = 1,
   spots = 0,
@@ -227,6 +256,7 @@ export function getPetalGeometryCacheKey({
   edgeIrregularity = 0,
   outline = "elliptic",
   longitudinalCurve = 0,
+  tipReflex = 0,
   lateralCup = 1,
   lengthSegments = 18,
   widthSegments = 8,
@@ -245,6 +275,7 @@ export function getPetalGeometryCacheKey({
   wavePhase?: number;
   thicknessScale?: number;
   fold?: number;
+  pleatStrength?: number;
   twist?: number;
   baseWidth?: number;
   spots?: number;
@@ -255,6 +286,7 @@ export function getPetalGeometryCacheKey({
   edgeIrregularity?: number;
   outline?: PetalOutline;
   longitudinalCurve?: number;
+  tipReflex?: number;
   lateralCup?: number;
   lengthSegments?: number;
   widthSegments?: number;
@@ -275,6 +307,7 @@ export function getPetalGeometryCacheKey({
     wavePhase,
     thicknessScale,
     fold,
+    pleatStrength,
     twist,
     baseWidth,
     spots,
@@ -285,6 +318,7 @@ export function getPetalGeometryCacheKey({
     edgeIrregularity,
     outline,
     longitudinalCurve,
+    tipReflex,
     lateralCup,
     lengthSegments,
     widthSegments,
@@ -306,6 +340,7 @@ export function createPetalGeometry({
   wavePhase = 0,
   thicknessScale = 1,
   fold = 0.5,
+  pleatStrength = 0,
   twist = 0.5,
   baseWidth = 1,
   spots = 0,
@@ -316,6 +351,7 @@ export function createPetalGeometry({
   edgeIrregularity = 0,
   outline = "elliptic",
   longitudinalCurve = 0,
+  tipReflex = 0,
   lateralCup = 1,
   lengthSegments = 18,
   widthSegments = 8,
@@ -334,6 +370,7 @@ export function createPetalGeometry({
   wavePhase?: number;
   thicknessScale?: number;
   fold?: number;
+  pleatStrength?: number;
   twist?: number;
   baseWidth?: number;
   spots?: number;
@@ -344,6 +381,7 @@ export function createPetalGeometry({
   edgeIrregularity?: number;
   outline?: PetalOutline;
   longitudinalCurve?: number;
+  tipReflex?: number;
   lateralCup?: number;
   lengthSegments?: number;
   widthSegments?: number;
@@ -363,6 +401,7 @@ export function createPetalGeometry({
     wavePhase,
     thicknessScale,
     fold,
+    pleatStrength,
     twist,
     baseWidth,
     spots,
@@ -373,6 +412,7 @@ export function createPetalGeometry({
     edgeIrregularity,
     outline,
     longitudinalCurve,
+    tipReflex,
     lateralCup,
     lengthSegments,
     widthSegments,
@@ -397,13 +437,19 @@ export function createPetalGeometry({
       for (let row = 0; row <= lengthSegments; row += 1) {
         const t = row / lengthSegments;
         const roundedWidth = getPetalOutlineWidth(t, profile, outline);
-        const ruffle =
+        // Margin ruffles should read as broad organic undulation. Applying the
+        // old 17/31-cycle signal directly to blade width produced a saw-tooth
+        // silhouette even with dense tessellation. Fine crinkling belongs in
+        // the out-of-plane edge displacement below.
+        const marginUndulation =
           1 +
           edgeRuffle *
-            (Math.sin(t * Math.PI * 17) + Math.sin(t * Math.PI * 31)) *
-            0.5;
+            (Math.sin(t * Math.PI * 3.7 + leftEdgePhase * 0.18) +
+              Math.sin(t * Math.PI * 7.3 + rightEdgePhase * 0.14)) *
+            0.06;
         const basalWidth = 0.045 * baseWidth * (1 - t) * (1 - t);
-        const halfWidth = width * (basalWidth + roundedWidth * 0.5) * ruffle;
+        const halfWidth =
+          width * (basalWidth + roundedWidth * 0.5) * marginUndulation;
 
         for (let column = 0; column <= widthSegments; column += 1) {
           const across = (column / widthSegments) * 2 - 1;
@@ -411,12 +457,28 @@ export function createPetalGeometry({
             across * across * 0.085 * lateralCup * Math.sin(Math.PI * t);
           const centerFold =
             (1 - across * across) * 0.07 * fold * Math.sin(Math.PI * t);
+          const pleatWave = Math.sin(across * Math.PI * 4.5 + wavePhase * 0.24);
+          const longitudinalPleats =
+            pleatStrength *
+            Math.sign(pleatWave) *
+            Math.pow(Math.abs(pleatWave), 1.65) *
+            Math.pow(Math.sin(Math.PI * t), 0.72) *
+            THREE.MathUtils.lerp(0.45, 1, t) *
+            0.04;
+          const paperCreases =
+            pleatStrength *
+            Math.sin(across * Math.PI * 8.5 - wavePhase * 0.17) *
+            Math.sin(t * Math.PI * 7.2 + across * 1.8) *
+            Math.pow(Math.sin(Math.PI * t), 0.58) *
+            0.009;
           const bladeTwist = across * t * t * twist * 0.11;
           const tipNotch =
             notch *
             Math.exp(-Math.pow(across / 0.27, 2)) *
             Math.pow(Math.max(0, (t - 0.76) / 0.24), 2);
           const vein = Math.exp(-Math.pow(across / 0.12, 2));
+          const rayVeins =
+            outline === "ray" ? getRayLongitudinalVeinStrength(across, t) : 0;
           const basalTone = THREE.MathUtils.lerp(
             baseDarkening,
             1,
@@ -452,6 +514,10 @@ export function createPetalGeometry({
             Math.pow(t, 1.25) *
             Math.sin(across * Math.PI * 1.5 + t * 7 + wavePhase) *
             0.035;
+          const reflex =
+            tipReflex *
+            Math.pow(THREE.MathUtils.smoothstep(t, 0.34, 1), 1.35) *
+            (0.84 + (1 - across * across) * 0.16);
           const localThickness =
             thickness *
             (0.18 + Math.pow(Math.sin(Math.PI * t), 0.45) * 0.82) *
@@ -478,6 +544,7 @@ export function createPetalGeometry({
                   basalTone *
                   (0.95 +
                     vein * 0.05 +
+                    rayVeins * 0.035 +
                     seededRandom(row * 31 + column) * 0.025) *
                   guide *
                   spot
@@ -494,14 +561,23 @@ export function createPetalGeometry({
               t * t * curl * 0.3 +
               edgeCup +
               centerFold +
+              longitudinalPleats +
+              paperCreases +
               surfaceOffset +
+              rayVeins *
+                width *
+                0.006 *
+                thicknessScale *
+                (face === 0 ? 1 : -0.42) +
               edgeRipple * 0.025 +
               surfaceWave +
-              Math.sin(Math.PI * t) * t * longitudinalCurve * 0.18,
+              Math.sin(Math.PI * t) * t * longitudinalCurve * 0.18 -
+              reflex,
             t * length -
               tipNotch -
               wornEdge * 0.16 +
               bladeTwist +
+              paperCreases * 0.34 +
               edgeRipple * 0.018 +
               lateralWave,
           );
@@ -729,11 +805,14 @@ export function getLeafOutlineWidth(t: number, shape: LeafShape = "ovate") {
     case "lance":
       return Math.pow(baseTaper, 0.48) * (0.76 + clampedT * 0.22);
     case "cordate":
-      return (
+      return Math.max(
         Math.pow(baseTaper, 0.42) *
-        (1.08 - clampedT * 0.28) *
-        (0.9 + Math.exp(-Math.pow((clampedT - 0.18) / 0.16, 2)) * 0.16)
+          (1.08 - clampedT * 0.28) *
+          (0.9 + Math.exp(-Math.pow((clampedT - 0.18) / 0.16, 2)) * 0.16),
+        0.34 * Math.exp(-Math.pow(clampedT / 0.13, 2)),
       );
+    case "peltate":
+      return Math.sqrt(Math.max(0, 1 - Math.pow(clampedT * 2 - 1, 2)));
     default:
       return Math.pow(baseTaper, 0.72);
   }
@@ -848,8 +927,8 @@ export function createLeafGeometry(
 
   return getCachedGeometry(cacheKey, () => {
     const geometry = new THREE.BufferGeometry();
-    const rows = 16;
-    const columns = 6;
+    const rows = 28;
+    const columns = 12;
     const positions: number[] = [];
     const colors: number[] = [];
     const uvs: number[] = [];
@@ -881,10 +960,20 @@ export function createLeafGeometry(
             sideCharacter *
             edgeIrregularity *
             (1 + Math.sign(across) * asymmetry * Math.sin(Math.PI * t)),
-          t * 1.35,
+          t * 1.35 +
+            (shape === "cordate"
+              ? 0.13 *
+                Math.exp(-Math.pow(t / 0.12, 2)) *
+                (1 - Math.pow(Math.abs(across), 1.35))
+              : 0),
           Math.sin(Math.PI * t) * (0.055 + curl * 0.13) +
             across * across * (0.018 + curl * 0.055) +
-            (seededRandom(seed + row) - 0.5) * 0.012,
+            (seededRandom(seed + row) - 0.5) * 0.012 -
+            (shape === "peltate"
+              ? 0.05 *
+                Math.exp(-Math.pow((t - 0.5) / 0.16, 2)) *
+                Math.exp(-Math.pow(across / 0.3, 2))
+              : 0),
         );
         const ageVariation = seededRandom(seed + row * 17 + column * 37);
         const edgeShade = Math.abs(across) * 0.045;
@@ -915,6 +1004,44 @@ export function createLeafGeometry(
     geometry.computeVertexNormals();
     return geometry;
   });
+}
+
+export function createLeafMarginGeometry(
+  leafGeometry: THREE.BufferGeometry,
+  thickness = 0.0035,
+) {
+  return getCachedGeometry(
+    ["leafMargin", leafGeometry.uuid, thickness].join("|"),
+    () => {
+      const positions = leafGeometry.getAttribute("position");
+      const rows = 28;
+      const columns = 12;
+      const rowWidth = columns + 1;
+      const perimeter: THREE.Vector3[] = [];
+
+      for (let row = 0; row <= rows; row += 1) {
+        perimeter.push(
+          new THREE.Vector3().fromBufferAttribute(positions, row * rowWidth),
+        );
+      }
+      for (let row = rows; row >= 0; row -= 1) {
+        perimeter.push(
+          new THREE.Vector3().fromBufferAttribute(
+            positions,
+            row * rowWidth + columns,
+          ),
+        );
+      }
+      for (let column = columns - 1; column > 0; column -= 1) {
+        perimeter.push(
+          new THREE.Vector3().fromBufferAttribute(positions, column),
+        );
+      }
+
+      const curve = new THREE.CatmullRomCurve3(perimeter, true, "centripetal");
+      return new THREE.TubeGeometry(curve, 68, thickness, 5, true);
+    },
+  );
 }
 
 export function createTaperedStem(
@@ -1007,6 +1134,80 @@ export function createTaperedStem(
   });
 }
 
+export function createPetioleGeometry(
+  curve: THREE.Curve<THREE.Vector3>,
+  baseRadius = 0.022,
+  shaftRadius = 0.012,
+  bladeFlare = 0.006,
+) {
+  const segments = 14;
+  const radialSegments = 7;
+  const cacheKey = [
+    "petiole",
+    curve
+      .getPoints(4)
+      .map((point) => [point.x, point.y, point.z].join(","))
+      .join(";"),
+    baseRadius,
+    shaftRadius,
+    bladeFlare,
+  ].join("|");
+
+  return getCachedGeometry(cacheKey, () => {
+    const geometry = new THREE.BufferGeometry();
+    const frames = curve.computeFrenetFrames(segments, false);
+    const positions: number[] = [];
+    const uvs: number[] = [];
+    const indices: number[] = [];
+
+    for (let segment = 0; segment <= segments; segment += 1) {
+      const t = segment / segments;
+      const point = curve.getPointAt(t);
+      const terminalFlare = THREE.MathUtils.smoothstep(t, 0.72, 1) * bladeFlare;
+      const radius =
+        THREE.MathUtils.lerp(baseRadius, shaftRadius, Math.sqrt(t)) +
+        terminalFlare;
+
+      for (let ring = 0; ring < radialSegments; ring += 1) {
+        const angle = (ring / radialSegments) * Math.PI * 2;
+        const offset = frames.normals[segment]
+          .clone()
+          .multiplyScalar(Math.cos(angle) * radius)
+          .addScaledVector(frames.binormals[segment], Math.sin(angle) * radius);
+        positions.push(
+          point.x + offset.x,
+          point.y + offset.y,
+          point.z + offset.z,
+        );
+        uvs.push(ring / radialSegments, t);
+      }
+    }
+
+    for (let segment = 0; segment < segments; segment += 1) {
+      for (let ring = 0; ring < radialSegments; ring += 1) {
+        const nextRing = (ring + 1) % radialSegments;
+        const current = segment * radialSegments + ring;
+        const next = current + radialSegments;
+        indices.push(current, next, segment * radialSegments + nextRing);
+        indices.push(
+          segment * radialSegments + nextRing,
+          next,
+          next + nextRing - ring,
+        );
+      }
+    }
+
+    geometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(positions, 3),
+    );
+    geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+    geometry.setIndex(indices);
+    geometry.computeVertexNormals();
+    return geometry;
+  });
+}
+
 export function getLeafGeometryCacheKey(
   width: number,
   seed: number,
@@ -1044,12 +1245,24 @@ export function getStemGeometryCacheKey(
 export function createLeafAttachments(
   curve: THREE.CatmullRomCurve3,
   pairCount: number,
+  startT = 0.28,
+  endT = 0.72,
+  arrangement: "opposite" | "alternate" = "opposite",
 ) {
   return Array.from({ length: pairCount }, (_, pair) => {
-    const centerT = 0.28 + ((pair + 1) / (pairCount + 1)) * 0.44;
-    return ([1, -1] as const).map((side) => {
-      const t = THREE.MathUtils.clamp(centerT - side * 0.026, 0.25, 0.78);
-      return { side, t, point: curve.getPointAt(t) };
+    const centerT = startT + ((pair + 1) / (pairCount + 1)) * (endT - startT);
+    const sides =
+      arrangement === "alternate"
+        ? ([pair % 2 === 0 ? 1 : -1] as const)
+        : ([1, -1] as const);
+    return sides.map((side) => {
+      const t = THREE.MathUtils.clamp(centerT - side * 0.026, 0.02, 0.9);
+      return {
+        side,
+        t,
+        point: curve.getPointAt(t),
+        tangent: curve.getTangentAt(t).normalize(),
+      };
     });
   }).flat();
 }
@@ -1094,4 +1307,100 @@ export function createStemPricklePlacements(
       ),
     };
   });
+}
+
+export function createStemSurfacePlacements(
+  curve: THREE.CatmullRomCurve3,
+  count: number,
+  seed: number,
+  startT = 0.1,
+  endT = 0.9,
+) {
+  const safeCount = Math.max(0, Math.round(count));
+  const up = new THREE.Vector3(0, 1, 0);
+  const fallback = new THREE.Vector3(1, 0, 0);
+
+  return Array.from({ length: safeCount }, (_, index) => {
+    const evenlySpacedT =
+      startT + ((index + 0.5) / safeCount) * (endT - startT);
+    const spacingJitter =
+      (seededRandom(seed + index * 193 + 17) - 0.5) *
+      ((endT - startT) / safeCount) *
+      0.58;
+    const t = THREE.MathUtils.clamp(
+      evenlySpacedT + spacingJitter,
+      startT,
+      endT,
+    );
+    const point = curve.getPointAt(t);
+    const tangent = curve.getTangentAt(t).normalize();
+    const normal = new THREE.Vector3().crossVectors(tangent, up);
+    if (normal.lengthSq() < 0.001) normal.crossVectors(tangent, fallback);
+    normal.normalize();
+    const binormal = new THREE.Vector3()
+      .crossVectors(tangent, normal)
+      .normalize();
+    const angle =
+      index * 2.399963 + seededRandom(seed + index * 283 + 71) * Math.PI * 0.8;
+    const radial = normal
+      .multiplyScalar(Math.cos(angle))
+      .addScaledVector(binormal, Math.sin(angle))
+      .normalize();
+
+    return {
+      t,
+      position: point,
+      tangent,
+      radial,
+      scale: THREE.MathUtils.lerp(
+        0.82,
+        1.18,
+        seededRandom(seed + index * 347 + 113),
+      ),
+    };
+  });
+}
+
+export function createPollenClusterPlacements(
+  stamenCount: number,
+  grainsPerAnther: number,
+  seed: number,
+) {
+  const safeStamenCount = Math.max(0, Math.round(stamenCount));
+  const safeGrainCount = Math.max(0, Math.round(grainsPerAnther));
+
+  return Array.from(
+    { length: safeStamenCount * safeGrainCount },
+    (_, index) => {
+      const stamenIndex = Math.floor(index / safeGrainCount);
+      const grainIndex = index % safeGrainCount;
+      const angle =
+        grainIndex * 2.399963 +
+        seededRandom(seed + stamenIndex * 397 + grainIndex * 89) * 0.9;
+      const elevation =
+        (seededRandom(seed + stamenIndex * 521 + grainIndex * 137 + 31) - 0.5) *
+        1.2;
+      const radial =
+        0.0065 *
+        THREE.MathUtils.lerp(
+          0.72,
+          1.18,
+          seededRandom(seed + stamenIndex * 613 + grainIndex * 173 + 67),
+        );
+
+      return {
+        stamenIndex,
+        offset: new THREE.Vector3(
+          Math.cos(angle) * radial,
+          Math.sin(elevation) * radial * 0.7 + 0.009,
+          Math.sin(angle) * radial,
+        ),
+        scale: THREE.MathUtils.lerp(
+          0.72,
+          1.12,
+          seededRandom(seed + stamenIndex * 719 + grainIndex * 211 + 103),
+        ),
+      };
+    },
+  );
 }

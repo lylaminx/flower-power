@@ -5,6 +5,7 @@ export type StemTuning = {
   curveScale: number;
   topBendX: number;
   topBendZ: number;
+  budNod: number;
   midBendX: number;
   midBendZ: number;
   stemHeightScale: number;
@@ -15,12 +16,17 @@ export type StemTuning = {
   stemNodeSpacingBias: number;
   stemNodeBulgeScale: number;
   stemLenticelScale: number;
+  axillaryBudScale: number;
+  aerialRootCount: number;
+  secondaryShootCount: number;
+  secondaryShootScale: number;
   prickleDensity: number;
   prickleSizeScale: number;
   calyxForm?: CalyxForm;
   sepalSizeScale: number;
   sepalSpreadScale: number;
   sepalLengthScale: number;
+  sepalPersistence: number;
   calyxLiftBias: number;
   calyxScaleX: number;
   calyxScaleY: number;
@@ -35,6 +41,7 @@ export function getHeroStemTuning(
     curveScale: 1,
     topBendX: 0,
     topBendZ: 0,
+    budNod: 0,
     midBendX: 0,
     midBendZ: 0,
     stemHeightScale: 1,
@@ -45,11 +52,16 @@ export function getHeroStemTuning(
     stemNodeSpacingBias: 0,
     stemNodeBulgeScale: 1,
     stemLenticelScale: 1,
+    axillaryBudScale: 0.72,
+    aerialRootCount: 0,
+    secondaryShootCount: 0,
+    secondaryShootScale: 1,
     prickleDensity: 0,
     prickleSizeScale: 1,
     sepalSizeScale: 1,
     sepalSpreadScale: 1,
     sepalLengthScale: 1,
+    sepalPersistence: 1,
     calyxLiftBias: 0,
     calyxScaleX: 1,
     calyxScaleY: 1,
@@ -72,11 +84,14 @@ export function getHeroStemTuning(
         stemNodeSpacingBias: -0.01,
         stemNodeBulgeScale: 1.16,
         stemLenticelScale: 1.1,
+        axillaryBudScale: 1.08,
+        secondaryShootCount: 1,
+        secondaryShootScale: 1,
         prickleDensity: 1,
         prickleSizeScale: 1.08,
-        sepalSizeScale: 0.96,
-        sepalSpreadScale: 0.88,
-        sepalLengthScale: 0.92,
+        sepalSizeScale: 1.05,
+        sepalSpreadScale: 1.1,
+        sepalLengthScale: 1.25,
         calyxLiftBias: -0.04,
         calyxScaleX: 1.04,
         calyxScaleY: 0.92,
@@ -87,6 +102,7 @@ export function getHeroStemTuning(
         ...base,
         curveScale: 0.72,
         topBendX: 0.02,
+        budNod: 0.68,
         midBendX: 0.01,
         stemHeightScale: 1.02,
         stemThicknessScale: 0.84,
@@ -96,9 +112,11 @@ export function getHeroStemTuning(
         stemNodeSpacingBias: 0.03,
         stemNodeBulgeScale: 0.86,
         stemLenticelScale: 0.82,
+        axillaryBudScale: 0.28,
         sepalSizeScale: 0.88,
         sepalSpreadScale: 0.8,
         sepalLengthScale: 0.82,
+        sepalPersistence: 0,
         calyxForm: "cupped",
         calyxLiftBias: -0.02,
         calyxScaleX: 0.9,
@@ -119,6 +137,7 @@ export function getHeroStemTuning(
         stemNodeSpacingBias: -0.02,
         stemNodeBulgeScale: 0.82,
         stemLenticelScale: 0.88,
+        axillaryBudScale: 0.5,
         sepalSizeScale: 1.02,
         sepalSpreadScale: 1,
         sepalLengthScale: 1.04,
@@ -142,6 +161,9 @@ export function getHeroStemTuning(
         stemNodeSpacingBias: -0.02,
         stemNodeBulgeScale: 1.18,
         stemLenticelScale: 1.14,
+        axillaryBudScale: 0.94,
+        secondaryShootCount: 1,
+        secondaryShootScale: 0.62,
         sepalSizeScale: 1.08,
         sepalSpreadScale: 1.08,
         sepalLengthScale: 1.1,
@@ -167,6 +189,8 @@ export function getHeroStemTuning(
         stemNodeSpacingBias: 0.05,
         stemNodeBulgeScale: 0.7,
         stemLenticelScale: 0.68,
+        axillaryBudScale: 0.18,
+        aerialRootCount: 5,
         sepalSizeScale: 0.94,
         sepalSpreadScale: 0.82,
         sepalLengthScale: 0.92,
@@ -189,6 +213,7 @@ export function getHeroStemTuning(
         stemNodeSpacingBias: 0.08,
         stemNodeBulgeScale: 0.78,
         stemLenticelScale: 0.64,
+        axillaryBudScale: 0,
         sepalSizeScale: 1.02,
         sepalSpreadScale: 0.92,
         sepalLengthScale: 0.96,

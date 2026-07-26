@@ -12,6 +12,8 @@ import {
 import { getHeroCenterTuning } from "@/lib/flower-center-tuning";
 import { useFlowerStore } from "@/lib/flower-store";
 import {
+  getCompositeFloretMaturity,
+  getCompositeFloretSenescence,
   getFlowerGrowthState,
   getFlowerPhaseTuning,
 } from "@/lib/flower-growth";
@@ -20,8 +22,9 @@ import { getTextureResolution } from "@/lib/flower-quality";
 import { useShallow } from "zustand/react/shallow";
 
 const centerSphereGeometry = new THREE.SphereGeometry(1, 40, 18);
+const seedpodBodyGeometry = new THREE.CylinderGeometry(1, 0.62, 1, 36, 8);
 const seedpodPitGeometry = new THREE.CylinderGeometry(1, 1, 1, 7);
-const floretSphereGeometry = new THREE.SphereGeometry(1, 8, 6);
+const seedpodSeedGeometry = new THREE.SphereGeometry(1, 10, 7);
 const floretCylinderGeometry = new THREE.CylinderGeometry(0.68, 1, 1, 7);
 const floretCrownGeometry = new THREE.TorusGeometry(0.62, 0.2, 4, 5);
 const floretStigmaGeometry = new THREE.CapsuleGeometry(1, 1, 3, 5);
@@ -56,6 +59,11 @@ export function FlowerCenter({
   const density = settings.centerDensity;
   const architecture = structure.centerArchitecture ?? "simple";
   const seedpodArchitecture = architecture === "seedpod";
+  // Poppies expose a capsule/stigmatic disk surrounded by true stamens. The
+  // shared simple-center body and decorative florets formed an incorrect black
+  // mound underneath that anatomy.
+  const reproductiveOnly =
+    settings.preset === "Poppy" || settings.preset === "Lily";
   const tuning = getHeroCenterTuning(settings.preset, structure, architecture);
   const growth = getFlowerGrowthState(settings.bloom, settings.petalAge);
   const phaseTuning = getFlowerPhaseTuning(growth.phase);
@@ -170,6 +178,7 @@ export function FlowerCenter({
   const floretCrowns = useRef<THREE.InstancedMesh>(null);
   const floretStigmas = useRef<THREE.InstancedMesh>(null);
   const seedpodPits = useRef<THREE.InstancedMesh>(null);
+  const seedpodSeeds = useRef<THREE.InstancedMesh>(null);
 
   useLayoutEffect(() => {
     if (!mesh.current) return;
@@ -178,7 +187,8 @@ export function FlowerCenter({
       (!floretCrowns.current || !floretStigmas.current)
     )
       return;
-    if (seedpodArchitecture && !seedpodPits.current) return;
+    if (seedpodArchitecture && (!seedpodPits.current || !seedpodSeeds.current))
+      return;
     const transform = new THREE.Object3D();
     const inner = new THREE.Color(
       architecture === "composite"
@@ -194,6 +204,20 @@ export function FlowerCenter({
       .lerp(new THREE.Color("#76553a"), centerWilt * 0.36);
     for (let index = 0; index < floretCount; index += 1) {
       const progress = Math.sqrt(index / floretCount);
+      const compositeMaturity =
+        architecture === "composite"
+          ? getCompositeFloretMaturity(
+              progress,
+              growth.reproductiveMaturity * centerExposure,
+            )
+          : 0;
+      const compositeSenescence =
+        architecture === "composite"
+          ? getCompositeFloretSenescence(
+              progress,
+              growth.reproductiveMaturity * centerExposure,
+            )
+          : 0;
       const angle = index * 2.399963;
       const radialShape =
         architecture === "composite"
@@ -268,7 +292,13 @@ export function FlowerCenter({
       );
       transform.updateMatrix();
       mesh.current.setMatrixAt(index, transform.matrix);
-      mesh.current.setColorAt(index, inner.clone().lerp(outer, progress));
+      mesh.current.setColorAt(
+        index,
+        inner
+          .clone()
+          .lerp(outer, progress)
+          .lerp(new THREE.Color("#60462f"), compositeSenescence * 0.58),
+      );
 
       if (architecture === "composite") {
         const x = Math.cos(angle) * radius;
@@ -277,6 +307,7 @@ export function FlowerCenter({
         const crownScale =
           THREE.MathUtils.lerp(0.28, 1, centerExposure) *
           THREE.MathUtils.lerp(1, 0.92, centerWilt);
+        const ringMaturity = compositeMaturity;
 
         transform.position.set(x, floretTop + size * 1.72, z);
         transform.rotation.set(Math.PI / 2, 0, -angle);
@@ -284,20 +315,17 @@ export function FlowerCenter({
           size *
             0.72 *
             topology.crownBias *
-            THREE.MathUtils.lerp(
-              0.3,
-              1,
-              growth.reproductiveMaturity * crownScale,
-            ) *
+            THREE.MathUtils.lerp(0.18, 1, ringMaturity * crownScale) *
+            THREE.MathUtils.lerp(1, 0.48, compositeSenescence) *
             THREE.MathUtils.lerp(1, 0.86, centerWilt),
         );
         transform.updateMatrix();
         floretCrowns.current?.setMatrixAt(index, transform.matrix);
 
         const stigmaEmergence = THREE.MathUtils.smoothstep(
-          progress,
-          0.18,
-          0.82,
+          ringMaturity,
+          0.38,
+          0.92,
         );
         const stigmaStretch =
           architecture === "composite"
@@ -308,11 +336,11 @@ export function FlowerCenter({
         transform.scale.set(
           size * 0.13,
           size *
-            THREE.MathUtils.lerp(0.75, 0.08, stigmaEmergence) *
-            growth.reproductiveMaturity *
+            THREE.MathUtils.lerp(0.08, 0.78, stigmaEmergence) *
             centerExposure *
             stigmaStretch *
             topology.stigmaBias *
+            THREE.MathUtils.lerp(1, 0.56, compositeSenescence) *
             THREE.MathUtils.lerp(1, 0.82, centerWilt),
           size * 0.13,
         );
@@ -321,7 +349,9 @@ export function FlowerCenter({
       }
     }
 
-    if (seedpodArchitecture && seedpodPits.current) {
+    const pitMesh = seedpodPits.current;
+    const seedMesh = seedpodSeeds.current;
+    if (seedpodArchitecture && pitMesh && seedMesh) {
       for (let index = 0; index < seedpodCount; index += 1) {
         const progress = Math.sqrt(index / seedpodCount);
         const angle = index * 2.399963 + 0.28;
@@ -331,35 +361,64 @@ export function FlowerCenter({
           0.64 *
           settings.centerSpread *
           tuning.spreadScale;
+        const seedpodSurfaceY =
+          centerHeight * 0.15 +
+          centerRadius *
+            Math.max(0.36, centerHeight) *
+            architectureBodyScale.y *
+            0.5;
         const pitHeight =
-          0.11 + centerHeight * (1 - progress * progress) * 0.84;
+          seedpodSurfaceY + centerHeight * 0.018 * (1 - progress * progress);
         transform.position.set(
           Math.cos(angle) * radius,
           pitHeight,
           Math.sin(angle) * radius,
         );
-        transform.rotation.set(Math.PI / 2, 0, -angle);
+        transform.rotation.set(0, -angle, 0);
+        const pitRadius =
+          centerRadius *
+          0.06 *
+          tuning.seedpodPitScale *
+          topology.pitBias *
+          THREE.MathUtils.lerp(0.96, 1.06, centerMoisture);
         transform.scale.set(
-          centerRadius *
-            0.06 *
-            tuning.seedpodPitScale *
-            topology.pitBias *
-            THREE.MathUtils.lerp(0.96, 1.06, centerMoisture),
-          centerRadius *
-            0.06 *
-            tuning.seedpodPitScale *
-            topology.pitBias *
-            THREE.MathUtils.lerp(0.96, 1.06, centerMoisture),
+          pitRadius,
           centerRadius *
             0.022 *
             tuning.seedpodPitDepthScale *
             topology.pitBias *
             THREE.MathUtils.lerp(1, 0.9, centerWilt),
+          pitRadius,
         );
         transform.updateMatrix();
-        seedpodPits.current.setMatrixAt(index, transform.matrix);
+        pitMesh.setMatrixAt(index, transform.matrix);
+
+        const seedMaturity = THREE.MathUtils.smoothstep(
+          growth.reproductiveMaturity * centerExposure,
+          0.34,
+          0.94,
+        );
+        const seedScale =
+          pitRadius *
+          THREE.MathUtils.lerp(0.18, 0.68, seedMaturity) *
+          THREE.MathUtils.lerp(1, 0.94, centerWilt);
+        transform.position.set(
+          Math.cos(angle) * radius,
+          pitHeight +
+            centerRadius * THREE.MathUtils.lerp(-0.008, 0.003, seedMaturity),
+          Math.sin(angle) * radius,
+        );
+        transform.rotation.set(0, -angle, 0);
+        transform.scale.set(
+          seedScale,
+          seedScale * THREE.MathUtils.lerp(0.64, 0.9, seedMaturity),
+          seedScale,
+        );
+        transform.updateMatrix();
+        seedMesh.setMatrixAt(index, transform.matrix);
       }
-      seedpodPits.current.instanceMatrix.needsUpdate = true;
+      pitMesh.instanceMatrix.needsUpdate = true;
+      seedMesh.instanceMatrix.needsUpdate = true;
     }
     mesh.current.instanceMatrix.needsUpdate = true;
     if (mesh.current.instanceColor)
@@ -378,15 +437,28 @@ export function FlowerCenter({
     settings,
     structure,
     architecture,
+    architectureBodyScale.y,
+    centerMoisture,
+    centerWilt,
     growth.reproductiveMaturity,
     centerExposure,
     seedpodArchitecture,
     seedpodCount,
+    topology.crownBias,
+    topology.pitBias,
+    topology.radiusBias,
+    topology.sizeBias,
+    topology.stigmaBias,
+    topology.verticalBias,
+    tuning.floretSizeScale,
+    tuning.seedpodPitDepthScale,
+    tuning.seedpodPitScale,
+    tuning.spreadScale,
   ]);
 
   return (
     <group>
-      {!minimal && (
+      {!minimal && !reproductiveOnly && (
         <>
           <mesh
             dispose={null}
@@ -418,7 +490,12 @@ export function FlowerCenter({
                     : 1),
             ]}
           >
-            <primitive object={centerSphereGeometry} attach="geometry" />
+            <primitive
+              object={
+                seedpodArchitecture ? seedpodBodyGeometry : centerSphereGeometry
+              }
+              attach="geometry"
+            />
             {lineDrawing ? (
               <meshBasicMaterial color="#ffffff" />
             ) : (
@@ -444,42 +521,62 @@ export function FlowerCenter({
             {lineDrawing && <Edges color="#111111" threshold={18} />}
           </mesh>
           {seedpodArchitecture && (
+            <>
+              <instancedMesh
+                ref={seedpodPits}
+                dispose={null}
+                args={[undefined, undefined, seedpodCount]}
+              >
+                <primitive object={seedpodPitGeometry} attach="geometry" />
+                {lineDrawing ? (
+                  <meshBasicMaterial color="#111111" />
+                ) : (
+                  <meshStandardMaterial
+                    color={structure.floretAccent}
+                    roughness={0.9}
+                  />
+                )}
+              </instancedMesh>
+              <instancedMesh
+                ref={seedpodSeeds}
+                dispose={null}
+                args={[undefined, undefined, seedpodCount]}
+              >
+                <primitive object={seedpodSeedGeometry} attach="geometry" />
+                {lineDrawing ? (
+                  <meshBasicMaterial color="#ffffff" />
+                ) : (
+                  <meshStandardMaterial
+                    color={new THREE.Color("#d5d39a").lerp(
+                      new THREE.Color("#75603d"),
+                      centerWilt * 0.72,
+                    )}
+                    roughness={THREE.MathUtils.lerp(0.82, 0.96, centerWilt)}
+                  />
+                )}
+              </instancedMesh>
+            </>
+          )}
+          {architecture !== "column" && (
             <instancedMesh
-              ref={seedpodPits}
+              ref={mesh}
+              key={floretCount}
+              visible={!seedpodArchitecture}
               dispose={null}
-              args={[undefined, undefined, seedpodCount]}
+              args={[undefined, undefined, floretCount]}
             >
-              <primitive object={seedpodPitGeometry} attach="geometry" />
+              <primitive object={floretCylinderGeometry} attach="geometry" />
               {lineDrawing ? (
-                <meshBasicMaterial color="#111111" />
+                <meshBasicMaterial color="#111111" wireframe />
               ) : (
                 <meshStandardMaterial
-                  color={structure.floretAccent}
-                  roughness={0.9}
+                  vertexColors
+                  roughness={1}
+                  metalness={0}
                 />
               )}
             </instancedMesh>
           )}
-          <instancedMesh
-            ref={mesh}
-            key={floretCount}
-            dispose={null}
-            args={[undefined, undefined, floretCount]}
-          >
-            <primitive
-              object={
-                architecture === "column"
-                  ? floretSphereGeometry
-                  : floretCylinderGeometry
-              }
-              attach="geometry"
-            />
-            {lineDrawing ? (
-              <meshBasicMaterial color="#111111" wireframe />
-            ) : (
-              <meshStandardMaterial vertexColors roughness={1} metalness={0} />
-            )}
-          </instancedMesh>
           {architecture === "composite" && (
             <>
               <instancedMesh
@@ -512,7 +609,7 @@ export function FlowerCenter({
           )}
         </>
       )}
-      {architecture !== "composite" && !seedpodArchitecture && (
+      {architecture !== "composite" && (
         <FlowerReproductiveDetails
           structure={structure}
           density={density}
@@ -523,6 +620,7 @@ export function FlowerCenter({
           antherSize={settings.centerAntherSize}
           stigmaSize={settings.centerStigmaSize}
           maturity={growth.reproductiveMaturity * centerExposure}
+          showPistil={!seedpodArchitecture}
         />
       )}
     </group>

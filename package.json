@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:visual": "playwright test --config playwright.visual.config.ts",
+    "test:visual:review": "VISUAL_REVIEW=1 PW_VISUAL_PORT=3101 playwright test tests/visual/review-scenarios.spec.ts --config playwright.visual.config.ts",
     "test:visual:update": "npm run test:visual -- --update-snapshots",
     "docs": "typedoc",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run test:coverage"

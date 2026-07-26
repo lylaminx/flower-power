@@ -2,14 +2,15 @@ import type { FlowerPreset } from "./flower-store";
 import { heroFlowerProfiles } from "./hero-flower-profiles";
 
 export type PetalOutline =
-  "elliptic" | "obovate" | "fan" | "lanceolate" | "spatulate";
+  "elliptic" | "obovate" | "fan" | "lanceolate" | "spatulate" | "ray";
 
 export type PetalArrangement = "radial" | "phyllotactic" | "bilateral";
 export type PetalRole = "petal" | "sepal" | "lip" | "ray";
 export type CenterArchitecture = "simple" | "composite" | "column" | "seedpod";
 export type BloomArchitecture = "radial" | "bell" | "trumpet";
 export type InflorescenceArchitecture = "solitary" | "spike" | "cluster";
-export type LeafShape = "ovate" | "lance" | "linear" | "lobed" | "cordate";
+export type LeafShape =
+  "ovate" | "lance" | "linear" | "lobed" | "cordate" | "peltate";
 export type OvaryPosition = "superior" | "inferior";
 export type CalyxForm = "cupped" | "reflexed" | "bracted";
 
