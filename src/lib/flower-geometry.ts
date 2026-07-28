@@ -927,8 +927,12 @@ export function createLeafGeometry(
 
   return getCachedGeometry(cacheKey, () => {
     const geometry = new THREE.BufferGeometry();
-    const rows = 28;
-    const columns = 12;
+    // A peltate blade exposes almost its entire perimeter in the hero views.
+    // Give that circular outline enough samples to remain smooth at 1024px;
+    // ordinary leaves keep the lighter grid because their tapered tips and
+    // lateral margins do not need the same angular resolution.
+    const rows = shape === "peltate" ? 64 : 28;
+    const columns = shape === "peltate" ? 16 : 12;
     const positions: number[] = [];
     const colors: number[] = [];
     const uvs: number[] = [];
@@ -1001,6 +1005,7 @@ export function createLeafGeometry(
     geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
     geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
     geometry.setIndex(indices);
+    geometry.userData.leafGrid = { rows, columns };
     geometry.computeVertexNormals();
     return geometry;
   });
@@ -1014,8 +1019,10 @@ export function createLeafMarginGeometry(
     ["leafMargin", leafGeometry.uuid, thickness].join("|"),
     () => {
       const positions = leafGeometry.getAttribute("position");
-      const rows = 28;
-      const columns = 12;
+      const grid = leafGeometry.userData.leafGrid as
+        { rows?: number; columns?: number } | undefined;
+      const rows = grid?.rows ?? 28;
+      const columns = grid?.columns ?? 12;
       const rowWidth = columns + 1;
       const perimeter: THREE.Vector3[] = [];
 

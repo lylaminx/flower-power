@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { heroFlowerProfiles } from "./hero-flower-profiles";
 
 export const flowerPresets = [
+  "Random",
   "Daisy",
   "Cosmos",
   "Sunset",
@@ -130,12 +131,14 @@ export type FlowerState = FlowerSettings & {
   ) => void;
   applyPreset: (preset: FlowerPreset, seed?: number) => void;
   randomize: () => void;
+  randomizeCompletely: () => void;
   togglePanel: () => void;
   toggleRightPanel: () => void;
   loadSettings: (settings: FlowerSettings) => void;
 };
 
 const presets: Record<FlowerPreset, Partial<FlowerSettings>> = {
+  Random: {},
   Daisy: {
     petalCount: 20,
     petalLength: 1.45,
@@ -798,6 +801,13 @@ const presets: Record<FlowerPreset, Partial<FlowerSettings>> = {
   },
 };
 
+const randomRange = (min: number, max: number) =>
+  min + Math.random() * (max - min);
+const randomInteger = (min: number, max: number) =>
+  Math.floor(randomRange(min, max + 1));
+const randomColor = () =>
+  `#${randomInteger(0, 0xffffff).toString(16).padStart(6, "0")}`;
+
 export const useFlowerStore = create<FlowerState>((set) => ({
   renderMode: "color",
   preset: "Cosmos",
@@ -882,6 +892,65 @@ export const useFlowerStore = create<FlowerState>((set) => ({
         Math.min(0.45, state.variation + Math.random() * 0.15 - 0.05),
       ),
     })),
+  randomizeCompletely: () =>
+    set({
+      preset: "Random",
+      seed: randomInteger(0, 99_999),
+      petalCount: randomInteger(1, 32),
+      petalLength: randomRange(0.8, 2.2),
+      petalWidth: randomRange(0.25, 1.2),
+      petalCurl: randomRange(0, 1),
+      petalWaviness: randomRange(0, 1),
+      petalThickness: randomRange(0.25, 2),
+      petalFold: randomRange(0, 1),
+      petalTwist: randomRange(-1, 1),
+      petalRuffle: randomRange(0, 2),
+      petalNotch: randomRange(0, 2),
+      petalVeinStrength: randomRange(0, 2),
+      petalBaseWidth: randomRange(0.5, 1.8),
+      petalAge: randomRange(0, 1),
+      petalSpots: randomRange(0, 1),
+      petalGuideStrength: randomRange(0, 1),
+      petalAsymmetry: randomRange(0, 0.4),
+      petalTranslucency: randomRange(0, 1),
+      petalEdgeWear: randomRange(0, 1),
+      petalSheen: randomRange(0, 1),
+      bloom: randomRange(0.25, 1),
+      variation: randomRange(0.04, 0.45),
+      petalColor: randomColor(),
+      petalTipColor: randomColor(),
+      centerColor: randomColor(),
+      stemColor: randomColor(),
+      backgroundColor: randomColor(),
+      centerDensity: randomRange(0.25, 2),
+      centerSize: randomRange(0.5, 1.7),
+      centerProfile: randomRange(0.4, 1.8),
+      centerFloretSize: randomRange(0.5, 1.8),
+      centerSpread: randomRange(0.5, 1.35),
+      centerStamenLength: randomRange(0.4, 2),
+      centerAntherSize: randomRange(0.4, 2),
+      centerStigmaSize: randomRange(0.4, 2),
+      sepalSize: randomRange(0.5, 1.8),
+      sepalSpread: randomRange(0, 1),
+      stemCurve: randomRange(0, 1.2),
+      stemHeight: randomRange(0.65, 1.35),
+      stemThickness: randomRange(0.5, 1.8),
+      stemTaper: randomRange(0, 0.7),
+      stemNodeCount: randomInteger(0, 8),
+      stemHairDensity: randomRange(0, 2),
+      leafDensity: randomRange(0, 2),
+      leafLength: randomRange(0.5, 1.6),
+      leafWidth: randomRange(0.5, 1.6),
+      leafCurl: randomRange(0, 1),
+      leafSerration: randomRange(0, 2),
+      leafVeinDensity: randomRange(0.25, 2),
+      leafDroop: randomRange(0, 1),
+      leafAsymmetry: randomRange(0, 0.4),
+      leafAge: randomRange(0, 1),
+      bloomTilt: randomRange(-0.6, 0.6),
+      bloomTurn: randomRange(-3.15, 3.15),
+      lightIntensity: randomRange(0.3, 3),
+    }),
   togglePanel: () => set((state) => ({ panelOpen: !state.panelOpen })),
   toggleRightPanel: () =>
     set((state) => ({ rightPanelOpen: !state.rightPanelOpen })),

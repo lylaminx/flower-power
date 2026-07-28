@@ -6,6 +6,9 @@ export type StemTuning = {
   topBendX: number;
   topBendZ: number;
   budNod: number;
+  bloomPitchBias: number;
+  bloomYawBias: number;
+  bloomRollBias: number;
   midBendX: number;
   midBendZ: number;
   stemHeightScale: number;
@@ -42,6 +45,9 @@ export function getHeroStemTuning(
     topBendX: 0,
     topBendZ: 0,
     budNod: 0,
+    bloomPitchBias: 0,
+    bloomYawBias: 0,
+    bloomRollBias: 0,
     midBendX: 0,
     midBendZ: 0,
     stemHeightScale: 1,
@@ -129,6 +135,9 @@ export function getHeroStemTuning(
         curveScale: 0.9,
         topBendX: 0.01,
         topBendZ: -0.01,
+        bloomPitchBias: 0.14,
+        bloomYawBias: 0.1,
+        bloomRollBias: -0.035,
         stemHeightScale: 1.08,
         stemThicknessScale: 0.9,
         stemTaperScale: 0.88,
@@ -143,9 +152,9 @@ export function getHeroStemTuning(
         sepalLengthScale: 1.04,
         calyxForm: "reflexed",
         calyxLiftBias: 0.02,
-        calyxScaleX: 0.96,
-        calyxScaleY: 1,
-        calyxScaleZ: 0.96,
+        calyxScaleX: 0.72,
+        calyxScaleY: 1.28,
+        calyxScaleZ: 0.72,
       };
     case "Sunflower":
       return {

@@ -516,6 +516,9 @@ describe("flower geometry", () => {
     expect(peltate.getAttribute("position").array).not.toEqual(
       ovate.getAttribute("position").array,
     );
+    expect(peltate.getAttribute("position").count).toBeGreaterThan(
+      ovate.getAttribute("position").count * 2,
+    );
   });
 
   it("builds deterministic branching veins within the leaf outline", () => {

@@ -80,6 +80,32 @@ export type FlowerSpecies = {
 };
 
 export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
+  Random: {
+    layers: [
+      { count: 1, length: 1, width: 1, lift: 0, offset: 0 },
+      { count: 0.62, length: 0.78, width: 0.9, lift: 0.15, offset: 0.5 },
+    ],
+    notch: 0.05,
+    profile: 0.58,
+    centerRadius: 0.34,
+    florets: 120,
+    sepals: 7,
+    leafWidth: 0.36,
+    centerHeight: 0.22,
+    floretAccent: "#e6b84a",
+    stamenCount: 24,
+    stigmaLobes: 6,
+    filamentColor: "#e6c98b",
+    antherColor: "#8d5d2d",
+    stigmaColor: "#c49b46",
+    pollenColor: "#e6b84a",
+    edgeRuffle: 0.06,
+    baseDarkening: 0.76,
+    petalArrangement: "phyllotactic",
+    overlapJitter: 0.5,
+    leafShape: "ovate",
+    leafPairs: 2,
+  },
   Daisy: {
     layers: [
       { count: 1, length: 1, width: 0.82, lift: 0, offset: 0 },

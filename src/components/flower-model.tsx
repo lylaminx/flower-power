@@ -426,7 +426,7 @@ export function FlowerModel() {
       {settings.preset === "Lotus" && !lineDrawing && (
         <group position={[0, -2.68, 0]}>
           <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-            <circleGeometry args={[12, quality === "draft" ? 64 : 128]} />
+            <circleGeometry args={[28, quality === "draft" ? 96 : 192]} />
             <meshPhysicalMaterial
               color="#4f8580"
               roughness={0.14}
@@ -450,12 +450,13 @@ export function FlowerModel() {
           rotation={[
             0.72 +
               settings.bloomTilt +
+              stemTuning.bloomPitchBias +
               bloomLoad.bloomDroop +
               stemTuning.budNod *
                 (1 - growth.openness) *
                 THREE.MathUtils.lerp(1, 0.72, growth.wilt),
-            settings.bloomTurn,
-            -0.42 + bloomLoad.individualLean * 0.4,
+            settings.bloomTurn + stemTuning.bloomYawBias,
+            -0.42 + stemTuning.bloomRollBias + bloomLoad.individualLean * 0.4,
           ]}
         >
           <FlowerBloom structure={structure} />

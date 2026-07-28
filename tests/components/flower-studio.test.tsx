@@ -410,6 +410,29 @@ describe("FlowerStudio", () => {
     expect(exportPng).toHaveBeenCalledOnce();
   });
 
+  it("creates a completely random variety-free flower from the header", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(Math, "random").mockReturnValue(0.25);
+    render(<FlowerStudio />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Create a completely random flower",
+      }),
+    );
+
+    expect(useFlowerStore.getState()).toMatchObject({
+      preset: "Random",
+      seed: 25_000,
+      petalColor: "#400000",
+      petalTipColor: "#400000",
+      centerColor: "#400000",
+      stemColor: "#400000",
+      backgroundColor: "#400000",
+    });
+    expect(screen.getByText("Random study")).toBeVisible();
+  }, 15_000);
+
   it("saves the current design through the flowers API", async () => {
     const user = userEvent.setup();
     render(<FlowerStudio />);
