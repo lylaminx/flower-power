@@ -2,6 +2,15 @@ import { describe, expect, it } from "vitest";
 import { flowerSpecies } from "@/lib/flower-species";
 
 describe("flower structural families", () => {
+  it("provides neutral procedural anatomy for variety-free flowers", () => {
+    expect(flowerSpecies.Random).toMatchObject({
+      petalArrangement: "phyllotactic",
+      leafShape: "ovate",
+      centerRadius: expect.any(Number),
+    });
+    expect(flowerSpecies.Random.layers.length).toBeGreaterThan(1);
+  });
+
   it("defines mirrored sepals, lateral petals, and a lip for Orchid", () => {
     const orchid = flowerSpecies.Orchid;
 

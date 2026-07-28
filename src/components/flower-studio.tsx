@@ -524,6 +524,14 @@ export function FlowerStudio({
             <X size={18} />
           </button>
           <ThemeToggle />
+          <button
+            className="icon-button"
+            aria-label="Create a completely random flower"
+            title="Create a completely random flower"
+            onClick={store.randomizeCompletely}
+          >
+            <Sparkles size={18} />
+          </button>
           <a
             className="icon-button"
             href="/docs"
@@ -660,19 +668,21 @@ export function FlowerStudio({
             <div className="control-section">
               <h2>Variety</h2>
               <div className="preset-grid">
-                {flowerPresets.map((preset) => (
-                  <button
-                    key={preset}
-                    className={store.preset === preset ? "active" : ""}
-                    onClick={() => {
-                      store.applyPreset(preset);
-                      setMobilePanel(null);
-                    }}
-                  >
-                    <i className={`mini-flower ${preset.toLowerCase()}`} />
-                    {preset}
-                  </button>
-                ))}
+                {flowerPresets
+                  .filter((preset) => preset !== "Random")
+                  .map((preset) => (
+                    <button
+                      key={preset}
+                      className={store.preset === preset ? "active" : ""}
+                      onClick={() => {
+                        store.applyPreset(preset);
+                        setMobilePanel(null);
+                      }}
+                    >
+                      <i className={`mini-flower ${preset.toLowerCase()}`} />
+                      {preset}
+                    </button>
+                  ))}
               </div>
               {heroProfile && (
                 <div className="hero-reference-card">

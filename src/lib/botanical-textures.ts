@@ -3,6 +3,8 @@ import * as THREE from "three";
 export type BotanicalSurface = "petal" | "leaf" | "stem" | "center";
 export type BotanicalMaterialMap =
   "roughness" | "thickness" | "microNormal" | "moisture";
+export type BotanicalMaterialVariant =
+  "default" | "papery" | "veined" | "ligulate";
 
 const textures = new Map<string, THREE.DataTexture>();
 const materialTextures = new Map<string, THREE.DataTexture>();
@@ -189,9 +191,10 @@ export function getBotanicalMaterialTexture(
   surface: BotanicalSurface,
   map: BotanicalMaterialMap,
   resolution = 128,
+  variant: BotanicalMaterialVariant = "default",
 ) {
   const size = THREE.MathUtils.clamp(Math.round(resolution), 32, 512);
-  const key = `${surface}:${map}:${size}`;
+  const key = `${surface}:${map}:${size}:${variant}`;
   const cached = materialTextures.get(key);
   if (cached) return cached;
 
@@ -229,7 +232,29 @@ export function getBotanicalMaterialTexture(
         if (surface === "petal") {
           const edgeTaper = THREE.MathUtils.smoothstep(margin, 0, 0.16);
           const tipTaper = THREE.MathUtils.smoothstep(1 - v, 0, 0.24);
-          value = 70 + edgeTaper * 78 + (1 - tipTaper) * 38 + centerVein * 74;
+          const ligulateSideVeins =
+            Math.exp(-Math.pow((u - 0.28) / 0.052, 2)) +
+            Math.exp(-Math.pow((u - 0.72) / 0.052, 2));
+          value =
+            variant === "papery"
+              ? 32 +
+                edgeTaper * 46 +
+                (1 - tipTaper) * 24 +
+                centerVein * 118 +
+                sideVeins * 46
+              : variant === "veined"
+                ? 56 +
+                  edgeTaper * 62 +
+                  (1 - tipTaper) * 28 +
+                  centerVein * 96 +
+                  sideVeins * 58
+                : variant === "ligulate"
+                  ? 42 +
+                    edgeTaper * 52 +
+                    (1 - tipTaper) * 24 +
+                    centerVein * 104 +
+                    ligulateSideVeins * 68
+                  : 70 + edgeTaper * 78 + (1 - tipTaper) * 38 + centerVein * 74;
         } else if (surface === "leaf") {
           const edgeTaper = THREE.MathUtils.smoothstep(margin, 0, 0.12);
           value = 92 + edgeTaper * 72 + centerVein * 82 + sideVeins * 28;

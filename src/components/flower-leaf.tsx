@@ -127,8 +127,8 @@ export function FlowerLeaf({
     const baseColor =
       settings.preset === "Lotus"
         ? new THREE.Color(settings.stemColor).lerp(
-            new THREE.Color("#79a66d"),
-            0.34,
+            new THREE.Color("#86b77a"),
+            0.52,
           )
         : new THREE.Color(settings.stemColor);
     return `#${baseColor
@@ -405,7 +405,7 @@ export function FlowerLeaf({
         attachment.y + tuning.attachmentShift,
         attachment.z,
       ]}
-      quaternion={stemFrame}
+      quaternion={peltateLeaf ? new THREE.Quaternion() : stemFrame}
     >
       <group
         rotation={
