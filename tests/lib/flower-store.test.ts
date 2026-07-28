@@ -202,4 +202,47 @@ describe("useFlowerStore", () => {
       seed: 99999,
     });
   });
+
+  it("creates a variety-free flower with every setting and color randomized", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.5);
+
+    useFlowerStore.getState().randomizeCompletely();
+
+    expect(useFlowerStore.getState()).toMatchObject({
+      preset: "Random",
+      seed: 50_000,
+      petalCount: 17,
+      petalLength: 1.5,
+      petalTwist: 0,
+      stemNodeCount: 4,
+      bloomTilt: 0,
+      petalColor: "#800000",
+      petalTipColor: "#800000",
+      centerColor: "#800000",
+      stemColor: "#800000",
+      backgroundColor: "#800000",
+    });
+  });
+
+  it("keeps complete randomization within every editor boundary", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+
+    useFlowerStore.getState().randomizeCompletely();
+
+    expect(useFlowerStore.getState()).toMatchObject({
+      preset: "Random",
+      petalCount: 1,
+      petalLength: 0.8,
+      petalWidth: 0.25,
+      petalTwist: -1,
+      bloom: 0.25,
+      variation: 0.04,
+      stemNodeCount: 0,
+      bloomTilt: -0.6,
+      bloomTurn: -3.15,
+      lightIntensity: 0.3,
+      petalColor: "#000000",
+      backgroundColor: "#000000",
+    });
+  });
 });

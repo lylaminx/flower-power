@@ -94,7 +94,14 @@ describe("hero flower tuning", () => {
     expect(lip).toBeDefined();
     expect(
       getHeroPetalTuning("Orchid", species, lip!, 1, species.layers.length),
-    ).toMatchObject({ foldBias: 0.08, lateralCupBias: 0.22 });
+    ).toMatchObject({
+      foldBias: 0.08,
+      widthScale: 0.86,
+      baseWidthScale: 1.02,
+      guideStrengthScale: 1.55,
+      lateralCupBias: 0.38,
+      longitudinalCurveBias: -0.22,
+    });
     expect(getHeroCenterTuning("Orchid", species, "column")).toMatchObject({
       floretCountScale: 0.5,
     });
@@ -113,6 +120,77 @@ describe("hero flower tuning", () => {
 
     expect(lily.filamentSpreadScale).toBeGreaterThan(3);
     expect(lily.filamentSpreadScale).toBeGreaterThan(poppy.filamentSpreadScale);
+  });
+
+  it("gives lily an oblique bloom and slender stem junction", () => {
+    const tuning = getHeroStemTuning("Lily", flowerSpecies.Lily);
+
+    expect(tuning.bloomPitchBias).toBeGreaterThan(0.1);
+    expect(tuning.bloomYawBias).not.toBe(0);
+    expect(tuning.calyxScaleX).toBeLessThan(0.8);
+    expect(tuning.calyxScaleY).toBeGreaterThan(1.2);
+    expect(tuning.calyxScaleZ).toBeLessThan(0.8);
+  });
+
+  it("gives lotus petals luminous tissue and restrained radial folds", () => {
+    const species = flowerSpecies.Lotus;
+    const tuning = getHeroPetalTuning(
+      "Lotus",
+      species,
+      species.layers[0],
+      0,
+      species.layers.length,
+    );
+
+    expect(tuning.translucencyScale).toBeGreaterThan(1);
+    expect(tuning.surfaceReliefScale).toBeGreaterThan(1);
+    expect(tuning.pleatStrength).toBeGreaterThan(0);
+    expect(tuning.sheenScale).toBeLessThan(1);
+  });
+
+  it("allocates enough poppy tessellation to resolve papery creases", () => {
+    const species = flowerSpecies.Poppy;
+    const tuning = getHeroPetalTuning(
+      "Poppy",
+      species,
+      species.layers[0],
+      0,
+      species.layers.length,
+    );
+
+    expect(tuning.tessellationScale).toBeGreaterThan(1.3);
+    expect(tuning.surfaceReliefScale).toBeGreaterThan(2);
+  });
+
+  it("resolves fine folds across broad rosa rugosa petals", () => {
+    const species = flowerSpecies.Rose;
+    const tuning = getHeroPetalTuning(
+      "Rose",
+      species,
+      species.layers[0],
+      0,
+      species.layers.length,
+    );
+
+    expect(tuning.tessellationScale).toBeGreaterThan(1.2);
+    expect(tuning.surfaceReliefScale).toBeGreaterThan(1.5);
+    expect(tuning.pleatStrength).toBeGreaterThan(0.2);
+  });
+
+  it("keeps sunflower rays thin, matte, and transmissive", () => {
+    const species = flowerSpecies.Sunflower;
+    const tuning = getHeroPetalTuning(
+      "Sunflower",
+      species,
+      species.layers[0],
+      0,
+      species.layers.length,
+    );
+
+    expect(tuning.thicknessScale).toBeLessThan(0.8);
+    expect(tuning.translucencyScale).toBeGreaterThan(1);
+    expect(tuning.sheenScale).toBeLessThan(0.8);
+    expect(tuning.surfaceReliefScale).toBeGreaterThan(1.2);
   });
 
   it("adds prickles only to the rose hero stem", () => {

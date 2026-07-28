@@ -83,6 +83,43 @@ describe("botanical textures", () => {
     expect(channelAt(64)).toBeGreaterThan(channelAt(42));
   });
 
+  it("gives papery petals stronger vein-to-membrane thickness contrast", () => {
+    const regular = getBotanicalMaterialTexture("petal", "thickness");
+    const papery = getBotanicalMaterialTexture(
+      "petal",
+      "thickness",
+      128,
+      "papery",
+    );
+    const contrast = (texture: THREE.DataTexture) => {
+      const data = texture.image.data as Uint8Array;
+      const values = Array.from(data).filter((_, index) => index % 4 === 1);
+      return Math.max(...values) - Math.min(...values);
+    };
+
+    expect(papery).not.toBe(regular);
+    expect(contrast(papery)).toBeGreaterThan(contrast(regular));
+  });
+
+  it("preserves fine vascular contrast in fleshy veined petals", () => {
+    const regular = getBotanicalMaterialTexture("petal", "thickness");
+    const veined = getBotanicalMaterialTexture(
+      "petal",
+      "thickness",
+      128,
+      "veined",
+    );
+    const data = (texture: THREE.DataTexture) =>
+      texture.image.data as Uint8Array;
+    const channelAt = (texture: THREE.DataTexture, x: number, y: number) =>
+      data(texture)[(y * 128 + x) * 4 + 1];
+
+    expect(veined).not.toBe(regular);
+    expect(
+      channelAt(veined, 64, 64) - channelAt(veined, 42, 64),
+    ).toBeGreaterThan(channelAt(regular, 64, 64) - channelAt(regular, 42, 64));
+  });
+
   it("creates deterministic age maps with stronger edge discoloration", () => {
     const texture = getBotanicalAgeTexture("petal", 0.8, 42);
     const data = texture.image.data as Uint8Array;
@@ -100,6 +137,22 @@ describe("botanical textures", () => {
     expect(new Set(data.filter((_, index) => index % 4 !== 3))).toEqual(
       new Set([255]),
     );
+  });
+
+  it("models three longitudinal thickness veins across ligulate rays", () => {
+    const texture = getBotanicalMaterialTexture(
+      "petal",
+      "thickness",
+      128,
+      "ligulate",
+    );
+    const data = texture.image.data as Uint8Array;
+    const channelAt = (u: number) =>
+      data[(72 * 128 + Math.round(u * 127)) * 4 + 1];
+
+    expect(channelAt(0.5)).toBeGreaterThan(channelAt(0.4));
+    expect(channelAt(0.28)).toBeGreaterThan(channelAt(0.4));
+    expect(channelAt(0.72)).toBeGreaterThan(channelAt(0.6));
   });
 
   it("creates deterministic UV-space petal spots and nectar guides", () => {

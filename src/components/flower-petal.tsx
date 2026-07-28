@@ -27,22 +27,22 @@ import { useShallow } from "zustand/react/shallow";
 const orchidCallusGeometry = new THREE.SphereGeometry(1, 14, 9);
 const orchidKeelGeometry = new THREE.CapsuleGeometry(1, 1.5, 4, 7);
 const orchidLipLobeGeometry = createPetalGeometry({
-  length: 0.68,
-  width: 0.56,
-  curl: 0.22,
-  lift: 0.04,
+  length: 0.72,
+  width: 0.44,
+  curl: 0.36,
+  lift: 0.07,
   baseColor: "#f2eadf",
   tipColor: "#fffdf8",
   notch: 0,
-  profile: 0.62,
+  profile: 0.68,
   thicknessScale: 0.72,
-  fold: 0.28,
-  baseWidth: 1.08,
+  fold: 0.42,
+  baseWidth: 1.2,
   outline: "obovate",
-  longitudinalCurve: -0.2,
-  lateralCup: 1.32,
-  lengthSegments: 24,
-  widthSegments: 16,
+  longitudinalCurve: -0.35,
+  lateralCup: 1.72,
+  lengthSegments: 30,
+  widthSegments: 20,
 }).clone();
 orchidLipLobeGeometry.clearGroups();
 
@@ -263,12 +263,21 @@ export function FlowerPetal({
           (layer.lateralCup ?? structure.lateralCup ?? 1) +
           tuning.lateralCupBias,
         lengthSegments:
-          quality === "draft" ? 12 : quality === "ultra" ? 40 : 28,
+          quality === "draft"
+            ? 12
+            : Math.round(
+                (quality === "ultra" ? 40 : 28) * tuning.tessellationScale,
+              ),
         // The lateral grid defines the projected petal margin. Eight to twelve
         // segments left unmistakable polygonal steps on broad hero petals,
         // especially Poppy, Rose, and Lotus. Spend tessellation on this visible
         // outline before adding more micro-detail.
-        widthSegments: quality === "draft" ? 6 : quality === "ultra" ? 24 : 16,
+        widthSegments:
+          quality === "draft"
+            ? 6
+            : Math.round(
+                (quality === "ultra" ? 24 : 16) * tuning.tessellationScale,
+              ),
       }),
     [
       length,
@@ -390,6 +399,13 @@ export function FlowerPetal({
                 "petal",
                 "thickness",
                 textureResolution,
+                settings.preset === "Poppy"
+                  ? "papery"
+                  : settings.preset === "Rose"
+                    ? "veined"
+                    : layer.role === "ray"
+                      ? "ligulate"
+                      : "default",
               )}
             />
           ))}
@@ -403,9 +419,9 @@ export function FlowerPetal({
               key={`lip-lobe-${lobeSide}`}
               dispose={null}
               geometry={orchidLipLobeGeometry}
-              position={[lobeSide * width * 0.055, 0.006, length * 0.015]}
-              rotation={[-0.16, lobeSide * 0.28, lobeSide * -0.08]}
-              scale={[width * 0.86, length * 0.7, width * 0.82]}
+              position={[lobeSide * width * 0.042, 0.004, length * 0.008]}
+              rotation={[-0.26, lobeSide * 0.34, lobeSide * -0.14]}
+              scale={[width * 0.7, length * 0.78, width * 0.72]}
             >
               {lineDrawing ? (
                 <meshBasicMaterial color="#ffffff" />
