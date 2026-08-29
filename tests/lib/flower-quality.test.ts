@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   getEffectiveRenderQuality,
+  getPetalTessellation,
   getTextureResolution,
   renderQualityOptions,
   renderQualitySettings,
@@ -38,6 +39,16 @@ describe("render quality tiers", () => {
     expect(getTextureResolution("draft")).toBe(64);
     expect(getTextureResolution("high")).toBe(128);
     expect(getTextureResolution("ultra")).toBe(256);
+  });
+
+  it("allocates projected outline tessellation by quality and shape", () => {
+    const draft = getPetalTessellation("draft", "elliptic");
+    const high = getPetalTessellation("high", "elliptic");
+    const ultraLabellum = getPetalTessellation("ultra", "labellum");
+
+    expect(high.lengthSegments).toBeGreaterThan(draft.lengthSegments);
+    expect(ultraLabellum.lengthSegments).toBeGreaterThan(high.lengthSegments);
+    expect(ultraLabellum.widthSegments).toBeGreaterThan(high.widthSegments);
   });
 
   it("temporarily lowers expensive tiers during interaction", () => {

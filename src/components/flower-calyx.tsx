@@ -6,18 +6,36 @@ import * as THREE from "three";
 import {
   getBotanicalMaterialTexture,
   getBotanicalTexture,
+  getCalyxBladeMaterialVariant,
+  getCalyxBodyMaterialVariant,
 } from "@/lib/botanical-textures";
-import { createPetalGeometry } from "@/lib/flower-geometry";
+import {
+  createPetalGeometry,
+  createPoppyReceptacleGeometry,
+  createRoseCalyxCupGeometry,
+  createSunflowerReceptacleGeometry,
+} from "@/lib/flower-geometry";
 import {
   getFlowerGrowthState,
   getFlowerPhaseTuning,
 } from "@/lib/flower-growth";
 import type { FlowerSpecies } from "@/lib/flower-species";
-import { getHeroStemTuning } from "@/lib/flower-stem-tuning";
+import {
+  getCalyxOrganVariation,
+  getCalyxAssemblyOffset,
+  getCalyxRetention,
+  getHeroStemTuning,
+  getSunflowerPhyllaryWhorlTuning,
+  shouldRenderExternalCalyx,
+} from "@/lib/flower-stem-tuning";
 import { useFlowerStore } from "@/lib/flower-store";
 import { useRenderQuality } from "./render-quality-context";
 import { getTextureResolution } from "@/lib/flower-quality";
 import { useShallow } from "zustand/react/shallow";
+import {
+  getHeroSupportTissueColor,
+  getSunflowerPhyllaryColor,
+} from "@/lib/flower-color-tuning";
 
 export function FlowerCalyx({
   structure,
@@ -35,11 +53,17 @@ export function FlowerCalyx({
       sepalSpread: state.sepalSpread,
       bloom: state.bloom,
       petalAge: state.petalAge,
+      seed: state.seed,
     })),
   );
   const quality = useRenderQuality();
   const textureResolution = getTextureResolution(quality);
+  const calyxBodyMaterialVariant = getCalyxBodyMaterialVariant(settings.preset);
+  const calyxBladeMaterialVariant = getCalyxBladeMaterialVariant(
+    settings.preset,
+  );
   const lineDrawing = settings.renderMode === "line";
+  const photorealistic = settings.renderMode === "photo";
   const stemTuning = getHeroStemTuning(settings.preset, structure);
   const form = stemTuning.calyxForm ?? structure.calyxForm ?? "cupped";
   const growth = getFlowerGrowthState(settings.bloom, settings.petalAge);
@@ -55,7 +79,11 @@ export function FlowerCalyx({
     stemTuning.sepalLengthScale *
     (fusedCorolla ? 0.42 : THREE.MathUtils.lerp(0.5, 0.68, opening));
   const sepalWidth =
-    (form === "bracted" ? 0.19 : 0.14) *
+    (settings.preset === "Sunflower"
+      ? 0.145
+      : form === "bracted"
+        ? 0.19
+        : 0.14) *
     settings.sepalSize *
     stemTuning.sepalSizeScale *
     THREE.MathUtils.lerp(0.86, 1, opening);
@@ -63,7 +91,12 @@ export function FlowerCalyx({
     const result = createPetalGeometry({
       length: sepalLength,
       width: sepalWidth,
-      curl: form === "reflexed" ? -0.75 : 0.12,
+      curl:
+        form === "reflexed"
+          ? -0.75
+          : settings.preset === "Sunflower"
+            ? 0.2
+            : 0.12,
       lift:
         (form === "cupped" ? 0.12 : -0.08) +
         stemTuning.calyxLiftBias +
@@ -73,8 +106,8 @@ export function FlowerCalyx({
       notch: 0,
       profile: form === "bracted" ? 0.9 : 0.72,
       thicknessScale: 1.5,
-      fold: 0.45,
-      twist: 0.08,
+      fold: settings.preset === "Sunflower" ? 0.72 : 0.45,
+      twist: settings.preset === "Sunflower" ? 0.12 : 0.08,
       baseWidth: 1.35,
       edgeIrregularity: 0.22,
       edgeRuffle:
@@ -83,7 +116,8 @@ export function FlowerCalyx({
         THREE.MathUtils.lerp(0.84, 1, opening) *
         phaseTuning.petalSpreadScale,
       outline: "lanceolate",
-      lateralCup: form === "cupped" ? 1.2 : 0.48,
+      lateralCup:
+        form === "cupped" ? 1.2 : settings.preset === "Sunflower" ? 0.82 : 0.48,
       lengthSegments: quality === "draft" ? 8 : quality === "ultra" ? 22 : 14,
       widthSegments: quality === "draft" ? 4 : quality === "ultra" ? 10 : 6,
     }).clone();
@@ -98,130 +132,326 @@ export function FlowerCalyx({
     quality,
     sepalLength,
     sepalWidth,
+    settings.preset,
     stemTuning,
   ]);
+  const roseCalyxCupGeometry = useMemo(
+    () => createRoseCalyxCupGeometry(structure.centerRadius * 1.16),
+    [structure.centerRadius],
+  );
+  const poppyReceptacleGeometry = useMemo(
+    () => createPoppyReceptacleGeometry(structure.centerRadius * 0.17),
+    [structure.centerRadius],
+  );
+  const sunflowerReceptacleGeometry = useMemo(
+    () => createSunflowerReceptacleGeometry(structure.centerRadius * 1.16),
+    [structure.centerRadius],
+  );
   const baseTilt =
-    form === "reflexed"
-      ? 1.12
-      : form === "bracted"
-        ? 0.8
-        : THREE.MathUtils.lerp(0.78, 0.58, opening);
+    settings.preset === "Rose"
+      ? 0.92
+      : form === "reflexed"
+        ? 1.12
+        : form === "bracted"
+          ? 0.8
+          : THREE.MathUtils.lerp(0.78, 0.58, opening);
   const growthTilt = THREE.MathUtils.lerp(
     0.34,
     0,
     growth.calyxRelease * phaseTuning.calyxOpenScale,
   );
-  const sepalRetention = THREE.MathUtils.lerp(
-    1,
+  const sepalRetention = getCalyxRetention(
+    opening,
     stemTuning.sepalPersistence,
-    THREE.MathUtils.smoothstep(opening, 0.3, 0.9),
   );
   const sepalCount =
-    form === "bracted" ? structure.sepals * 2 : structure.sepals;
+    settings.preset === "Sunflower"
+      ? structure.sepals * 3
+      : form === "bracted"
+        ? structure.sepals * 2
+        : structure.sepals;
 
   return (
-    <group position={[0, fusedCorolla ? -0.19 : -0.11, 0]}>
-      {!fusedCorolla && (
+    <group
+      position={[0, getCalyxAssemblyOffset(settings.preset, fusedCorolla), 0]}
+    >
+      {settings.preset === "Poppy" && opening > 0.3 && (
         <mesh
           dispose={null}
-          position={[0, -0.035 + stemTuning.calyxLiftBias, 0]}
-          scale={[
-            stemTuning.calyxScaleX,
-            0.42 * stemTuning.calyxScaleY,
-            stemTuning.calyxScaleZ,
-          ]}
+          geometry={poppyReceptacleGeometry}
+          position={[0, -0.025 + stemTuning.calyxLiftBias, 0]}
+          scale={[1, 1.65, 1]}
         >
-          <sphereGeometry args={[structure.centerRadius * 1.16, 32, 14]} />
           {lineDrawing ? (
             <meshBasicMaterial color="#ffffff" />
           ) : (
             <meshPhysicalMaterial
-              color={settings.stemColor}
-              roughness={0.86}
-              bumpMap={getBotanicalTexture("stem", textureResolution)}
-              bumpScale={0.025}
+              color={getHeroSupportTissueColor(
+                settings.preset,
+                settings.stemColor,
+                "calyx",
+              )}
+              roughness={0.88}
+              bumpMap={getBotanicalTexture("center", textureResolution)}
+              bumpScale={0.008}
+              normalMap={getBotanicalMaterialTexture(
+                "center",
+                "microNormal",
+                textureResolution,
+                "receptacle",
+              )}
+              normalScale={new THREE.Vector2(0.1, 0.1)}
               roughnessMap={getBotanicalMaterialTexture(
-                "stem",
+                "center",
                 "roughness",
                 textureResolution,
+                "receptacle",
+              )}
+              clearcoat={photorealistic ? 0.025 : 0}
+              clearcoatRoughness={0.82}
+              clearcoatMap={getBotanicalMaterialTexture(
+                "center",
+                "moisture",
+                textureResolution,
+                "receptacle",
               )}
             />
           )}
-          {lineDrawing && <Edges color="#111111" threshold={18} />}
+          {lineDrawing && <Edges color="#111111" threshold={20} />}
         </mesh>
       )}
-
-      {Array.from({ length: sepalCount }, (_, index) => {
-        const bractWhorl =
-          form === "bracted" ? Math.floor(index / structure.sepals) : 0;
-        const whorlIndex =
-          form === "bracted" ? index % structure.sepals : index;
-        const angle =
-          (whorlIndex / structure.sepals) * Math.PI * 2 +
-          (bractWhorl === 1 ? Math.PI / structure.sepals : 0);
-        const lengthScale =
-          form === "bracted" ? (bractWhorl === 0 ? 1.08 : 0.82) : 1;
-        const widthScale =
-          form === "bracted" ? (bractWhorl === 0 ? 0.94 : 1.08) : 1;
-        const whorlTilt =
-          form === "bracted" ? (bractWhorl === 0 ? 0.12 : -0.1) : 0;
-        return (
-          <group
-            key={`sepal-${index}`}
-            position={[
-              0,
-              -(1 - sepalRetention) * 0.12 -
-                (form === "bracted" ? bractWhorl * 0.022 : 0),
-              0,
+      {!fusedCorolla &&
+        sepalRetention > 0.02 &&
+        shouldRenderExternalCalyx(
+          structure.centerArchitecture,
+          settings.preset,
+        ) && (
+          <mesh
+            dispose={null}
+            position={[0, -0.035 + stemTuning.calyxLiftBias, 0]}
+            scale={[
+              stemTuning.calyxScaleX * sepalRetention,
+              0.42 * stemTuning.calyxScaleY * sepalRetention,
+              stemTuning.calyxScaleZ * sepalRetention,
             ]}
-            rotation={[0, angle, 0]}
           >
-            <mesh
-              dispose={null}
-              geometry={geometry}
-              rotation={[
-                baseTilt +
-                  whorlTilt +
-                  growthTilt -
-                  settings.sepalSpread * 0.22 +
-                  (1 - sepalRetention) * 0.72,
+            {settings.preset === "Rose" ? (
+              <primitive object={roseCalyxCupGeometry} attach="geometry" />
+            ) : settings.preset === "Sunflower" ? (
+              <primitive
+                object={sunflowerReceptacleGeometry}
+                attach="geometry"
+              />
+            ) : (
+              <sphereGeometry args={[structure.centerRadius * 1.16, 32, 14]} />
+            )}
+            {lineDrawing ? (
+              <meshBasicMaterial color="#ffffff" />
+            ) : (
+              <meshPhysicalMaterial
+                color={getHeroSupportTissueColor(
+                  settings.preset,
+                  settings.stemColor,
+                  "calyx",
+                )}
+                roughness={settings.preset === "Rose" ? 0.9 : 0.86}
+                transmission={
+                  photorealistic && settings.preset === "Rose" ? 0.018 : 0
+                }
+                thickness={settings.preset === "Rose" ? 0.06 : 0.035}
+                attenuationColor={getHeroSupportTissueColor(
+                  settings.preset,
+                  settings.stemColor,
+                  "calyx",
+                )}
+                attenuationDistance={settings.preset === "Rose" ? 0.82 : 1}
+                bumpMap={getBotanicalTexture("stem", textureResolution)}
+                bumpScale={settings.preset === "Sunflower" ? 0.018 : 0.025}
+                normalMap={
+                  settings.preset === "Sunflower"
+                    ? getBotanicalMaterialTexture(
+                        "stem",
+                        "microNormal",
+                        textureResolution,
+                        calyxBodyMaterialVariant,
+                      )
+                    : undefined
+                }
+                normalScale={new THREE.Vector2(0.1, 0.1)}
+                roughnessMap={getBotanicalMaterialTexture(
+                  "stem",
+                  "roughness",
+                  textureResolution,
+                  calyxBodyMaterialVariant,
+                )}
+              />
+            )}
+            {lineDrawing && <Edges color="#111111" threshold={18} />}
+          </mesh>
+        )}
+
+      {shouldRenderExternalCalyx(
+        structure.centerArchitecture,
+        settings.preset,
+      ) &&
+        Array.from({ length: sepalCount }, (_, index) => {
+          const bractWhorl =
+            form === "bracted" ? Math.floor(index / structure.sepals) : 0;
+          const whorlIndex =
+            form === "bracted" ? index % structure.sepals : index;
+          const sunflowerWhorl =
+            settings.preset === "Sunflower"
+              ? getSunflowerPhyllaryWhorlTuning(bractWhorl)
+              : null;
+          const angle =
+            (whorlIndex / structure.sepals) * Math.PI * 2 +
+            (sunflowerWhorl
+              ? (Math.PI / structure.sepals) * sunflowerWhorl.angleOffsetScale
+              : bractWhorl === 1
+                ? Math.PI / structure.sepals
+                : 0);
+          const lengthScale =
+            sunflowerWhorl?.lengthScale ??
+            (form === "bracted" ? (bractWhorl === 0 ? 1.08 : 0.82) : 1);
+          const widthScale =
+            sunflowerWhorl?.widthScale ??
+            (form === "bracted" ? (bractWhorl === 0 ? 0.94 : 1.08) : 1);
+          const whorlTilt =
+            sunflowerWhorl?.tilt ??
+            (form === "bracted" ? (bractWhorl === 0 ? 0.12 : -0.1) : 0);
+          const organVariation = getCalyxOrganVariation(
+            settings.preset,
+            settings.seed,
+            index,
+          );
+          return (
+            <group
+              key={`sepal-${index}`}
+              position={[
                 0,
-                form === "bracted" ? (whorlIndex % 3) * 0.025 - 0.025 : -0.03,
+                -(1 - sepalRetention) * 0.12 -
+                  (sunflowerWhorl?.axialOffset ??
+                    (form === "bracted" ? bractWhorl * 0.022 : 0)) -
+                  (settings.preset === "Rose" ? 0.075 : 0),
+                0,
               ]}
-              scale={[
-                widthScale * sepalRetention,
-                lengthScale * sepalRetention,
-                widthScale * sepalRetention,
-              ]}
+              rotation={[0, angle + organVariation.azimuth, 0]}
             >
-              {lineDrawing ? (
-                <meshBasicMaterial color="#ffffff" />
-              ) : (
-                <meshPhysicalMaterial
-                  vertexColors
-                  color={settings.stemColor}
-                  side={THREE.DoubleSide}
-                  roughness={0.84}
-                  bumpMap={getBotanicalTexture("leaf", textureResolution)}
-                  bumpScale={0.018}
-                  normalMap={getBotanicalMaterialTexture(
-                    "leaf",
-                    "microNormal",
-                    textureResolution,
-                  )}
-                  normalScale={new THREE.Vector2(0.09, 0.09)}
-                  roughnessMap={getBotanicalMaterialTexture(
-                    "leaf",
-                    "roughness",
-                    textureResolution,
-                  )}
-                />
-              )}
-              {lineDrawing && <Edges color="#111111" threshold={22} />}
-            </mesh>
-          </group>
-        );
-      })}
+              <mesh
+                dispose={null}
+                geometry={geometry}
+                rotation={[
+                  baseTilt +
+                    whorlTilt +
+                    organVariation.tilt +
+                    growthTilt -
+                    settings.sepalSpread * 0.22 +
+                    (1 - sepalRetention) * 0.72,
+                  0,
+                  (form === "bracted"
+                    ? (whorlIndex % 3) * 0.025 - 0.025
+                    : -0.03) + organVariation.roll,
+                ]}
+                scale={[
+                  widthScale * organVariation.widthScale * sepalRetention,
+                  lengthScale * organVariation.lengthScale * sepalRetention,
+                  widthScale *
+                    organVariation.widthScale *
+                    organVariation.depthScale *
+                    sepalRetention,
+                ]}
+              >
+                {lineDrawing ? (
+                  <meshBasicMaterial color="#ffffff" />
+                ) : (
+                  <meshPhysicalMaterial
+                    vertexColors
+                    color={
+                      settings.preset === "Sunflower"
+                        ? getSunflowerPhyllaryColor(
+                            settings.stemColor,
+                            bractWhorl,
+                          )
+                        : getHeroSupportTissueColor(
+                            settings.preset,
+                            settings.stemColor,
+                            "calyx",
+                          )
+                    }
+                    side={THREE.DoubleSide}
+                    roughness={
+                      settings.preset === "Sunflower"
+                        ? 0.82 + bractWhorl * 0.025
+                        : settings.preset === "Poppy"
+                          ? 0.88
+                          : settings.preset === "Rose"
+                            ? 0.87 + (organVariation.widthScale - 0.94) * 0.18
+                            : 0.84
+                    }
+                    bumpMap={getBotanicalTexture("leaf", textureResolution)}
+                    bumpScale={0.018}
+                    normalMap={getBotanicalMaterialTexture(
+                      "leaf",
+                      "microNormal",
+                      textureResolution,
+                      calyxBladeMaterialVariant,
+                    )}
+                    normalScale={
+                      settings.preset === "Sunflower"
+                        ? new THREE.Vector2(0.15, 0.15)
+                        : settings.preset === "Rose"
+                          ? new THREE.Vector2(0.1, 0.1)
+                          : new THREE.Vector2(0.09, 0.09)
+                    }
+                    roughnessMap={getBotanicalMaterialTexture(
+                      "leaf",
+                      "roughness",
+                      textureResolution,
+                      calyxBladeMaterialVariant,
+                    )}
+                    transmission={
+                      photorealistic && settings.preset === "Rose"
+                        ? 0.028
+                        : photorealistic && settings.preset === "Sunflower"
+                          ? 0.014 + (1 - bractWhorl) * 0.006
+                          : photorealistic && settings.preset === "Poppy"
+                            ? 0.012
+                            : 0
+                    }
+                    thickness={
+                      settings.preset === "Rose"
+                        ? 0.045
+                        : settings.preset === "Sunflower"
+                          ? 0.05
+                          : settings.preset === "Poppy"
+                            ? 0.04
+                            : 0.035
+                    }
+                    thicknessMap={getBotanicalMaterialTexture(
+                      "leaf",
+                      "thickness",
+                      textureResolution,
+                      calyxBladeMaterialVariant,
+                    )}
+                    attenuationColor={getHeroSupportTissueColor(
+                      settings.preset,
+                      settings.stemColor,
+                      "calyx",
+                    )}
+                    attenuationDistance={
+                      settings.preset === "Rose"
+                        ? 0.78
+                        : settings.preset === "Poppy"
+                          ? 0.5
+                          : 0.64
+                    }
+                  />
+                )}
+                {lineDrawing && <Edges color="#111111" threshold={22} />}
+              </mesh>
+            </group>
+          );
+        })}
     </group>
   );
 }

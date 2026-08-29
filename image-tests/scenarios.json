@@ -170,6 +170,22 @@
     "dimensions": { "width": 1440, "height": 1440 }
   },
   {
+    "id": "lily-morning-backlight-review",
+    "species": "Lily",
+    "seed": 3141,
+    "renderMode": "photo",
+    "lighting": "morningBacklight",
+    "lightIntensity": 1.3,
+    "focalLength": 58,
+    "reviewOnly": true,
+    "camera": {
+      "position": [5.8, 3.2, 7.8],
+      "target": [0, -0.2, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
     "id": "sunflower-golden-hour",
     "species": "Sunflower",
     "seed": 5772,
@@ -206,7 +222,7 @@
     "renderMode": "photo",
     "lighting": "macroPhotography",
     "lightIntensity": 1.25,
-    "focalLength": 65,
+    "focalLength": 58,
     "effects": {
       "depthOfField": true,
       "aperture": 5.6,
@@ -242,6 +258,23 @@
     "renderMode": "photo",
     "lighting": "morningBacklight",
     "lightIntensity": 1.35,
+    "focalLength": 105,
+    "reviewOnly": true,
+    "backgroundColor": "#dce5df",
+    "camera": {
+      "position": [0, 1.1, 10],
+      "target": [0, 0.45, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "poppy-morning-backlight-seed-1618-review",
+    "species": "Poppy",
+    "seed": 1618,
+    "renderMode": "photo",
+    "lighting": "morningBacklight",
+    "lightIntensity": 1.35,
     "focalLength": 85,
     "reviewOnly": true,
     "backgroundColor": "#dce5df",
@@ -251,6 +284,380 @@
       "fov": 36
     },
     "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "poppy-morning-backlight-seed-5772-review",
+    "species": "Poppy",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "morningBacklight",
+    "lightIntensity": 1.35,
+    "focalLength": 85,
+    "reviewOnly": true,
+    "backgroundColor": "#dce5df",
+    "camera": {
+      "position": [0, 1.1, 10],
+      "target": [0, 0.45, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1440, "height": 1440 }
+  },
+  {
+    "id": "poppy-outdoor-front-review",
+    "species": "Poppy",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 58,
+    "reviewOnly": true,
+    "backgroundColor": "#b8c6b2",
+    "groundStyle": "garden",
+    "effects": {
+      "depthOfField": true,
+      "aperture": 5.6,
+      "focusDistance": 9
+    },
+    "camera": {
+      "position": [0.4, -0.15, 10.2],
+      "target": [0, -0.45, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "poppy-outdoor-front-seed-1618-review",
+    "species": "Poppy",
+    "seed": 1618,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 58,
+    "reviewOnly": true,
+    "backgroundColor": "#b8c6b2",
+    "groundStyle": "garden",
+    "effects": {
+      "depthOfField": true,
+      "aperture": 5.6,
+      "focusDistance": 9
+    },
+    "camera": {
+      "position": [0.4, -0.15, 10.2],
+      "target": [0, -0.45, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "poppy-outdoor-front-seed-5772-review",
+    "species": "Poppy",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 58,
+    "reviewOnly": true,
+    "backgroundColor": "#b8c6b2",
+    "groundStyle": "garden",
+    "effects": {
+      "depthOfField": true,
+      "aperture": 5.6,
+      "focusDistance": 9
+    },
+    "camera": {
+      "position": [0.4, -0.15, 10.2],
+      "target": [0, -0.45, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "poppy-petal-macro-review",
+    "species": "Poppy",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 70,
+    "reviewOnly": true,
+    "backgroundColor": "#d7ded7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-1.45, 1.72, 6.5],
+      "target": [0.05, 1.42, 0],
+      "fov": 28
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "poppy-center-macro-review",
+    "species": "Poppy",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#d7ded7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [0.58, 1.5, 2.7],
+      "target": [0, 1.45, 0],
+      "fov": 15
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "poppy-center-macro-seed-1618-review",
+    "species": "Poppy",
+    "seed": 1618,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#d7ded7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [0.58, 1.5, 2.7],
+      "target": [0, 1.45, 0],
+      "fov": 15
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "poppy-center-macro-seed-5772-review",
+    "species": "Poppy",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#d7ded7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [0.58, 1.5, 2.7],
+      "target": [0, 1.45, 0],
+      "fov": 15
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "poppy-petal-macro-seed-1618-review",
+    "species": "Poppy",
+    "seed": 1618,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 70,
+    "reviewOnly": true,
+    "backgroundColor": "#d7ded7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-1.45, 1.72, 6.5],
+      "target": [0.05, 1.42, 0],
+      "fov": 28
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "poppy-petal-macro-seed-5772-review",
+    "species": "Poppy",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 70,
+    "reviewOnly": true,
+    "backgroundColor": "#d7ded7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-1.45, 1.72, 6.5],
+      "target": [0.05, 1.42, 0],
+      "fov": 28
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "poppy-side-profile-review",
+    "species": "Poppy",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.25,
+    "focalLength": 70,
+    "reviewOnly": true,
+    "backgroundColor": "#e4e8e2",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-8.2, 1.75, 2.35],
+      "target": [0, 1.4, 0],
+      "fov": 34
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "poppy-side-profile-seed-1618-review",
+    "species": "Poppy",
+    "seed": 1618,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.25,
+    "focalLength": 70,
+    "reviewOnly": true,
+    "backgroundColor": "#e4e8e2",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-8.2, 1.75, 2.35],
+      "target": [0, 1.4, 0],
+      "fov": 34
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "poppy-side-profile-seed-5772-review",
+    "species": "Poppy",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.25,
+    "focalLength": 70,
+    "reviewOnly": true,
+    "backgroundColor": "#e4e8e2",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-8.2, 1.75, 2.35],
+      "target": [0, 1.4, 0],
+      "fov": 34
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "poppy-underside-attachment-review",
+    "species": "Poppy",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.35,
+    "focalLength": 90,
+    "reviewOnly": true,
+    "backgroundColor": "#d7ded7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-6.7, -0.55, 3.55],
+      "target": [0, 1.3, 0],
+      "fov": 30
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "poppy-underside-attachment-seed-1618-review",
+    "species": "Poppy",
+    "seed": 1618,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.35,
+    "focalLength": 90,
+    "reviewOnly": true,
+    "backgroundColor": "#d7ded7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-6.7, -0.55, 3.55],
+      "target": [0, 1.3, 0],
+      "fov": 30
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "poppy-underside-attachment-seed-5772-review",
+    "species": "Poppy",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.35,
+    "focalLength": 90,
+    "reviewOnly": true,
+    "backgroundColor": "#d7ded7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-6.7, -0.55, 3.55],
+      "target": [0, 1.3, 0],
+      "fov": 30
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "poppy-foliage-stem-review",
+    "species": "Poppy",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.35,
+    "focalLength": 85,
+    "reviewOnly": true,
+    "backgroundColor": "#c9d2c7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [2.2, -1.9, 6.2],
+      "target": [0, -1.45, 0],
+      "fov": 26
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "poppy-foliage-stem-seed-1618-review",
+    "species": "Poppy",
+    "seed": 1618,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.35,
+    "focalLength": 85,
+    "reviewOnly": true,
+    "backgroundColor": "#c9d2c7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [2.2, -1.9, 6.2],
+      "target": [0, -1.45, 0],
+      "fov": 26
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "poppy-foliage-stem-seed-5772-review",
+    "species": "Poppy",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.35,
+    "focalLength": 85,
+    "reviewOnly": true,
+    "backgroundColor": "#c9d2c7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [2.2, -1.9, 6.2],
+      "target": [0, -1.45, 0],
+      "fov": 26
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "poppy-nodding-bud-review",
+    "species": "Poppy",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.2,
+    "focalLength": 105,
+    "reviewOnly": true,
+    "backgroundColor": "#c9d2c7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [1.7, -1.85, 3.4],
+      "target": [0.55, -1.4, 0.45],
+      "fov": 16
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
   },
   {
     "id": "lily-reference-front-review",
@@ -287,6 +694,118 @@
     "dimensions": { "width": 1024, "height": 1024 }
   },
   {
+    "id": "lily-reference-front-seed-2718-review",
+    "species": "Lily",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 65,
+    "reviewOnly": true,
+    "backgroundColor": "#e4e8e1",
+    "camera": {
+      "position": [0, 0.95, 10.5],
+      "target": [0, 0.35, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "lily-reference-front-seed-5772-review",
+    "species": "Lily",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 65,
+    "reviewOnly": true,
+    "backgroundColor": "#e4e8e1",
+    "camera": {
+      "position": [0, 0.95, 10.5],
+      "target": [0, 0.35, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "lily-garden-habit-review",
+    "species": "Lily",
+    "seed": 3141,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.2,
+    "focalLength": 72,
+    "reviewOnly": true,
+    "backgroundColor": "#b8c6b2",
+    "groundStyle": "garden",
+    "effects": {
+      "ambientOcclusion": true,
+      "depthOfField": true,
+      "aperture": 5.6,
+      "focusDistance": 10.7
+    },
+    "camera": {
+      "position": [0.35, 1.1, 10.8],
+      "target": [0, 0.5, 0],
+      "fov": 42
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "lily-tepal-backlight-review",
+    "species": "Lily",
+    "seed": 3141,
+    "renderMode": "photo",
+    "lighting": "morningBacklight",
+    "lightIntensity": 1.15,
+    "focalLength": 110,
+    "reviewOnly": true,
+    "backgroundColor": "#aab8b2",
+    "effects": { "ambientOcclusion": false },
+    "camera": {
+      "position": [2.2, 0.75, 5.8],
+      "target": [0, 0.35, 0],
+      "fov": 22
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "lily-tepal-macro-review",
+    "species": "Lily",
+    "seed": 3141,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.1,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#e0e5df",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [2.05, 0.65, 5.25],
+      "target": [0.1, 0.35, 0],
+      "fov": 17
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "lily-center-macro-review",
+    "species": "Lily",
+    "seed": 3141,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#e0e5df",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [0.85, 1.5, 4.4],
+      "target": [0.05, 1.45, 0],
+      "fov": 22
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
     "id": "rose-rugosa-front-review",
     "species": "Rose",
     "seed": 1847,
@@ -304,11 +823,86 @@
     "dimensions": { "width": 1024, "height": 1024 }
   },
   {
-    "id": "rose-rugosa-underside-review",
+    "id": "rose-rugosa-habit-review",
     "species": "Rose",
     "seed": 1847,
     "renderMode": "photo",
     "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 46,
+    "reviewOnly": true,
+    "backgroundColor": "#b9c5b3",
+    "groundStyle": "garden",
+    "effects": {
+      "depthOfField": true,
+      "aperture": 5.6,
+      "focusDistance": 9.2
+    },
+    "camera": {
+      "position": [0.8, 0.3, 10.4],
+      "target": [0, -0.35, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
+    "id": "rose-rugosa-front-seed-2718-review",
+    "species": "Rose",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 65,
+    "reviewOnly": true,
+    "backgroundColor": "#e1e7df",
+    "camera": {
+      "position": [3.6, 6, 7.2],
+      "target": [0, 0.45, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "rose-rugosa-front-seed-5772-review",
+    "species": "Rose",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 65,
+    "reviewOnly": true,
+    "backgroundColor": "#e1e7df",
+    "camera": {
+      "position": [3.6, 6, 7.2],
+      "target": [0, 0.45, 0],
+      "fov": 36
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "rose-rugosa-side-review",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 105,
+    "reviewOnly": true,
+    "backgroundColor": "#dce4da",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [6.8, 1.1, 0],
+      "target": [0, 1.1, 0],
+      "fov": 26
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "rose-rugosa-underside-review",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "botanicalStudio",
     "lightIntensity": 1.25,
     "focalLength": 72,
     "reviewOnly": true,
@@ -322,20 +916,111 @@
     "dimensions": { "width": 1024, "height": 1024 }
   },
   {
+    "id": "rose-rugosa-foliage-stem-review",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 85,
+    "reviewOnly": true,
+    "backgroundColor": "#c3cec0",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [2.8, -0.8, 5.2],
+      "target": [0, -0.85, 0],
+      "fov": 24
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "rose-petal-backlight-review",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "morningBacklight",
+    "lightIntensity": 1.2,
+    "focalLength": 105,
+    "reviewOnly": true,
+    "backgroundColor": "#a8b4ae",
+    "effects": { "ambientOcclusion": false },
+    "camera": {
+      "position": [-1.5, 1.2, 4.2],
+      "target": [0, 1.65, 0],
+      "fov": 24
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "rose-petal-macro-ultra-review",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.1,
+    "quality": "ultra",
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#e0e4dd",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-0.82, 1.76, 1.85],
+      "target": [-0.35, 1.75, 0],
+      "fov": 17
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "rose-petal-macro-review",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.1,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#e0e4dd",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [-0.82, 1.76, 1.85],
+      "target": [-0.35, 1.75, 0],
+      "fov": 17
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "rose-center-macro-review",
+    "species": "Rose",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#dfe4dc",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [0.68, 2.51, 0.94],
+      "target": [0.05, 1.45, 0],
+      "fov": 18
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
     "id": "sunflower-reference-front-review",
     "species": "Sunflower",
     "seed": 5772,
     "renderMode": "photo",
     "lighting": "overcastGarden",
     "lightIntensity": 1.25,
-    "focalLength": 65,
+    "focalLength": 58,
     "reviewOnly": true,
     "backgroundColor": "#dfe6dc",
     "effects": { "ambientOcclusion": true },
     "camera": {
       "position": [3.5, 5.8, 7.4],
       "target": [0, 0.4, 0],
-      "fov": 36
+      "fov": 42
     },
     "dimensions": { "width": 1024, "height": 1024 }
   },
@@ -358,6 +1043,132 @@
     "dimensions": { "width": 1024, "height": 1024 }
   },
   {
+    "id": "sunflower-reference-front-seed-1847-review",
+    "species": "Sunflower",
+    "seed": 1847,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 58,
+    "reviewOnly": true,
+    "backgroundColor": "#dfe6dc",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [3.5, 5.8, 7.4],
+      "target": [0, 0.4, 0],
+      "fov": 42
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "sunflower-reference-front-seed-2718-review",
+    "species": "Sunflower",
+    "seed": 2718,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.25,
+    "focalLength": 58,
+    "reviewOnly": true,
+    "backgroundColor": "#dfe6dc",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [3.5, 5.8, 7.4],
+      "target": [0, 0.4, 0],
+      "fov": 42
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "sunflower-ray-backlight-review",
+    "species": "Sunflower",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "morningBacklight",
+    "lightIntensity": 1.3,
+    "focalLength": 105,
+    "reviewOnly": true,
+    "backgroundColor": "#d8e2dc",
+    "camera": {
+      "position": [0.25, 0.55, 8.6],
+      "target": [0, 0.35, 0],
+      "fov": 24
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "sunflower-attachment-underside-review",
+    "species": "Sunflower",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.3,
+    "focalLength": 85,
+    "reviewOnly": true,
+    "backgroundColor": "#dfe6dc",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [3.9, -5.4, 4.6],
+      "target": [0, 0.38, 0],
+      "fov": 30
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "sunflower-ray-macro-review",
+    "species": "Sunflower",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.1,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#d9dfd8",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [1.85, 0.72, 5.1],
+      "target": [0.15, 0.35, 0],
+      "fov": 16
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "sunflower-center-macro-review",
+    "species": "Sunflower",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#d9dfd8",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [2.1, 3.35, 4.5],
+      "target": [0, 0.48, 0],
+      "fov": 13
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "sunflower-ray-macro-ultra-review",
+    "species": "Sunflower",
+    "seed": 5772,
+    "renderMode": "photo",
+    "quality": "ultra",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.1,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#d9dfd8",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [1.85, 0.72, 5.1],
+      "target": [0.15, 0.35, 0],
+      "fov": 16
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
     "id": "sunflower-foliage-review",
     "species": "Sunflower",
     "seed": 5772,
@@ -376,15 +1187,36 @@
     "dimensions": { "width": 1024, "height": 1024 }
   },
   {
+    "id": "sunflower-whole-plant-habit-review",
+    "species": "Sunflower",
+    "seed": 5772,
+    "renderMode": "photo",
+    "lighting": "overcastGarden",
+    "lightIntensity": 1.28,
+    "focalLength": 50,
+    "reviewOnly": true,
+    "backgroundColor": "#b9c6b5",
+    "groundStyle": "garden",
+    "fogNear": 14,
+    "fogFar": 24,
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [0.9, -1.05, 13.8],
+      "target": [0, -1.1, 0],
+      "fov": 42
+    },
+    "dimensions": { "width": 1200, "height": 1200 }
+  },
+  {
     "id": "orchid-phalaenopsis-front-review",
     "species": "Orchid",
     "seed": 6180,
     "renderMode": "photo",
-    "lighting": "overcastGarden",
-    "lightIntensity": 1.3,
+    "lighting": "botanicalStudio",
+    "lightIntensity": 1.2,
     "focalLength": 72,
     "reviewOnly": true,
-    "backgroundColor": "#e3e6e1",
+    "backgroundColor": "#cfd5d1",
     "effects": { "ambientOcclusion": true },
     "camera": {
       "position": [0, 0.85, 9.8],
@@ -400,14 +1232,14 @@
     "renderMode": "photo",
     "lighting": "macroPhotography",
     "lightIntensity": 1.25,
-    "focalLength": 85,
+    "focalLength": 120,
     "reviewOnly": true,
     "backgroundColor": "#e3e6e1",
     "effects": { "ambientOcclusion": true },
     "camera": {
       "position": [3, 0.2, 4.5],
-      "target": [0.25, -0.38, 0],
-      "fov": 26
+      "target": [0.25, -0.82, 0],
+      "fov": 18
     },
     "dimensions": { "width": 1024, "height": 1024 }
   },
@@ -426,6 +1258,42 @@
       "position": [4.2, -2.7, 7.2],
       "target": [0, -3.05, 0],
       "fov": 34
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "orchid-phalaenopsis-tepal-backlight-review",
+    "species": "Orchid",
+    "seed": 6180,
+    "renderMode": "photo",
+    "lighting": "morningBacklight",
+    "lightIntensity": 1.15,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#98a6a2",
+    "effects": { "ambientOcclusion": false },
+    "camera": {
+      "position": [3, 0.2, 4.5],
+      "target": [0.25, -0.82, 0],
+      "fov": 18
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "orchid-phalaenopsis-labellum-macro-review",
+    "species": "Orchid",
+    "seed": 6180,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#d9ddd7",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [2.35, -0.15, 4.05],
+      "target": [0.15, -0.72, 0],
+      "fov": 15
     },
     "dimensions": { "width": 1024, "height": 1024 }
   },
@@ -459,9 +1327,27 @@
     "backgroundColor": "#dce5dc",
     "effects": { "ambientOcclusion": true },
     "camera": {
-      "position": [7.6, 1.65, 4.8],
-      "target": [0, 0.5, 0],
-      "fov": 34
+      "position": [9, 1.45, 1.8],
+      "target": [0, 0.55, 0],
+      "fov": 38
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "lotus-center-macro-review",
+    "species": "Lotus",
+    "seed": 8128,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.15,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#dce4db",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [0.8, 0.1, 4.4],
+      "target": [0, 0.05, 0],
+      "fov": 15
     },
     "dimensions": { "width": 1024, "height": 1024 }
   },
@@ -475,11 +1361,48 @@
     "focalLength": 58,
     "reviewOnly": true,
     "backgroundColor": "#cfdedb",
+    "groundStyle": "water",
     "effects": { "ambientOcclusion": true },
     "camera": {
       "position": [5.6, 4.5, 9],
-      "target": [0, -1, 0],
-      "fov": 42
+      "target": [0, -0.7, 0],
+      "fov": 46
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "lotus-petal-backlight-review",
+    "species": "Lotus",
+    "seed": 8128,
+    "renderMode": "photo",
+    "lighting": "morningBacklight",
+    "lightIntensity": 1.2,
+    "focalLength": 105,
+    "reviewOnly": true,
+    "backgroundColor": "#9eaaa4",
+    "effects": { "ambientOcclusion": false },
+    "camera": {
+      "position": [2.1, 1.05, 6.4],
+      "target": [0, 0.45, 0],
+      "fov": 24
+    },
+    "dimensions": { "width": 1024, "height": 1024 }
+  },
+  {
+    "id": "lotus-petal-macro-review",
+    "species": "Lotus",
+    "seed": 8128,
+    "renderMode": "photo",
+    "lighting": "macroPhotography",
+    "lightIntensity": 1.1,
+    "focalLength": 120,
+    "reviewOnly": true,
+    "backgroundColor": "#e1e7df",
+    "effects": { "ambientOcclusion": true },
+    "camera": {
+      "position": [1.9, 0.95, 5.3],
+      "target": [0.1, 0.55, 0],
+      "fov": 17
     },
     "dimensions": { "width": 1024, "height": 1024 }
   }

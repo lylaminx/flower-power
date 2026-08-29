@@ -13,7 +13,10 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: 0,
-  timeout: 60_000,
+  // Readiness has its own 60-second assertion budget. Keep a separate budget
+  // for the GPU readback and snapshot comparison instead of letting a scene
+  // that becomes ready near that boundary fail immediately in screenshot().
+  timeout: 180_000,
   reporter: "list",
   outputDir: "image-tests/results",
   snapshotPathTemplate: "image-tests/baselines/{arg}{ext}",

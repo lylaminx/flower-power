@@ -20,6 +20,19 @@ import {
   renderQualitySettings,
   type RenderQuality,
 } from "@/lib/flower-quality";
+import { FlowerLightingProvider } from "./flower-lighting-context";
+import {
+  compileSceneDeterministically,
+  getSceneReadinessOutstanding,
+  type SceneCompilationResult,
+} from "@/lib/scene-readiness";
+import {
+  getAquaticWaterTexture,
+  getGardenBackdropPlacements,
+  createGardenBladeGeometry,
+  getGardenGroundPlacements,
+  getGardenGroundTexture,
+} from "@/lib/flower-ground";
 
 export type ExportPng = () => Promise<void>;
 
@@ -34,6 +47,64 @@ const defaultView: FlowerSceneView = {
   target: [0, -0.2, 0],
   fov: 36,
 };
+
+const gardenBladeGeometry = createGardenBladeGeometry();
+const gardenBladeMaterials = ["#718066", "#829076", "#64735b"].map(
+  (color) =>
+    new THREE.MeshStandardMaterial({
+      color,
+      roughness: 0.96,
+      side: THREE.DoubleSide,
+    }),
+);
+
+function GardenGroundDetails() {
+  const placements = [
+    ...getGardenBackdropPlacements().map((placement) => ({
+      ...placement,
+      layer: "backdrop" as const,
+    })),
+    ...getGardenGroundPlacements().map((placement) => ({
+      ...placement,
+      layer: "ground" as const,
+    })),
+  ];
+  return (
+    <group>
+      {placements.map((placement, index) => (
+        <group
+          key={`garden-${placement.layer}-${index}`}
+          position={placement.position}
+          rotation={[0, placement.rotation, placement.lean]}
+        >
+          {Array.from({ length: placement.bladeCount }, (_, bladeIndex) => {
+            const centeredIndex = bladeIndex - (placement.bladeCount - 1) / 2;
+            const edgeProgress = Math.abs(centeredIndex) / placement.bladeCount;
+            return (
+              <mesh
+                key={bladeIndex}
+                geometry={gardenBladeGeometry}
+                material={gardenBladeMaterials[placement.tone]}
+                position={[
+                  centeredIndex * placement.spread,
+                  0,
+                  centeredIndex * placement.spread * 0.38,
+                ]}
+                rotation={[0, centeredIndex * 0.64, centeredIndex * 0.09]}
+                scale={[
+                  placement.widthScale * (1 - edgeProgress * 0.22),
+                  placement.height * (1 - edgeProgress * 0.32),
+                  1,
+                ]}
+                receiveShadow
+              />
+            );
+          })}
+        </group>
+      ))}
+    </group>
+  );
+}
 
 function useCanvasBackground(fixedColor?: string) {
   const [background, setBackground] = useState(fixedColor ?? "#ffffff");
@@ -134,6 +205,9 @@ export function FlowerScene({
   interactive = true,
   onSceneReady,
   backgroundColor,
+  groundStyle = "studio",
+  fogNear = 11,
+  fogFar = 19,
   environment = true,
   lightingPreset = "botanicalStudio",
   focalLength = 52,
@@ -149,8 +223,11 @@ export function FlowerScene({
   onExportReady: (exportPng: ExportPng | null) => void;
   view?: FlowerSceneView;
   interactive?: boolean;
-  onSceneReady?: () => void;
+  onSceneReady?: (result: SceneCompilationResult) => void;
   backgroundColor?: string;
+  groundStyle?: "studio" | "garden" | "water";
+  fogNear?: number;
+  fogFar?: number;
   environment?: boolean;
   lightingPreset?: LightingPreset;
   focalLength?: number;
@@ -189,6 +266,9 @@ export function FlowerScene({
       dpr={[1, qualitySettings.maxDpr]}
     >
       <color attach="background" args={[background]} />
+      {groundStyle === "garden" && (
+        <fog attach="fog" args={[background, fogNear, fogFar]} />
+      )}
       <CameraSetup view={view} focalLength={focalLength} />
       <ambientLight intensity={photorealistic ? 0.12 : 0.38} />
       <hemisphereLight
@@ -219,7 +299,9 @@ export function FlowerScene({
         color={rig.rimColor}
       />
       <directionalLight
-        castShadow={photorealistic && qualitySettings.shadows}
+        castShadow={
+          photorealistic && qualitySettings.shadows && groundStyle !== "garden"
+        }
         position={[3.5, 7, 4.5]}
         intensity={photorealistic ? intensity * 0.34 : intensity * 0.56}
         color={rig.keyColor}
@@ -233,9 +315,11 @@ export function FlowerScene({
         shadow-camera-bottom={-4}
         shadow-bias={-0.00015}
       />
-      <RenderQualityProvider value={quality}>
-        <FlowerModel />
-      </RenderQualityProvider>
+      <FlowerLightingProvider rig={rig}>
+        <RenderQualityProvider value={quality}>
+          <FlowerModel />
+        </RenderQualityProvider>
+      </FlowerLightingProvider>
       <PhotographicRendererSetup
         exposure={rig.exposure}
         shadows={photorealistic && qualitySettings.shadows}
@@ -256,21 +340,56 @@ export function FlowerScene({
         <>
           <ContactShadows
             position={[0, -3.02, 0]}
-            opacity={0.42}
-            scale={9}
-            blur={2.6}
-            far={5.5}
+            opacity={groundStyle === "garden" ? 0.2 : 0.42}
+            scale={groundStyle === "garden" ? 5.5 : 9}
+            blur={groundStyle === "garden" ? 4.2 : 2.6}
+            far={groundStyle === "garden" ? 2.8 : 5.5}
             resolution={qualitySettings.contactShadowResolution}
             color="#27302c"
           />
-          <mesh
-            position={[0, -3.055, 0]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            receiveShadow
-          >
-            <planeGeometry args={[30, 30]} />
-            <shadowMaterial color={rig.groundColor} opacity={0.12} />
-          </mesh>
+          {groundStyle === "garden" ? (
+            <>
+              <mesh
+                position={[0, -3.055, 0]}
+                rotation={[-Math.PI / 2, 0, 0]}
+                receiveShadow
+              >
+                <planeGeometry args={[30, 30]} />
+                <meshStandardMaterial
+                  map={getGardenGroundTexture()}
+                  color="#ddd4bd"
+                  roughness={0.98}
+                  metalness={0}
+                />
+              </mesh>
+              <GardenGroundDetails />
+            </>
+          ) : groundStyle === "water" ? (
+            <mesh
+              position={[0, -3.055, 0]}
+              rotation={[-Math.PI / 2, 0, 0]}
+              receiveShadow
+            >
+              <planeGeometry args={[30, 30]} />
+              <meshStandardMaterial
+                map={getAquaticWaterTexture()}
+                color="#ffffff"
+                roughness={0.24}
+                metalness={0.08}
+                transparent
+                opacity={0.88}
+              />
+            </mesh>
+          ) : (
+            <mesh
+              position={[0, -3.055, 0]}
+              rotation={[-Math.PI / 2, 0, 0]}
+              receiveShadow
+            >
+              <planeGeometry args={[30, 30]} />
+              <shadowMaterial color={rig.groundColor} opacity={0.12} />
+            </mesh>
+          )}
         </>
       )}
       {photorealistic &&
@@ -335,7 +454,11 @@ export function FlowerScene({
   );
 }
 
-function SceneReady({ onReady }: { onReady: () => void }) {
+function SceneReady({
+  onReady,
+}: {
+  onReady: (result: SceneCompilationResult) => void;
+}) {
   const { gl, scene, camera } = useThree();
 
   useEffect(() => {
@@ -348,17 +471,27 @@ function SceneReady({ onReady }: { onReady: () => void }) {
       });
 
     const settleScene = async () => {
-      // A fixed number of frames alone is not sufficient for deterministic
-      // captures: the first frame can still be compiling physical-material
-      // shaders. Explicitly compile the complete scene, then allow layout
-      // effects and shadow/contact-shadow passes to settle.
-      await gl.compileAsync(scene, camera);
+      // Prefer non-blocking parallel shader compilation. If the browser driver
+      // cannot complete it, continue through settled render frames rather than
+      // calling synchronous gl.compile(), which can deadlock Chrome's render
+      // thread on complex physical-material scenes.
+      const compilation = await compileSceneDeterministically(
+        gl,
+        scene,
+        camera,
+      );
       await nextFrame();
       await nextFrame();
       await nextFrame();
       if (cancelled) return;
       gl.render(scene, camera);
-      onReady();
+      const outstanding = getSceneReadinessOutstanding(scene);
+      if (gl.info.render.calls === 0) outstanding.push("render");
+      onReady({
+        ...compilation,
+        settledFrames: 3,
+        outstanding: [...new Set(outstanding)],
+      });
     };
 
     void settleScene();

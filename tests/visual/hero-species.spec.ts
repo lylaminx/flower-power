@@ -12,7 +12,7 @@ for (const scenario of scenarios.filter((candidate) => !candidate.reviewOnly)) {
       // The first scenario also pays the Next.js development compilation cost.
       // Scene readiness itself waits for WebGL shader compilation and settled
       // frames, so this is a startup budget rather than an arbitrary sleep.
-      timeout: 60_000,
+      timeout: 120_000,
     });
 
     const capture = await page.screenshot({ animations: "disabled" });

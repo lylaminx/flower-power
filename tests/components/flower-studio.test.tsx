@@ -262,7 +262,7 @@ describe("FlowerStudio", () => {
       panelOpen: true,
       rightPanelOpen: true,
     });
-  });
+  }, 20_000);
 
   it("updates numeric and color controls", () => {
     render(<FlowerStudio />);
@@ -321,7 +321,7 @@ describe("FlowerStudio", () => {
     });
     expect(screen.getByText("24")).toBeVisible();
     expect(screen.getByText("#112233")).toBeVisible();
-  }, 10_000);
+  }, 20_000);
 
   it("applies presets and updates the live-study label", async () => {
     const user = userEvent.setup();

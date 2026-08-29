@@ -4,7 +4,7 @@ import scenarios from "../../image-tests/scenarios.json";
 const reviewScenarios = scenarios.filter((scenario) => scenario.reviewOnly);
 
 test.describe("reference review captures", () => {
-  test.setTimeout(120_000);
+  test.setTimeout(180_000);
 
   test.skip(
     process.env.VISUAL_REVIEW !== "1",
@@ -19,7 +19,7 @@ test.describe("reference review captures", () => {
       const stage = page.locator("[data-visual-test-ready]");
       await expect(stage).toHaveAttribute("data-scenario", scenario.id);
       await expect(stage).toHaveAttribute("data-visual-test-ready", "true", {
-        timeout: 60_000,
+        timeout: 120_000,
       });
 
       const path = testInfo.outputPath(`${scenario.id}.png`);

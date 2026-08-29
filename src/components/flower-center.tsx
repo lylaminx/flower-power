@@ -9,7 +9,10 @@ import {
   getBotanicalMaterialTexture,
   getBotanicalTexture,
 } from "@/lib/botanical-textures";
-import { getHeroCenterTuning } from "@/lib/flower-center-tuning";
+import {
+  getHeroCenterTuning,
+  shouldRenderCenterBody,
+} from "@/lib/flower-center-tuning";
 import { useFlowerStore } from "@/lib/flower-store";
 import {
   getCompositeFloretMaturity,
@@ -19,15 +22,42 @@ import {
 } from "@/lib/flower-growth";
 import { useRenderQuality } from "./render-quality-context";
 import { getTextureResolution } from "@/lib/flower-quality";
+import {
+  createCompositeFloretCrownGeometry,
+  createSunflowerCompositeFloretCrownGeometry,
+  createCompositeFloretTubeGeometry,
+  createBifidCompositeStigmaGeometry,
+  getCompositeCrownVariation,
+  getCompositeCrownColor,
+  getCompositeFloretVerticalLayout,
+  getCompositeFloretPlacementVariation,
+  getSunflowerDiskBodyColor,
+  getSunflowerFloretPosture,
+  getSunflowerFloretRadialSizeScale,
+  getSunflowerFloretStage,
+  getSunflowerSpentCrownVariation,
+  getSunflowerWeatheredCrownColor,
+} from "@/lib/composite-floret";
+import {
+  createLotusCarpelPitGeometry,
+  createRoseHypanthiumLiningGeometry,
+  seededRandom,
+} from "@/lib/flower-geometry";
 import { useShallow } from "zustand/react/shallow";
 
 const centerSphereGeometry = new THREE.SphereGeometry(1, 40, 18);
+const roseHypanthiumLiningGeometry = createRoseHypanthiumLiningGeometry();
 const seedpodBodyGeometry = new THREE.CylinderGeometry(1, 0.62, 1, 36, 8);
-const seedpodPitGeometry = new THREE.CylinderGeometry(1, 1, 1, 7);
+const seedpodPitGeometry = createLotusCarpelPitGeometry();
 const seedpodSeedGeometry = new THREE.SphereGeometry(1, 10, 7);
 const floretCylinderGeometry = new THREE.CylinderGeometry(0.68, 1, 1, 7);
-const floretCrownGeometry = new THREE.TorusGeometry(0.62, 0.2, 4, 5);
+const compositeFloretTubeGeometry = createCompositeFloretTubeGeometry();
+const floretCrownGeometry = createCompositeFloretCrownGeometry();
+const sunflowerFloretCrownGeometry =
+  createSunflowerCompositeFloretCrownGeometry();
 const floretStigmaGeometry = new THREE.CapsuleGeometry(1, 1, 3, 5);
+const sunflowerFloretStigmaGeometry = createBifidCompositeStigmaGeometry();
+const seedpodBodyHeightFloor = 0.68;
 
 export function FlowerCenter({
   structure,
@@ -51,6 +81,7 @@ export function FlowerCenter({
       centerStigmaSize: state.centerStigmaSize,
       bloom: state.bloom,
       petalAge: state.petalAge,
+      seed: state.seed,
     })),
   );
   const textureResolution = getTextureResolution(useRenderQuality());
@@ -59,9 +90,9 @@ export function FlowerCenter({
   const density = settings.centerDensity;
   const architecture = structure.centerArchitecture ?? "simple";
   const seedpodArchitecture = architecture === "seedpod";
-  // Poppies expose a capsule/stigmatic disk surrounded by true stamens. The
-  // shared simple-center body and decorative florets formed an incorrect black
-  // mound underneath that anatomy.
+  // Poppies and lilies expose true reproductive organs rather than the shared
+  // decorative center body and generic floret mound. Rose retains a dedicated
+  // flattened hypanthial disc below its stamens.
   const reproductiveOnly =
     settings.preset === "Poppy" || settings.preset === "Lily";
   const tuning = getHeroCenterTuning(settings.preset, structure, architecture);
@@ -75,53 +106,69 @@ export function FlowerCenter({
   );
   const centerWilt = growth.wilt * phaseTuning.wiltScale;
   const topology =
-    settings.preset === "Sunflower"
+    settings.preset === "Rose"
       ? {
-          bodyX: 1.02,
-          bodyY: 0.9,
-          bodyZ: 1.02,
-          radiusBias: 1.08,
-          verticalBias: 0.88,
-          sizeBias: 1.04,
-          crownBias: 0.92,
-          stigmaBias: 0.9,
-          pitBias: 0.94,
+          // Bridge the open space inside the five petal bases without
+          // revealing the green sepal whorl as a geometric pentagon.
+          bodyX: 0.9,
+          bodyY: 0.34,
+          bodyZ: 0.87,
+          radiusBias: 1,
+          verticalBias: 1,
+          sizeBias: 1,
+          crownBias: 1,
+          stigmaBias: 1,
+          pitBias: 1,
         }
-      : settings.preset === "Orchid"
+      : settings.preset === "Sunflower"
         ? {
-            bodyX: 0.74,
-            bodyY: 1.16,
-            bodyZ: 0.78,
-            radiusBias: 0.72,
-            verticalBias: 1.14,
-            sizeBias: 0.9,
-            crownBias: 0.86,
-            stigmaBias: 1.08,
-            pitBias: 0.88,
+            bodyX: 1.02,
+            bodyY: 0.9,
+            bodyZ: 1.02,
+            radiusBias: 1.08,
+            verticalBias: 0.88,
+            sizeBias: 1.04,
+            crownBias: 0.92,
+            // Sunflower's bifid styles should just clear the active crowns in
+            // the macro view without becoming a decorative yellow star field.
+            stigmaBias: 1.18,
+            pitBias: 0.94,
           }
-        : settings.preset === "Lotus"
+        : settings.preset === "Orchid"
           ? {
-              bodyX: 1.08,
-              bodyY: 0.92,
-              bodyZ: 1.08,
-              radiusBias: 1.04,
-              verticalBias: 0.86,
-              sizeBias: 1.02,
-              crownBias: 0.96,
-              stigmaBias: 0.94,
-              pitBias: 1.1,
+              bodyX: 0.74,
+              bodyY: 1.16,
+              bodyZ: 0.78,
+              radiusBias: 0.72,
+              verticalBias: 1.14,
+              sizeBias: 0.9,
+              crownBias: 0.86,
+              stigmaBias: 1.08,
+              pitBias: 0.88,
             }
-          : {
-              bodyX: 1,
-              bodyY: 1,
-              bodyZ: 1,
-              radiusBias: 1,
-              verticalBias: 1,
-              sizeBias: 1,
-              crownBias: 1,
-              stigmaBias: 1,
-              pitBias: 1,
-            };
+          : settings.preset === "Lotus"
+            ? {
+                bodyX: 1.08,
+                bodyY: 0.92,
+                bodyZ: 1.08,
+                radiusBias: 1.04,
+                verticalBias: 0.86,
+                sizeBias: 1.02,
+                crownBias: 0.96,
+                stigmaBias: 0.94,
+                pitBias: 1.1,
+              }
+            : {
+                bodyX: 1,
+                bodyY: 1,
+                bodyZ: 1,
+                radiusBias: 1,
+                verticalBias: 1,
+                sizeBias: 1,
+                crownBias: 1,
+                stigmaBias: 1,
+                pitBias: 1,
+              };
   const architectureBodyScale =
     architecture === "column"
       ? {
@@ -132,7 +179,7 @@ export function FlowerCenter({
       : seedpodArchitecture
         ? {
             x: 0.92 * topology.bodyX,
-            y: 0.76 * topology.bodyY,
+            y: 0.94 * topology.bodyY,
             z: 0.92 * topology.bodyZ,
           }
         : {
@@ -145,7 +192,15 @@ export function FlowerCenter({
       ? new THREE.Color(structure.stigmaColor)
           .lerp(new THREE.Color(centerColor), tuning.displayColorMix)
           .getStyle()
-      : centerColor;
+      : seedpodArchitecture
+        ? new THREE.Color(centerColor)
+            .lerp(new THREE.Color("#b58a36"), centerWilt * 0.18)
+            .getStyle()
+        : settings.preset === "Rose"
+          ? new THREE.Color("#77804b")
+              .lerp(new THREE.Color(centerColor), 0.18)
+              .getStyle()
+          : centerColor;
   const centerRadius =
     structure.centerRadius *
     settings.centerSize *
@@ -161,10 +216,10 @@ export function FlowerCenter({
     THREE.MathUtils.lerp(0.92, 1.04, centerExposure) *
     THREE.MathUtils.lerp(1, 0.9, centerWilt);
   const seedpodCount = Math.max(
-    18,
+    14,
     Math.min(
-      64,
-      Math.round(structure.florets * density * tuning.densityScale * 0.56),
+      36,
+      Math.round(structure.florets * density * tuning.densityScale * 0.26),
     ),
   );
   const floretCount = Math.max(
@@ -204,21 +259,29 @@ export function FlowerCenter({
       .lerp(new THREE.Color("#76553a"), centerWilt * 0.36);
     for (let index = 0; index < floretCount; index += 1) {
       const progress = Math.sqrt(index / floretCount);
+      const placementVariation =
+        architecture === "composite"
+          ? getCompositeFloretPlacementVariation(settings.seed, index)
+          : null;
+      const individualDevelopment = THREE.MathUtils.clamp(
+        growth.reproductiveMaturity * centerExposure +
+          (placementVariation?.developmentOffset ?? 0),
+        0,
+        1,
+      );
       const compositeMaturity =
         architecture === "composite"
-          ? getCompositeFloretMaturity(
-              progress,
-              growth.reproductiveMaturity * centerExposure,
-            )
+          ? getCompositeFloretMaturity(progress, individualDevelopment)
           : 0;
       const compositeSenescence =
         architecture === "composite"
-          ? getCompositeFloretSenescence(
-              progress,
-              growth.reproductiveMaturity * centerExposure,
-            )
+          ? getCompositeFloretSenescence(progress, individualDevelopment)
           : 0;
-      const angle = index * 2.399963;
+      const angle = index * 2.399963 + (placementVariation?.angleOffset ?? 0);
+      const crownVariation =
+        architecture === "composite"
+          ? getCompositeCrownVariation(settings.seed, index)
+          : null;
       const radialShape =
         architecture === "composite"
           ? THREE.MathUtils.lerp(0.76, 1.04, progress)
@@ -232,7 +295,8 @@ export function FlowerCenter({
         topology.radiusBias *
         radialShape *
         settings.centerSpread *
-        tuning.spreadScale;
+        tuning.spreadScale *
+        (placementVariation?.radiusScale ?? 1);
       const innerCompaction =
         architecture === "composite"
           ? THREE.MathUtils.lerp(0.86, 1.1, centerExposure) *
@@ -248,17 +312,20 @@ export function FlowerCenter({
           : architecture === "column"
             ? THREE.MathUtils.lerp(1.22, 0.88, progress)
             : THREE.MathUtils.lerp(1.0, 0.92, progress);
+      const floretY =
+        0.1 +
+        centerHeight *
+          (1 - progress * progress) *
+          innerCompaction *
+          verticalBias *
+          THREE.MathUtils.lerp(1, 0.92, centerWilt) +
+        centerHeight * (placementVariation?.heightOffset ?? 0);
       transform.position.set(
         Math.cos(angle) * radius,
-        0.1 +
-          centerHeight *
-            (1 - progress * progress) *
-            innerCompaction *
-            verticalBias *
-            THREE.MathUtils.lerp(1, 0.92, centerWilt),
+        floretY,
         Math.sin(angle) * radius,
       );
-      transform.rotation.set(0, -angle, 0);
+      transform.rotation.set(0, -angle + (crownVariation?.phase ?? 0), 0);
       const densityScale = THREE.MathUtils.clamp(
         1 / Math.sqrt(density),
         0.72,
@@ -282,67 +349,191 @@ export function FlowerCenter({
         settings.centerFloretSize *
         THREE.MathUtils.lerp(0.28, 1, centerExposure) *
         THREE.MathUtils.lerp(0.96, 1.08, centerMoisture) *
-        topology.sizeBias;
+        topology.sizeBias *
+        (settings.preset === "Sunflower"
+          ? getSunflowerFloretRadialSizeScale(progress)
+          : 1);
+      const sunflowerStage =
+        settings.preset === "Sunflower"
+          ? getSunflowerFloretStage(
+              progress,
+              compositeMaturity,
+              compositeSenescence,
+            )
+          : null;
+      const sunflowerPosture =
+        settings.preset === "Sunflower"
+          ? getSunflowerFloretPosture(
+              settings.seed,
+              index,
+              progress,
+              compositeMaturity,
+              compositeSenescence,
+            )
+          : null;
+      transform.rotation.set(
+        sunflowerPosture?.tilt ?? 0,
+        -angle +
+          (crownVariation?.phase ?? 0) +
+          (sunflowerPosture?.azimuthOffset ?? 0),
+        0,
+      );
+      const bodyHeightScale = sunflowerStage
+        ? sunflowerStage.bodyHeightScale *
+          THREE.MathUtils.lerp(1, 0.9, centerWilt)
+        : THREE.MathUtils.lerp(1.8, 1.15, progress) *
+          THREE.MathUtils.lerp(1, 0.9, centerWilt);
+      const bodyWidthScale = sunflowerStage?.bodyWidthScale ?? 1;
       transform.scale.set(
-        size,
-        size *
-          THREE.MathUtils.lerp(1.8, 1.15, progress) *
-          THREE.MathUtils.lerp(1, 0.9, centerWilt),
-        size,
+        size * bodyWidthScale,
+        size * bodyHeightScale,
+        size * bodyWidthScale,
       );
       transform.updateMatrix();
       mesh.current.setMatrixAt(index, transform.matrix);
-      mesh.current.setColorAt(
-        index,
-        inner
-          .clone()
-          .lerp(outer, progress)
-          .lerp(new THREE.Color("#60462f"), compositeSenescence * 0.58),
-      );
+      const bodyColor =
+        settings.preset === "Sunflower"
+          ? getSunflowerDiskBodyColor(
+              progress,
+              compositeMaturity,
+              compositeSenescence,
+              placementVariation?.lightnessOffset ?? 0,
+            )
+          : inner
+              .clone()
+              .lerp(outer, progress)
+              .lerp(new THREE.Color("#60462f"), compositeSenescence * 0.58);
+      mesh.current.setColorAt(index, bodyColor);
 
       if (architecture === "composite") {
         const x = Math.cos(angle) * radius;
         const z = Math.sin(angle) * radius;
-        const floretTop = 0.1 + centerHeight * (1 - progress * progress);
         const crownScale =
           THREE.MathUtils.lerp(0.28, 1, centerExposure) *
           THREE.MathUtils.lerp(1, 0.92, centerWilt);
         const ringMaturity = compositeMaturity;
 
-        transform.position.set(x, floretTop + size * 1.72, z);
-        transform.rotation.set(Math.PI / 2, 0, -angle);
-        transform.scale.setScalar(
+        const individualCrownScale = THREE.MathUtils.lerp(
+          0.9,
+          1.08,
+          seededRandom(settings.seed + index * 149 + 37),
+        );
+        const renderedCrownScale =
           size *
-            0.72 *
-            topology.crownBias *
-            THREE.MathUtils.lerp(0.18, 1, ringMaturity * crownScale) *
-            THREE.MathUtils.lerp(1, 0.48, compositeSenescence) *
-            THREE.MathUtils.lerp(1, 0.86, centerWilt),
+          (settings.preset === "Sunflower" ? 0.82 : 0.72) *
+          topology.crownBias *
+          individualCrownScale *
+          THREE.MathUtils.lerp(0.38, 1, ringMaturity * crownScale) *
+          (sunflowerStage?.crownScale ?? 1) *
+          // Sunflower's stage model already contracts spent crowns. Applying
+          // the shared senescence factor again erased the five corolla lobes
+          // and left the outer disk reading as a field of round tube ends.
+          (settings.preset === "Sunflower"
+            ? 1
+            : THREE.MathUtils.lerp(1, 0.48, compositeSenescence)) *
+          THREE.MathUtils.lerp(1, 0.86, centerWilt);
+        const verticalLayout = getCompositeFloretVerticalLayout(
+          size,
+          bodyHeightScale,
+          renderedCrownScale / size,
+        );
+        const spentCrownVariation =
+          settings.preset === "Sunflower"
+            ? getSunflowerSpentCrownVariation(
+                settings.seed,
+                index,
+                compositeSenescence,
+              )
+            : { scaleX: 1, scaleY: 1, rotationOffset: 0 };
+        const postureAngle = angle + (sunflowerPosture?.azimuthOffset ?? 0);
+        const crownLean = sunflowerPosture
+          ? Math.sin(sunflowerPosture.tilt) * verticalLayout.crownCenterOffset
+          : 0;
+        transform.position.set(
+          x + Math.cos(postureAngle) * crownLean,
+          floretY +
+            Math.cos(sunflowerPosture?.tilt ?? 0) *
+              verticalLayout.crownCenterOffset,
+          z + Math.sin(postureAngle) * crownLean,
+        );
+        transform.rotation.set(
+          Math.PI / 2 + (sunflowerPosture?.tilt ?? 0),
+          0,
+          -angle +
+            crownVariation!.phase +
+            spentCrownVariation.rotationOffset +
+            (sunflowerPosture?.azimuthOffset ?? 0),
+        );
+        transform.scale.set(
+          renderedCrownScale *
+            crownVariation!.scaleX *
+            spentCrownVariation.scaleX,
+          renderedCrownScale *
+            crownVariation!.scaleY *
+            spentCrownVariation.scaleY,
+          renderedCrownScale,
         );
         transform.updateMatrix();
         floretCrowns.current?.setMatrixAt(index, transform.matrix);
-
-        const stigmaEmergence = THREE.MathUtils.smoothstep(
+        const crownColor = getCompositeCrownColor(
+          structure.diskOuterColor ?? centerColor,
+          structure.pollenColor ?? structure.floretAccent,
           ringMaturity,
-          0.38,
-          0.92,
+          compositeSenescence,
         );
+        if (settings.preset === "Sunflower") {
+          crownColor.lerp(
+            new THREE.Color("#d8a83d"),
+            seededRandom(settings.seed + index * 127 + 43) * 0.06,
+          );
+          crownColor.offsetHSL(
+            0,
+            0,
+            (placementVariation?.lightnessOffset ?? 0) * 0.72,
+          );
+          crownColor.copy(
+            getSunflowerWeatheredCrownColor(
+              crownColor,
+              settings.seed,
+              index,
+              compositeSenescence,
+            ),
+          );
+        }
+        floretCrowns.current?.setColorAt(index, crownColor);
+
+        const stigmaEmergence =
+          sunflowerStage?.styleScale ??
+          THREE.MathUtils.smoothstep(ringMaturity, 0.38, 0.92);
         const stigmaStretch =
           architecture === "composite"
             ? THREE.MathUtils.lerp(1, 0.84, progress)
             : THREE.MathUtils.lerp(1, 0.92, progress);
-        transform.position.set(x, floretTop + size * 2.05, z);
-        transform.rotation.set(0, -angle, 0);
+        const stigmaLean = sunflowerPosture
+          ? Math.sin(sunflowerPosture.tilt) * verticalLayout.stigmaCenterOffset
+          : 0;
+        transform.position.set(
+          x + Math.cos(postureAngle) * stigmaLean,
+          floretY +
+            Math.cos(sunflowerPosture?.tilt ?? 0) *
+              verticalLayout.stigmaCenterOffset,
+          z + Math.sin(postureAngle) * stigmaLean,
+        );
+        transform.rotation.set(
+          sunflowerPosture?.tilt ?? 0,
+          -angle + (sunflowerPosture?.azimuthOffset ?? 0),
+          0,
+        );
         transform.scale.set(
-          size * 0.13,
+          size * (settings.preset === "Sunflower" ? 0.22 : 0.13),
           size *
-            THREE.MathUtils.lerp(0.08, 0.78, stigmaEmergence) *
+            THREE.MathUtils.lerp(0.06, 0.96, stigmaEmergence) *
             centerExposure *
             stigmaStretch *
             topology.stigmaBias *
             THREE.MathUtils.lerp(1, 0.56, compositeSenescence) *
             THREE.MathUtils.lerp(1, 0.82, centerWilt),
-          size * 0.13,
+          size * (settings.preset === "Sunflower" ? 0.22 : 0.13),
         );
         transform.updateMatrix();
         floretStigmas.current?.setMatrixAt(index, transform.matrix);
@@ -364,7 +555,7 @@ export function FlowerCenter({
         const seedpodSurfaceY =
           centerHeight * 0.15 +
           centerRadius *
-            Math.max(0.36, centerHeight) *
+            Math.max(seedpodBodyHeightFloor, centerHeight) *
             architectureBodyScale.y *
             0.5;
         const pitHeight =
@@ -392,20 +583,29 @@ export function FlowerCenter({
         );
         transform.updateMatrix();
         pitMesh.setMatrixAt(index, transform.matrix);
+        const pitVariation = seededRandom(settings.seed + index * 149 + 61);
+        pitMesh.setColorAt(
+          index,
+          new THREE.Color().setRGB(
+            THREE.MathUtils.lerp(0.92, 1.05, pitVariation),
+            THREE.MathUtils.lerp(0.9, 1.03, pitVariation),
+            THREE.MathUtils.lerp(0.72, 0.9, pitVariation),
+          ),
+        );
 
         const seedMaturity = THREE.MathUtils.smoothstep(
           growth.reproductiveMaturity * centerExposure,
-          0.34,
-          0.94,
+          0.62,
+          0.98,
         );
         const seedScale =
           pitRadius *
-          THREE.MathUtils.lerp(0.18, 0.68, seedMaturity) *
+          THREE.MathUtils.lerp(0.1, 0.38, seedMaturity) *
           THREE.MathUtils.lerp(1, 0.94, centerWilt);
         transform.position.set(
           Math.cos(angle) * radius,
           pitHeight +
-            centerRadius * THREE.MathUtils.lerp(-0.008, 0.003, seedMaturity),
+            centerRadius * THREE.MathUtils.lerp(-0.014, -0.004, seedMaturity),
           Math.sin(angle) * radius,
         );
         transform.rotation.set(0, -angle, 0);
@@ -416,15 +616,28 @@ export function FlowerCenter({
         );
         transform.updateMatrix();
         seedMesh.setMatrixAt(index, transform.matrix);
+        const seedVariation = seededRandom(settings.seed + index * 173 + 29);
+        seedMesh.setColorAt(
+          index,
+          new THREE.Color().setRGB(
+            THREE.MathUtils.lerp(0.94, 1.02, seedVariation),
+            THREE.MathUtils.lerp(0.94, 1.01, seedVariation),
+            THREE.MathUtils.lerp(0.9, 0.98, seedVariation),
+          ),
+        );
       }
       pitMesh.instanceMatrix.needsUpdate = true;
       seedMesh.instanceMatrix.needsUpdate = true;
+      if (pitMesh.instanceColor) pitMesh.instanceColor.needsUpdate = true;
+      if (seedMesh.instanceColor) seedMesh.instanceColor.needsUpdate = true;
     }
     mesh.current.instanceMatrix.needsUpdate = true;
     if (mesh.current.instanceColor)
       mesh.current.instanceColor.needsUpdate = true;
     if (floretCrowns.current)
       floretCrowns.current.instanceMatrix.needsUpdate = true;
+    if (floretCrowns.current?.instanceColor)
+      floretCrowns.current.instanceColor.needsUpdate = true;
     if (floretStigmas.current)
       floretStigmas.current.instanceMatrix.needsUpdate = true;
   }, [
@@ -460,66 +673,71 @@ export function FlowerCenter({
     <group>
       {!minimal && !reproductiveOnly && (
         <>
-          <mesh
-            dispose={null}
-            position={[0, centerHeight * 0.15, 0]}
-            scale={[
-              centerRadius *
-                architectureBodyScale.x *
-                (architecture === "column"
-                  ? 0.58
-                  : seedpodArchitecture
-                    ? 0.9
-                    : 1),
-              centerRadius *
-                Math.max(
-                  architecture === "column"
-                    ? 0.52
-                    : seedpodArchitecture
-                      ? 0.36
-                      : 0.22,
-                  centerHeight,
-                ) *
-                architectureBodyScale.y,
-              centerRadius *
-                architectureBodyScale.z *
-                (architecture === "column"
-                  ? 0.5
-                  : seedpodArchitecture
-                    ? 0.9
-                    : 1),
-            ]}
-          >
-            <primitive
-              object={
-                seedpodArchitecture ? seedpodBodyGeometry : centerSphereGeometry
-              }
-              attach="geometry"
-            />
-            {lineDrawing ? (
-              <meshBasicMaterial color="#ffffff" />
-            ) : (
-              <meshStandardMaterial
-                color={lineDrawing ? "#111111" : displayCenterColor}
-                roughness={1}
-                metalness={0}
-                bumpMap={getBotanicalTexture("center", textureResolution)}
-                bumpScale={0.035}
-                normalMap={getBotanicalMaterialTexture(
-                  "center",
-                  "microNormal",
-                  textureResolution,
-                )}
-                normalScale={new THREE.Vector2(0.14, 0.14)}
-                roughnessMap={getBotanicalMaterialTexture(
-                  "center",
-                  "roughness",
-                  textureResolution,
-                )}
+          {shouldRenderCenterBody(architecture) && (
+            <mesh
+              dispose={null}
+              position={[0, centerHeight * 0.15, 0]}
+              scale={[
+                centerRadius *
+                  architectureBodyScale.x *
+                  (seedpodArchitecture ? 0.9 : 1),
+                centerRadius *
+                  Math.max(
+                    seedpodArchitecture ? seedpodBodyHeightFloor : 0.22,
+                    centerHeight,
+                  ) *
+                  architectureBodyScale.y,
+                centerRadius *
+                  architectureBodyScale.z *
+                  (seedpodArchitecture ? 0.9 : 1),
+              ]}
+            >
+              <primitive
+                object={
+                  seedpodArchitecture
+                    ? seedpodBodyGeometry
+                    : settings.preset === "Rose"
+                      ? roseHypanthiumLiningGeometry
+                      : centerSphereGeometry
+                }
+                attach="geometry"
               />
-            )}
-            {lineDrawing && <Edges color="#111111" threshold={18} />}
-          </mesh>
+              {lineDrawing ? (
+                <meshBasicMaterial color="#ffffff" />
+              ) : (
+                <meshStandardMaterial
+                  color={lineDrawing ? "#111111" : displayCenterColor}
+                  roughness={settings.preset === "Rose" ? 0.94 : 1}
+                  metalness={0}
+                  bumpMap={getBotanicalTexture("center", textureResolution)}
+                  bumpScale={0.035}
+                  normalMap={getBotanicalMaterialTexture(
+                    "center",
+                    "microNormal",
+                    textureResolution,
+                    seedpodArchitecture || settings.preset === "Rose"
+                      ? "receptacle"
+                      : "default",
+                  )}
+                  normalScale={
+                    new THREE.Vector2(
+                      settings.preset === "Rose" ? 0.16 : 0.14,
+                      settings.preset === "Rose" ? 0.16 : 0.14,
+                    )
+                  }
+                  roughnessMap={getBotanicalMaterialTexture(
+                    "center",
+                    "roughness",
+                    textureResolution,
+                    seedpodArchitecture || settings.preset === "Rose"
+                      ? "receptacle"
+                      : "default",
+                  )}
+                />
+              )}
+              {lineDrawing && <Edges color="#111111" threshold={18} />}
+            </mesh>
+          )}
           {seedpodArchitecture && (
             <>
               <instancedMesh
@@ -532,8 +750,22 @@ export function FlowerCenter({
                   <meshBasicMaterial color="#111111" />
                 ) : (
                   <meshStandardMaterial
-                    color={structure.floretAccent}
-                    roughness={0.9}
+                    vertexColors
+                    color="#9b873f"
+                    roughness={0.94}
+                    normalMap={getBotanicalMaterialTexture(
+                      "center",
+                      "microNormal",
+                      textureResolution,
+                      "pit",
+                    )}
+                    normalScale={new THREE.Vector2(0.028, 0.028)}
+                    roughnessMap={getBotanicalMaterialTexture(
+                      "center",
+                      "roughness",
+                      textureResolution,
+                      "pit",
+                    )}
                   />
                 )}
               </instancedMesh>
@@ -547,11 +779,25 @@ export function FlowerCenter({
                   <meshBasicMaterial color="#ffffff" />
                 ) : (
                   <meshStandardMaterial
+                    vertexColors
                     color={new THREE.Color("#d5d39a").lerp(
                       new THREE.Color("#75603d"),
                       centerWilt * 0.72,
                     )}
                     roughness={THREE.MathUtils.lerp(0.82, 0.96, centerWilt)}
+                    normalMap={getBotanicalMaterialTexture(
+                      "center",
+                      "microNormal",
+                      textureResolution,
+                      "seed",
+                    )}
+                    normalScale={new THREE.Vector2(0.022, 0.022)}
+                    roughnessMap={getBotanicalMaterialTexture(
+                      "center",
+                      "roughness",
+                      textureResolution,
+                      "seed",
+                    )}
                   />
                 )}
               </instancedMesh>
@@ -561,18 +807,40 @@ export function FlowerCenter({
             <instancedMesh
               ref={mesh}
               key={floretCount}
-              visible={!seedpodArchitecture}
+              visible={!seedpodArchitecture && settings.preset !== "Rose"}
               dispose={null}
               args={[undefined, undefined, floretCount]}
             >
-              <primitive object={floretCylinderGeometry} attach="geometry" />
+              <primitive
+                object={
+                  architecture === "composite"
+                    ? compositeFloretTubeGeometry
+                    : floretCylinderGeometry
+                }
+                attach="geometry"
+              />
               {lineDrawing ? (
                 <meshBasicMaterial color="#111111" wireframe />
               ) : (
                 <meshStandardMaterial
                   vertexColors
-                  roughness={1}
+                  roughness={settings.preset === "Sunflower" ? 0.9 : 1}
                   metalness={0}
+                  emissive={
+                    settings.preset === "Sunflower" ? "#6b351c" : "#000000"
+                  }
+                  emissiveIntensity={settings.preset === "Sunflower" ? 0.06 : 0}
+                  normalMap={getBotanicalMaterialTexture(
+                    "center",
+                    "microNormal",
+                    textureResolution,
+                  )}
+                  normalScale={new THREE.Vector2(0.045, 0.045)}
+                  roughnessMap={getBotanicalMaterialTexture(
+                    "center",
+                    "roughness",
+                    textureResolution,
+                  )}
                 />
               )}
             </instancedMesh>
@@ -584,14 +852,61 @@ export function FlowerCenter({
                 dispose={null}
                 args={[undefined, undefined, floretCount]}
               >
-                <primitive object={floretCrownGeometry} attach="geometry" />
-                <meshStandardMaterial
-                  color={
-                    lineDrawing
-                      ? "#111111"
-                      : (structure.pollenColor ?? structure.floretAccent)
+                <primitive
+                  object={
+                    settings.preset === "Sunflower"
+                      ? sunflowerFloretCrownGeometry
+                      : floretCrownGeometry
                   }
-                  roughness={0.92}
+                  attach="geometry"
+                />
+                <meshPhysicalMaterial
+                  color={lineDrawing ? "#111111" : "#ffffff"}
+                  vertexColors={!lineDrawing}
+                  roughness={0.88}
+                  emissive={
+                    settings.preset === "Sunflower" ? "#9b5a24" : "#000000"
+                  }
+                  emissiveIntensity={settings.preset === "Sunflower" ? 0.05 : 0}
+                  clearcoat={
+                    lineDrawing || settings.preset !== "Sunflower"
+                      ? 0
+                      : 0.08 * growth.moisture
+                  }
+                  clearcoatRoughness={0.62}
+                  clearcoatMap={
+                    lineDrawing
+                      ? undefined
+                      : settings.preset === "Sunflower"
+                        ? getBotanicalMaterialTexture(
+                            "center",
+                            "moisture",
+                            textureResolution,
+                            "disk",
+                          )
+                        : undefined
+                  }
+                  normalMap={
+                    lineDrawing
+                      ? undefined
+                      : getBotanicalMaterialTexture(
+                          "center",
+                          "microNormal",
+                          textureResolution,
+                          settings.preset === "Sunflower" ? "disk" : "default",
+                        )
+                  }
+                  normalScale={new THREE.Vector2(0.035, 0.035)}
+                  roughnessMap={
+                    lineDrawing
+                      ? undefined
+                      : getBotanicalMaterialTexture(
+                          "center",
+                          "roughness",
+                          textureResolution,
+                          settings.preset === "Sunflower" ? "disk" : "default",
+                        )
+                  }
                 />
               </instancedMesh>
               <instancedMesh
@@ -599,10 +914,38 @@ export function FlowerCenter({
                 dispose={null}
                 args={[undefined, undefined, floretCount]}
               >
-                <primitive object={floretStigmaGeometry} attach="geometry" />
+                <primitive
+                  object={
+                    settings.preset === "Sunflower"
+                      ? sunflowerFloretStigmaGeometry
+                      : floretStigmaGeometry
+                  }
+                  attach="geometry"
+                />
                 <meshStandardMaterial
                   color={lineDrawing ? "#111111" : structure.stigmaColor}
                   roughness={0.88}
+                  normalMap={
+                    lineDrawing
+                      ? undefined
+                      : getBotanicalMaterialTexture(
+                          "center",
+                          "microNormal",
+                          textureResolution,
+                          settings.preset === "Sunflower" ? "disk" : "default",
+                        )
+                  }
+                  normalScale={new THREE.Vector2(0.025, 0.025)}
+                  roughnessMap={
+                    lineDrawing
+                      ? undefined
+                      : getBotanicalMaterialTexture(
+                          "center",
+                          "roughness",
+                          textureResolution,
+                          settings.preset === "Sunflower" ? "disk" : "default",
+                        )
+                  }
                 />
               </instancedMesh>
             </>
