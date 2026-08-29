@@ -9,8 +9,12 @@ export type VisualTestScenario = {
   renderMode: "photo";
   lighting: LightingPreset;
   lightIntensity: number;
+  quality?: "high" | "ultra";
   reviewOnly?: boolean;
   backgroundColor?: string;
+  groundStyle?: "studio" | "garden" | "water";
+  fogNear?: number;
+  fogFar?: number;
   focalLength?: number;
   effects?: {
     depthOfField?: boolean;
@@ -55,11 +59,24 @@ export function isVisualTestScenario(
       candidate.lighting as string,
     ) &&
     typeof candidate.lightIntensity === "number" &&
+    (candidate.quality === undefined ||
+      candidate.quality === "high" ||
+      candidate.quality === "ultra") &&
     (candidate.reviewOnly === undefined ||
       typeof candidate.reviewOnly === "boolean") &&
     (candidate.backgroundColor === undefined ||
       (typeof candidate.backgroundColor === "string" &&
         /^#[0-9a-f]{6}$/i.test(candidate.backgroundColor))) &&
+    (candidate.groundStyle === undefined ||
+      candidate.groundStyle === "studio" ||
+      candidate.groundStyle === "garden" ||
+      candidate.groundStyle === "water") &&
+    (candidate.fogNear === undefined ||
+      (typeof candidate.fogNear === "number" && candidate.fogNear >= 0)) &&
+    (candidate.fogFar === undefined ||
+      (typeof candidate.fogFar === "number" &&
+        candidate.fogFar >
+          (typeof candidate.fogNear === "number" ? candidate.fogNear : 0))) &&
     (candidate.focalLength === undefined ||
       (typeof candidate.focalLength === "number" &&
         candidate.focalLength >= 28 &&

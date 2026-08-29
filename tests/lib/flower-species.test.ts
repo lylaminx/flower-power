@@ -21,7 +21,7 @@ describe("flower structural families", () => {
       "petal",
       "lip",
     ]);
-    expect(orchid.layers[2].outline).toBe("fan");
+    expect(orchid.layers[2].outline).toBe("labellum");
   });
 
   it("defines ray petals around a composite Sunflower disk", () => {
@@ -31,6 +31,9 @@ describe("flower structural families", () => {
     expect(sunflower.layers.every((layer) => layer.role === "ray")).toBe(true);
     expect(sunflower.diskInnerColor).toMatch(/^#[0-9a-f]{6}$/i);
     expect(sunflower.diskOuterColor).toMatch(/^#[0-9a-f]{6}$/i);
+    expect(sunflower.receptacleRadius).toBeGreaterThan(0.3);
+    expect(sunflower.receptacleRadius).toBeLessThan(sunflower.centerRadius);
+    expect(sunflower.sepals * 3).toBe(30);
   });
 
   it("uses composite disk anatomy for daisy-family flowers", () => {
@@ -75,5 +78,11 @@ describe("flower structural families", () => {
     expect(flowerSpecies.Sunflower.calyxForm).toBe("bracted");
     expect(flowerSpecies.Lily.calyxForm).toBe("reflexed");
     expect(flowerSpecies.Orchid.pollenColor).toMatch(/^#[0-9a-f]{6}$/i);
+  });
+
+  it("keeps the single rugosa corolla in one five-part radial whorl", () => {
+    expect(flowerSpecies.Rose.layers).toHaveLength(1);
+    expect(flowerSpecies.Rose.layers[0].count).toBe(1);
+    expect(flowerSpecies.Rose.petalArrangement).toBe("radial");
   });
 });

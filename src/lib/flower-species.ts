@@ -2,7 +2,14 @@ import type { FlowerPreset } from "./flower-store";
 import { heroFlowerProfiles } from "./hero-flower-profiles";
 
 export type PetalOutline =
-  "elliptic" | "obovate" | "fan" | "lanceolate" | "spatulate" | "ray";
+  | "elliptic"
+  | "obovate"
+  | "rugosa"
+  | "fan"
+  | "lanceolate"
+  | "spatulate"
+  | "ray"
+  | "labellum";
 
 export type PetalArrangement = "radial" | "phyllotactic" | "bilateral";
 export type PetalRole = "petal" | "sepal" | "lip" | "ray";
@@ -10,7 +17,7 @@ export type CenterArchitecture = "simple" | "composite" | "column" | "seedpod";
 export type BloomArchitecture = "radial" | "bell" | "trumpet";
 export type InflorescenceArchitecture = "solitary" | "spike" | "cluster";
 export type LeafShape =
-  "ovate" | "lance" | "linear" | "lobed" | "cordate" | "peltate";
+  "ovate" | "lance" | "linear" | "lobed" | "pinnatifid" | "cordate" | "peltate";
 export type OvaryPosition = "superior" | "inferior";
 export type CalyxForm = "cupped" | "reflexed" | "bracted";
 
@@ -354,7 +361,7 @@ export const flowerSpecies: Record<FlowerPreset, FlowerSpecies> = {
     inflorescenceArchitecture: "spike",
     inflorescenceCount: 5,
     inflorescenceSpacing: 0.44,
-    inflorescenceSpread: 0.26,
+    inflorescenceSpread: 0.56,
   },
   Carnation: {
     layers: [

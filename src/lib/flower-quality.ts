@@ -1,3 +1,5 @@
+import type { PetalOutline } from "./flower-species";
+
 export type RenderQuality = "draft" | "high" | "ultra";
 
 export type RenderQualitySettings = {
@@ -55,6 +57,25 @@ export const renderQualitySettings: Record<
 
 export function getTextureResolution(quality: RenderQuality) {
   return quality === "draft" ? 64 : quality === "ultra" ? 256 : 128;
+}
+
+export function getPetalTessellation(
+  quality: RenderQuality,
+  outline: PetalOutline,
+  scale = 1,
+) {
+  const outlineScale =
+    outline === "labellum"
+      ? 1.16
+      : outline === "fan" || outline === "ray"
+        ? 1.08
+        : 1;
+  const lengthBase = quality === "draft" ? 12 : quality === "ultra" ? 52 : 36;
+  const widthBase = quality === "draft" ? 6 : quality === "ultra" ? 28 : 20;
+  return {
+    lengthSegments: Math.max(8, Math.round(lengthBase * outlineScale * scale)),
+    widthSegments: Math.max(5, Math.round(widthBase * outlineScale * scale)),
+  };
 }
 
 export function getEffectiveRenderQuality(

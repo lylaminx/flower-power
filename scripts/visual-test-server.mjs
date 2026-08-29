@@ -44,5 +44,10 @@ for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
 }
 
 child.on("exit", (code, signal) => {
-  process.exit(code ?? (signal ? 1 : 0));
+  // A test server is expected to stay alive until Playwright stops it. Next's
+  // dev command can report status 0 even when startup failed (for example,
+  // when the environment denies binding the requested port). Treat every
+  // unsolicited exit as a failure so Playwright reports the server error
+  // immediately instead of polling an unreachable URL until its timeout.
+  process.exit(stopping ? 0 : (code ?? 1) || 1);
 });

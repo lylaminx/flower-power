@@ -12,6 +12,10 @@ import { getBotanicalTexture } from "@/lib/botanical-textures";
 import { useRenderQuality } from "./render-quality-context";
 import { getTextureResolution } from "@/lib/flower-quality";
 import { useFlowerStore } from "@/lib/flower-store";
+import {
+  getOrchidInflorescenceBloomRotation,
+  getOrchidInflorescenceStandOff,
+} from "@/lib/flower-stem-tuning";
 
 const inflorescenceBractGeometry = new THREE.ConeGeometry(1, 1, 7);
 
@@ -26,14 +30,32 @@ export function FlowerInflorescence({
   const lineDrawing = settings.renderMode === "line";
   const placements = useMemo(() => {
     if (architecture !== "spike" && architecture !== "cluster") return [];
-    return createInflorescencePlacements({
+    const basePlacements = createInflorescencePlacements({
       architecture,
       count: structure.inflorescenceCount ?? 5,
       spacing: structure.inflorescenceSpacing ?? 0.45,
       spread: structure.inflorescenceSpread ?? 0.5,
       seed: settings.seed,
     });
-  }, [architecture, settings.seed, structure]);
+    return settings.preset === "Orchid"
+      ? basePlacements.map((placement) => {
+          const position = getOrchidInflorescenceStandOff(
+            placement.position,
+            placement.maturity,
+          );
+          return {
+            ...placement,
+            position,
+            rotation: getOrchidInflorescenceBloomRotation(
+              placement.rotation,
+              position,
+              placement.maturity,
+              settings.seed + placement.seedOffset,
+            ),
+          };
+        })
+      : basePlacements;
+  }, [architecture, settings.preset, settings.seed, structure]);
   const branches = useMemo(
     () =>
       placements.map(({ position }) => {

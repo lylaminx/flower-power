@@ -8,15 +8,32 @@ import {
   createLeafMarginGeometry,
   createLeafVeinNetwork,
   createPetioleGeometry,
+  createRoseStipuleGeometry,
+  getPeltateDropletVertexIndex,
   seededRandom,
 } from "@/lib/flower-geometry";
 import {
   getBotanicalAgeTexture,
   getBotanicalMaterialTexture,
   getBotanicalTexture,
+  getPetioleMaterialVariant,
 } from "@/lib/botanical-textures";
 import { flowerSpecies } from "@/lib/flower-species";
-import { getHeroLeafTuning } from "@/lib/flower-leaf-tuning";
+import {
+  getCompoundLeafletPlacements,
+  getCompoundLeafletGeometrySeed,
+  getCompoundLeafletPoseVariation,
+  getLeafBladeAttachmentOffset,
+  getLilyLeafPoseVariation,
+  getLilyLeafSizeScale,
+  getPoppyLeafSizeScale,
+  getSunflowerLeafSizeScale,
+  getSunflowerLeafPoseVariation,
+  getHeroLeafTuning,
+  getIntegratedPinnateVeinRelief,
+  getLeafSubsurfaceFill,
+  getOrchidLeafFanOffset,
+} from "@/lib/flower-leaf-tuning";
 import {
   getFlowerGrowthState,
   getLeafSenescence,
@@ -25,13 +42,14 @@ import {
 import { useFlowerStore } from "@/lib/flower-store";
 import { useRenderQuality } from "./render-quality-context";
 import { getTextureResolution } from "@/lib/flower-quality";
+import {
+  getHeroPetioleColor,
+  getHeroSupportTissueColor,
+  getSunflowerLeafColorVariation,
+} from "@/lib/flower-color-tuning";
 import { useShallow } from "zustand/react/shallow";
 
-const stipuleShape = new THREE.Shape();
-stipuleShape.moveTo(0, 0);
-stipuleShape.bezierCurveTo(-0.035, 0.07, -0.042, 0.19, -0.008, 0.27);
-stipuleShape.bezierCurveTo(0.025, 0.2, 0.03, 0.08, 0, 0);
-const stipuleGeometry = new THREE.ShapeGeometry(stipuleShape, 5);
+const stipuleGeometry = createRoseStipuleGeometry();
 const leafHairGeometry = new THREE.ConeGeometry(1, 1, 5);
 const leafDropletGeometry = new THREE.SphereGeometry(1, 12, 8);
 
@@ -40,11 +58,15 @@ export function FlowerLeaf({
   attachment,
   stemTangent,
   attachmentT,
+  azimuth = 0,
+  visualScale = 1,
 }: {
   side: number;
   attachment: THREE.Vector3;
   stemTangent: THREE.Vector3;
   attachmentT: number;
+  azimuth?: number;
+  visualScale?: number;
 }) {
   const settings = useFlowerStore(
     useShallow((state) => ({
@@ -65,6 +87,18 @@ export function FlowerLeaf({
   );
   const quality = useRenderQuality();
   const textureResolution = getTextureResolution(quality);
+  const leafTessellationScale =
+    settings.preset === "Poppy"
+      ? quality === "draft"
+        ? 0.95
+        : quality === "ultra"
+          ? 2
+          : 1.65
+      : quality === "draft"
+        ? 0.82
+        : quality === "ultra"
+          ? 1.55
+          : 1.2;
   const lineDrawing = settings.renderMode === "line";
   const photorealistic = settings.renderMode === "photo";
   const structure = flowerSpecies[settings.preset];
@@ -83,6 +117,18 @@ export function FlowerLeaf({
     1,
   );
   const leafDroop = settings.leafDroop * 0.68 + senescence.wilt * 0.44;
+  const integratedPinnateVeinRelief = getIntegratedPinnateVeinRelief(
+    settings.preset,
+  );
+  const sunflowerPoseVariation =
+    settings.preset === "Sunflower"
+      ? getSunflowerLeafPoseVariation(settings.seed, attachmentT)
+      : {
+          pitchOffset: 0,
+          yawOffset: 0,
+          rollOffset: 0,
+          curvatureScale: 1,
+        };
   const geometry = useMemo(
     () =>
       createLeafGeometry(
@@ -97,6 +143,7 @@ export function FlowerLeaf({
           THREE.MathUtils.lerp(0.88, 1, phaseTuning.moistureScale),
         settings.leafCurl *
           tuning.curlScale *
+          sunflowerPoseVariation.curvatureScale *
           (THREE.MathUtils.lerp(0.96, 1.02, leafMoisture) +
             senescence.wilt * 0.22),
         settings.leafAsymmetry *
@@ -104,6 +151,9 @@ export function FlowerLeaf({
           (seededRandom(settings.seed + side * 211 + attachmentT * 1709) -
             0.5) *
           2,
+        integratedPinnateVeinRelief,
+        leafTessellationScale,
+        settings.preset === "Sunflower" ? "coarse" : "default",
       ),
     [
       attachmentT,
@@ -117,6 +167,9 @@ export function FlowerLeaf({
       settings.leafSerration,
       settings.seed,
       side,
+      integratedPinnateVeinRelief,
+      leafTessellationScale,
+      sunflowerPoseVariation.curvatureScale,
     ],
   );
   const marginGeometry = useMemo(
@@ -130,7 +183,37 @@ export function FlowerLeaf({
             new THREE.Color("#86b77a"),
             0.52,
           )
-        : new THREE.Color(settings.stemColor);
+        : settings.preset === "Orchid"
+          ? new THREE.Color(settings.stemColor).lerp(
+              new THREE.Color("#668762"),
+              0.38,
+            )
+          : getHeroSupportTissueColor(
+              settings.preset,
+              settings.stemColor,
+              "leaf",
+            );
+    if (settings.preset === "Lily") {
+      const individualColor =
+        seededRandom(settings.seed + side * 431 + attachmentT * 1879) - 0.5;
+      baseColor.offsetHSL(
+        individualColor * 0.012,
+        individualColor * 0.04,
+        individualColor * 0.035,
+      );
+    }
+    if (settings.preset === "Sunflower") {
+      const variation = getSunflowerLeafColorVariation(
+        settings.seed,
+        attachmentT,
+        side,
+      );
+      baseColor.offsetHSL(
+        variation.hueOffset,
+        variation.saturationOffset,
+        variation.lightnessOffset,
+      );
+    }
     return `#${baseColor
       .lerp(
         new THREE.Color("#77733c"),
@@ -143,7 +226,10 @@ export function FlowerLeaf({
     senescence.age,
     senescence.wilt,
     settings.preset,
+    settings.seed,
     settings.stemColor,
+    side,
+    attachmentT,
     tuning.leafColorMix,
   ]);
   const frontVeinColors =
@@ -217,18 +303,6 @@ export function FlowerLeaf({
       }),
     [structure.leafWidth, tuning.leafWidthScale],
   );
-  const undersideParallelVeins = useMemo(
-    () =>
-      parallelVeins.map(
-        (vein) =>
-          new THREE.CatmullRomCurve3(
-            vein.points.map(
-              (point) => new THREE.Vector3(point.x, point.y, point.z - 0.03),
-            ),
-          ),
-      ),
-    [parallelVeins],
-  );
   const petiole = useMemo(
     () =>
       new THREE.CatmullRomCurve3([
@@ -256,17 +330,125 @@ export function FlowerLeaf({
       ),
     [stemTangent],
   );
-  const leafletPlacements = Array.from(
-    { length: tuning.leafletPairs },
-    (_, pair) =>
-      ([-1, 1] as const).map((leafletSide) => ({
-        side: leafletSide,
-        y: 0.28 + pair * 0.32,
-        scale: 0.5 - pair * 0.055,
-      })),
-  ).flat();
+  const leafletPlacements = useMemo(
+    () => getCompoundLeafletPlacements(tuning.leafletPairs),
+    [tuning.leafletPairs],
+  );
   const compoundLeaf = tuning.leafletPairs > 0;
+  const compoundLeafletPoses = useMemo(
+    () =>
+      leafletPlacements.map((_, leafletIndex) =>
+        getCompoundLeafletPoseVariation(
+          settings.seed,
+          attachmentT,
+          side,
+          leafletIndex,
+        ),
+      ),
+    [attachmentT, leafletPlacements, settings.seed, side],
+  );
+  const compoundLeafletGeometries = useMemo(
+    () =>
+      leafletPlacements.map((_, leafletIndex) => {
+        const leafletSeed = getCompoundLeafletGeometrySeed(
+          settings.seed,
+          attachmentT,
+          side,
+          leafletIndex,
+        );
+        return createLeafGeometry(
+          structure.leafWidth *
+            tuning.leafWidthScale *
+            THREE.MathUtils.lerp(0.92, 1.03, leafMoisture),
+          leafletSeed,
+          tuning.leafShape ?? structure.leafShape,
+          (structure.leafSerration ?? 0.07) *
+            settings.leafSerration *
+            tuning.serrationScale *
+            THREE.MathUtils.lerp(0.88, 1, phaseTuning.moistureScale),
+          settings.leafCurl *
+            tuning.curlScale *
+            (THREE.MathUtils.lerp(0.96, 1.02, leafMoisture) +
+              senescence.wilt * 0.22),
+          settings.leafAsymmetry *
+            tuning.asymmetryScale *
+            (seededRandom(leafletSeed + 1709) - 0.5) *
+            2,
+          integratedPinnateVeinRelief,
+          leafTessellationScale,
+          settings.preset === "Rose" ? "rugose" : "default",
+        );
+      }),
+    [
+      attachmentT,
+      integratedPinnateVeinRelief,
+      leafMoisture,
+      leafTessellationScale,
+      leafletPlacements,
+      phaseTuning.moistureScale,
+      senescence.wilt,
+      settings.leafAsymmetry,
+      settings.leafCurl,
+      settings.leafSerration,
+      settings.preset,
+      settings.seed,
+      side,
+      structure.leafSerration,
+      structure.leafShape,
+      structure.leafWidth,
+      tuning,
+    ],
+  );
+  const compoundLeafletMargins = useMemo(
+    () =>
+      compoundLeafletGeometries.map((leafletGeometry) =>
+        createLeafMarginGeometry(
+          leafletGeometry,
+          0.0035 * tuning.leafWidthScale,
+        ),
+      ),
+    [compoundLeafletGeometries, tuning.leafWidthScale],
+  );
+  const compoundRachisGeometry = useMemo(
+    () =>
+      createPetioleGeometry(
+        new THREE.CatmullRomCurve3([
+          new THREE.Vector3(0, 0.16, 0.024),
+          new THREE.Vector3(0, 0.54, 0.04),
+          new THREE.Vector3(0, 0.88, 0.05),
+        ]),
+        0.012,
+        0.007,
+        0.004,
+      ),
+    [],
+  );
   const peltateLeaf = tuning.leafShape === "peltate";
+  const leafMaterialVariant = peltateLeaf
+    ? "peltate"
+    : settings.preset === "Sunflower"
+      ? "coarse"
+      : settings.preset === "Poppy"
+        ? "glaucous"
+        : settings.preset === "Rose"
+          ? "veined"
+          : tuning.venation === "parallel"
+            ? "parallel"
+            : "default";
+  const orchidFanOffset =
+    settings.preset === "Orchid" ? getOrchidLeafFanOffset(attachmentT) : 0;
+  const speciesLeafSizeScale =
+    settings.preset === "Lily"
+      ? getLilyLeafSizeScale(attachmentT)
+      : settings.preset === "Poppy"
+        ? getPoppyLeafSizeScale(attachmentT)
+        : settings.preset === "Sunflower"
+          ? getSunflowerLeafSizeScale(attachmentT)
+          : 1;
+  const lilyPoseVariation =
+    settings.preset === "Lily"
+      ? getLilyLeafPoseVariation(settings.seed, attachmentT)
+      : { pitchOffset: 0, yawOffset: 0, rollOffset: 0 };
   const leafHairs = useRef<THREE.InstancedMesh>(null);
   const leafDroplets = useRef<THREE.InstancedMesh>(null);
   const leafHairCount =
@@ -333,15 +515,17 @@ export function FlowerLeaf({
     const transform = new THREE.Object3D();
     const position = new THREE.Vector3();
     const normal = new THREE.Vector3();
-    const frontVertexCount = Math.floor(positionAttribute.count / 2);
 
     for (let index = 0; index < dropletCount; index += 1) {
       const random = seededRandom(
         settings.seed + attachmentT * 3251 + side * 233 + index * 619,
       );
       const vertexIndex = Math.min(
-        frontVertexCount - 1,
-        Math.floor(random * frontVertexCount),
+        positionAttribute.count - 1,
+        getPeltateDropletVertexIndex(
+          index,
+          settings.seed + attachmentT * 3251 + side * 233,
+        ),
       );
       position.fromBufferAttribute(positionAttribute, vertexIndex);
       normal.fromBufferAttribute(normalAttribute, vertexIndex).normalize();
@@ -397,6 +581,15 @@ export function FlowerLeaf({
       }),
     [structure.leafWidth],
   );
+  const supportMaterialVariant = getPetioleMaterialVariant(settings.preset);
+  const petioleColor = useMemo(
+    () =>
+      `#${getHeroPetioleColor(
+        settings.preset,
+        settings.stemColor,
+      ).getHexString()}`,
+    [settings.preset, settings.stemColor],
+  );
 
   return (
     <group
@@ -406,6 +599,7 @@ export function FlowerLeaf({
         attachment.z,
       ]}
       quaternion={peltateLeaf ? new THREE.Quaternion() : stemFrame}
+      scale={visualScale}
     >
       <group
         rotation={
@@ -416,32 +610,64 @@ export function FlowerLeaf({
                 side * (0.08 + tuning.bladeRoll),
               ]
             : [
-                0.18 + leafDroop * 0.28 + tuning.droopBias + tuning.bladePitch,
-                side * (0.5 + tuning.bladeYaw),
-                side * (-0.88 - leafDroop * 0.48 + tuning.bladeRoll),
+                0.18 +
+                  leafDroop * 0.28 +
+                  tuning.droopBias +
+                  tuning.bladePitch +
+                  lilyPoseVariation.pitchOffset +
+                  sunflowerPoseVariation.pitchOffset,
+                side * (0.5 + tuning.bladeYaw) +
+                  orchidFanOffset * 0.52 +
+                  azimuth +
+                  lilyPoseVariation.yawOffset +
+                  sunflowerPoseVariation.yawOffset,
+                side * (-0.88 - leafDroop * 0.48 + tuning.bladeRoll) +
+                  orchidFanOffset * 0.16 +
+                  lilyPoseVariation.rollOffset +
+                  sunflowerPoseVariation.rollOffset,
               ]
         }
         scale={[
           side *
             settings.leafWidth *
             tuning.leafWidthScale *
+            (settings.preset === "Lily"
+              ? speciesLeafSizeScale
+              : Math.sqrt(speciesLeafSizeScale)) *
             THREE.MathUtils.lerp(0.94, 1.04, leafMoisture),
           settings.leafLength *
             tuning.leafLengthScale *
+            speciesLeafSizeScale *
             THREE.MathUtils.lerp(0.92, 1.02, leafMoisture),
           1,
         ]}
       >
         <mesh dispose={null} geometry={petioleGeometry}>
           <meshStandardMaterial
-            color={lineDrawing ? "#111111" : settings.stemColor}
-            roughness={0.84}
+            color={lineDrawing ? "#111111" : petioleColor}
+            vertexColors={!lineDrawing}
+            roughness={peltateLeaf ? 0.76 : 0.84}
             bumpMap={
               lineDrawing
                 ? undefined
                 : getBotanicalTexture("stem", textureResolution)
             }
-            bumpScale={0.018}
+            bumpScale={peltateLeaf ? 0.012 : 0.018}
+            normalMap={
+              lineDrawing
+                ? undefined
+                : getBotanicalMaterialTexture(
+                    "stem",
+                    "microNormal",
+                    textureResolution,
+                    supportMaterialVariant,
+                  )
+            }
+            normalScale={
+              peltateLeaf
+                ? new THREE.Vector2(0.12, 0.12)
+                : new THREE.Vector2(0.16, 0.16)
+            }
             roughnessMap={
               lineDrawing
                 ? undefined
@@ -449,6 +675,7 @@ export function FlowerLeaf({
                     "stem",
                     "roughness",
                     textureResolution,
+                    supportMaterialVariant,
                   )
             }
           />
@@ -456,10 +683,11 @@ export function FlowerLeaf({
         <group
           position={[
             0,
-            0.26 +
-              tuning.petioleLift +
-              (compoundLeaf ? 0.58 : 0) -
-              (peltateLeaf ? 0.675 : 0),
+            getLeafBladeAttachmentOffset(
+              tuning.petioleScale,
+              compoundLeaf,
+              peltateLeaf,
+            ) + tuning.petioleLift,
             0,
           ]}
           scale={compoundLeaf ? [0.62, 0.62, 0.82] : [1, 1, 1]}
@@ -478,6 +706,12 @@ export function FlowerLeaf({
                 )}
                 vertexColors
                 side={THREE.FrontSide}
+                emissive={leafColor}
+                emissiveIntensity={
+                  photorealistic
+                    ? getLeafSubsurfaceFill(settings.preset, "front")
+                    : 0
+                }
                 roughness={
                   photorealistic
                     ? 0.8 - (tuning.leafGlossScale - 1) * 0.08
@@ -489,37 +723,113 @@ export function FlowerLeaf({
                 sheen={0}
                 clearcoat={
                   photorealistic
-                    ? 0.12 * tuning.leafGlossScale * leafMoisture
+                    ? 0.12 *
+                      tuning.leafGlossScale *
+                      leafMoisture *
+                      (settings.preset === "Lotus"
+                        ? 0.82
+                        : settings.preset === "Sunflower"
+                          ? 0.86
+                          : settings.preset === "Poppy"
+                            ? 0.88
+                            : settings.preset === "Orchid"
+                              ? 0.88
+                              : 1)
                     : 0
                 }
-                clearcoatRoughness={0.38}
+                clearcoatRoughness={
+                  settings.preset === "Lotus" ||
+                  settings.preset === "Sunflower" ||
+                  settings.preset === "Poppy" ||
+                  settings.preset === "Orchid"
+                    ? 0.48
+                    : 0.38
+                }
                 clearcoatMap={getBotanicalMaterialTexture(
                   "leaf",
                   "moisture",
                   textureResolution,
+                  settings.preset === "Lotus"
+                    ? "lotus"
+                    : settings.preset === "Sunflower"
+                      ? "coarse"
+                      : settings.preset === "Poppy"
+                        ? "glaucous"
+                        : settings.preset === "Orchid"
+                          ? "velamen"
+                          : settings.preset === "Lily"
+                            ? "parallel"
+                            : "default",
                 )}
-                bumpMap={getBotanicalTexture("leaf", textureResolution)}
+                bumpMap={getBotanicalTexture(
+                  "leaf",
+                  textureResolution,
+                  leafMaterialVariant,
+                )}
                 bumpScale={0.022}
                 normalMap={getBotanicalMaterialTexture(
                   "leaf",
                   "microNormal",
                   textureResolution,
+                  leafMaterialVariant,
                 )}
-                normalScale={new THREE.Vector2(0.14, 0.14)}
+                normalScale={
+                  settings.preset === "Lily"
+                    ? new THREE.Vector2(0.19, 0.19)
+                    : settings.preset === "Sunflower"
+                      ? new THREE.Vector2(0.18, 0.18)
+                      : new THREE.Vector2(0.14, 0.14)
+                }
                 roughnessMap={getBotanicalMaterialTexture(
                   "leaf",
                   "roughness",
                   textureResolution,
+                  leafMaterialVariant,
                 )}
-                transmission={photorealistic ? 0.045 * leafMoisture : 0}
-                thickness={0.045 * tuning.leafWidthScale * leafMoisture}
+                transmission={
+                  photorealistic
+                    ? (settings.preset === "Lotus"
+                        ? 0.032
+                        : settings.preset === "Sunflower"
+                          ? 0.036
+                          : settings.preset === "Poppy"
+                            ? 0.034
+                            : settings.preset === "Orchid"
+                              ? 0.038
+                              : 0.045) * leafMoisture
+                    : 0
+                }
+                thickness={
+                  (settings.preset === "Lotus"
+                    ? 0.05
+                    : settings.preset === "Sunflower"
+                      ? 0.052
+                      : settings.preset === "Poppy"
+                        ? 0.05
+                        : settings.preset === "Orchid"
+                          ? 0.05
+                          : 0.045) *
+                  tuning.leafWidthScale *
+                  leafMoisture
+                }
                 thicknessMap={getBotanicalMaterialTexture(
                   "leaf",
                   "thickness",
                   textureResolution,
+                  leafMaterialVariant,
                 )}
                 attenuationColor={leafColor}
-                attenuationDistance={0.8}
+                attenuationDistance={
+                  settings.preset === "Lotus"
+                    ? 0.9
+                    : settings.preset === "Sunflower"
+                      ? 0.92
+                      : settings.preset === "Poppy"
+                        ? 0.88
+                        : settings.preset === "Orchid"
+                          ? 0.9
+                          : 0.8
+                }
               />
             )}
             {lineDrawing && <Edges color="#111111" threshold={20} />}
@@ -538,20 +848,32 @@ export function FlowerLeaf({
                 )}
                 vertexColors
                 side={THREE.BackSide}
+                emissive={leafColor}
+                emissiveIntensity={
+                  photorealistic
+                    ? getLeafSubsurfaceFill(settings.preset, "back")
+                    : 0
+                }
                 roughness={photorealistic ? 0.9 : 0.94}
                 specularIntensity={photorealistic ? 0.07 : 0.03}
-                bumpMap={getBotanicalTexture("leaf", textureResolution)}
+                bumpMap={getBotanicalTexture(
+                  "leaf",
+                  textureResolution,
+                  leafMaterialVariant,
+                )}
                 bumpScale={-0.018}
                 normalMap={getBotanicalMaterialTexture(
                   "leaf",
                   "microNormal",
                   textureResolution,
+                  leafMaterialVariant,
                 )}
                 normalScale={new THREE.Vector2(0.1, -0.1)}
                 roughnessMap={getBotanicalMaterialTexture(
                   "leaf",
                   "roughness",
                   textureResolution,
+                  leafMaterialVariant,
                 )}
                 transmission={photorealistic ? 0.075 * leafMoisture : 0}
                 thickness={0.04 * tuning.leafWidthScale * leafMoisture}
@@ -559,6 +881,7 @@ export function FlowerLeaf({
                   "leaf",
                   "thickness",
                   textureResolution,
+                  leafMaterialVariant,
                 )}
                 attenuationColor={leafColor}
                 attenuationDistance={0.72}
@@ -576,31 +899,33 @@ export function FlowerLeaf({
             </mesh>
           )}
           <group visible={!peltateLeaf && tuning.venation === "pinnate"}>
-            <mesh>
-              <tubeGeometry args={[midrib, 24, 0.009, 6, false]} />
-              <meshStandardMaterial
-                color={lineDrawing ? "#111111" : frontVeinColors[0]}
-                roughness={0.86}
-              />
-            </mesh>
-            {veinNetwork.laterals.map((vein, index) => (
-              <mesh key={`lateral-${index}`}>
-                <tubeGeometry args={[vein, 10, 0.0035, 5, false]} />
+            <group visible={lineDrawing || integratedPinnateVeinRelief === 0}>
+              <mesh>
+                <tubeGeometry args={[midrib, 24, 0.009, 6, false]} />
                 <meshStandardMaterial
-                  color={lineDrawing ? "#111111" : frontVeinColors[1]}
-                  roughness={0.9}
+                  color={lineDrawing ? "#111111" : frontVeinColors[0]}
+                  roughness={0.86}
                 />
               </mesh>
-            ))}
-            {veinNetwork.branches.map((vein, index) => (
-              <mesh key={`branch-${index}`}>
-                <tubeGeometry args={[vein, 7, 0.0022, 5, false]} />
-                <meshStandardMaterial
-                  color={lineDrawing ? "#111111" : frontVeinColors[2]}
-                  roughness={0.92}
-                />
-              </mesh>
-            ))}
+              {veinNetwork.laterals.map((vein, index) => (
+                <mesh key={`lateral-${index}`}>
+                  <tubeGeometry args={[vein, 10, 0.0035, 5, false]} />
+                  <meshStandardMaterial
+                    color={lineDrawing ? "#111111" : frontVeinColors[1]}
+                    roughness={0.9}
+                  />
+                </mesh>
+              ))}
+              {veinNetwork.branches.map((vein, index) => (
+                <mesh key={`branch-${index}`}>
+                  <tubeGeometry args={[vein, 7, 0.0022, 5, false]} />
+                  <meshStandardMaterial
+                    color={lineDrawing ? "#111111" : frontVeinColors[2]}
+                    roughness={0.92}
+                  />
+                </mesh>
+              ))}
+            </group>
             {!lineDrawing && (
               <>
                 <mesh>
@@ -618,42 +943,22 @@ export function FlowerLeaf({
               </>
             )}
           </group>
-          {tuning.venation === "parallel" &&
+          {lineDrawing &&
+            tuning.venation === "parallel" &&
             parallelVeins.map((vein, index) => (
-              <group key={`parallel-${index}`}>
-                <mesh>
-                  <tubeGeometry
-                    args={[vein, 18, index === 3 ? 0.0075 : 0.0032, 5, false]}
-                  />
-                  <meshStandardMaterial
-                    color={lineDrawing ? "#111111" : "#36583a"}
-                    roughness={0.9}
-                  />
-                </mesh>
-                {!lineDrawing && (
-                  <mesh>
-                    <tubeGeometry
-                      args={[
-                        undersideParallelVeins[index],
-                        18,
-                        index === 3 ? 0.009 : 0.0038,
-                        5,
-                        false,
-                      ]}
-                    />
-                    <meshStandardMaterial color="#91a078" roughness={0.96} />
-                  </mesh>
-                )}
-              </group>
+              <mesh key={`parallel-${index}`}>
+                <tubeGeometry
+                  args={[vein, 18, index === 3 ? 0.006 : 0.0028, 5, false]}
+                />
+                <meshBasicMaterial color="#111111" />
+              </mesh>
             ))}
-          {peltateLeaf &&
+          {lineDrawing &&
+            peltateLeaf &&
             radialVeins.map((vein, index) => (
               <mesh key={`radial-${index}`}>
-                <tubeGeometry args={[vein, 12, 0.0045, 5, false]} />
-                <meshStandardMaterial
-                  color={lineDrawing ? "#111111" : "#416346"}
-                  roughness={0.9}
-                />
+                <tubeGeometry args={[vein, 12, 0.003, 5, false]} />
+                <meshBasicMaterial color="#111111" />
               </mesh>
             ))}
           {!lineDrawing && tuning.leafHairiness > 0 && (
@@ -730,23 +1035,38 @@ export function FlowerLeaf({
                 {lineDrawing && <Edges color="#111111" threshold={20} />}
               </mesh>
             ))}
-            <mesh>
-              <tubeGeometry
-                args={[
-                  new THREE.CatmullRomCurve3([
-                    new THREE.Vector3(0, 0.2, 0.025),
-                    new THREE.Vector3(0, 0.58, 0.04),
-                    new THREE.Vector3(0, 0.96, 0.05),
-                  ]),
-                  18,
-                  0.01,
-                  6,
-                  false,
-                ]}
-              />
+            <mesh dispose={null} geometry={compoundRachisGeometry}>
               <meshStandardMaterial
-                color={lineDrawing ? "#111111" : "#315136"}
+                color={lineDrawing ? "#111111" : leafColor}
+                vertexColors={!lineDrawing}
                 roughness={0.88}
+                bumpMap={
+                  lineDrawing
+                    ? undefined
+                    : getBotanicalTexture("stem", textureResolution)
+                }
+                bumpScale={0.012}
+                normalMap={
+                  lineDrawing
+                    ? undefined
+                    : getBotanicalMaterialTexture(
+                        "stem",
+                        "microNormal",
+                        textureResolution,
+                        supportMaterialVariant,
+                      )
+                }
+                normalScale={new THREE.Vector2(0.12, 0.12)}
+                roughnessMap={
+                  lineDrawing
+                    ? undefined
+                    : getBotanicalMaterialTexture(
+                        "stem",
+                        "roughness",
+                        textureResolution,
+                        supportMaterialVariant,
+                      )
+                }
               />
             </mesh>
             {leafletPlacements.map((leaflet, leafletIndex) => (
@@ -754,13 +1074,31 @@ export function FlowerLeaf({
                 key={`leaflet-${leaflet.side}-${leaflet.y}`}
                 position={[
                   leaflet.side * 0.018,
-                  leaflet.y,
+                  leaflet.y +
+                    (compoundLeafletPoses[leafletIndex]?.heightOffset ?? 0),
                   0.035 + leafletIndex * 0.001,
                 ]}
-                rotation={[0.03, leaflet.side * 0.08, leaflet.side * -0.88]}
-                scale={[leaflet.scale, leaflet.scale * 0.82, leaflet.scale]}
+                rotation={[
+                  0.03 + (compoundLeafletPoses[leafletIndex]?.pitchOffset ?? 0),
+                  leaflet.side * 0.08 +
+                    (compoundLeafletPoses[leafletIndex]?.yawOffset ?? 0),
+                  leaflet.roll +
+                    (compoundLeafletPoses[leafletIndex]?.rollOffset ?? 0),
+                ]}
+                scale={[
+                  leaflet.scale *
+                    (compoundLeafletPoses[leafletIndex]?.scale ?? 1),
+                  leaflet.scale *
+                    0.82 *
+                    (compoundLeafletPoses[leafletIndex]?.scale ?? 1),
+                  leaflet.scale *
+                    (compoundLeafletPoses[leafletIndex]?.scale ?? 1),
+                ]}
               >
-                <mesh dispose={null} geometry={geometry}>
+                <mesh
+                  dispose={null}
+                  geometry={compoundLeafletGeometries[leafletIndex] ?? geometry}
+                >
                   {lineDrawing ? (
                     <meshBasicMaterial
                       color="#ffffff"
@@ -779,16 +1117,60 @@ export function FlowerLeaf({
                       side={THREE.DoubleSide}
                       roughness={
                         photorealistic
-                          ? 0.82 - (tuning.leafGlossScale - 1) * 0.07
+                          ? 0.82 -
+                            (tuning.leafGlossScale - 1) * 0.07 +
+                            (settings.preset === "Rose"
+                              ? (seededRandom(
+                                  settings.seed +
+                                    attachmentT * 2711 +
+                                    leafletIndex * 173,
+                                ) -
+                                  0.5) *
+                                0.035
+                              : 0)
                           : 0.9
                       }
                       specularIntensity={
                         photorealistic ? 0.12 * tuning.leafGlossScale : 0.05
                       }
+                      clearcoat={
+                        photorealistic
+                          ? 0.1 *
+                            tuning.leafGlossScale *
+                            leafMoisture *
+                            (settings.preset === "Rose" ? 0.72 : 1)
+                          : 0
+                      }
+                      clearcoatRoughness={
+                        settings.preset === "Rose" ? 0.5 : 0.42
+                      }
                       bumpMap={getBotanicalTexture("leaf", textureResolution)}
-                      bumpScale={0.018}
+                      bumpScale={settings.preset === "Rose" ? 0.008 : 0.018}
+                      normalMap={getBotanicalMaterialTexture(
+                        "leaf",
+                        "microNormal",
+                        textureResolution,
+                        leafMaterialVariant,
+                      )}
+                      normalScale={
+                        settings.preset === "Rose"
+                          ? new THREE.Vector2(0.19, 0.19)
+                          : new THREE.Vector2(0.12, 0.12)
+                      }
+                      roughnessMap={getBotanicalMaterialTexture(
+                        "leaf",
+                        "roughness",
+                        textureResolution,
+                        leafMaterialVariant,
+                      )}
                       transmission={photorealistic ? 0.04 * leafMoisture : 0}
                       thickness={0.04 * leafMoisture}
+                      thicknessMap={getBotanicalMaterialTexture(
+                        "leaf",
+                        "thickness",
+                        textureResolution,
+                        leafMaterialVariant,
+                      )}
                       attenuationColor={leafColor}
                       attenuationDistance={0.76}
                     />
@@ -796,7 +1178,12 @@ export function FlowerLeaf({
                   {lineDrawing && <Edges color="#111111" threshold={20} />}
                 </mesh>
                 {!lineDrawing && (
-                  <mesh dispose={null} geometry={marginGeometry}>
+                  <mesh
+                    dispose={null}
+                    geometry={
+                      compoundLeafletMargins[leafletIndex] ?? marginGeometry
+                    }
+                  >
                     <meshStandardMaterial
                       color={new THREE.Color(leafColor).multiplyScalar(0.78)}
                       roughness={0.92}
